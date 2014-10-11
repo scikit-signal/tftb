@@ -32,7 +32,7 @@ def amgauss(N, t0=None, T=None):
     if N <= 0:
         raise TypeError
     else:
-        tmt0 = np.arange(N) - t0
+        tmt0 = np.arange(1, N+1, dtype=float) - t0
         y = np.exp(-((tmt0/T)**2)*np.pi)
         return y
 

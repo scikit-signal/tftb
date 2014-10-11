@@ -1,4 +1,5 @@
 import numpy as np
+from scipy import angle
 
 
 def locfreq(sig):
@@ -34,3 +35,48 @@ def locfreq(sig):
     fm = np.mean(freqs*Sig2)
     B = 2*np.sqrt(np.pi*np.mean(((freqs-fm)**2)*Sig2))
     return fm, B
+
+
+def inst_freq(x, t=None, L=1):
+    """
+    Compute the instantaneous frequency of an analytic signal at specific
+    time instants using the trapezoidal integration rule.
+
+    Parameters
+    ----------
+    x : array-like
+        The input analytic signal
+
+    t : array-like, optional
+        The time instants at which to calculate the instantaneous frequencies.
+        Default: np.arange(2,len(x))
+
+    L : integer, optional
+        Non default values are currently not supported.
+        If L is 1, the normalized instantaneous frequency is computed. If L > 1,
+        the maximum likelihood estimate of the instantaneous frequency of the
+        deterministic part of the signal.
+
+    Returns
+    -------
+    fnorm : 1-D ndarray
+        The instantaneous frequencies of the input signal.
+
+    """
+    if x.ndim != 1:
+        if 1 not in x.shape:
+            raise TypeError("Input should be a one dimensional array.")
+        else:
+            x = x.ravel()
+    if t is not None:
+        if t.ndim != 1:
+            if 1 not in t.shape:
+                raise TypeError("Time instants should be a one dimensional "
+                                "array.")
+            else:
+                t = t.ravel()
+    else:
+        t = np.arange(2,len(x))
+
+    fnorm = 0.5 * (angle(-x[t] * np.conj(x[t-2])) + np.pi) / (2 * np.pi)
+    return fnorm
