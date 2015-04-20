@@ -9,7 +9,5 @@ setup(
     author_email='deshpande.jaidev@gmail.com',
     packages=['tftb',
               'tftb.processing',
-              'tftb.visualization',
-              'tftb.generators',
-              'tftb.postprocessing']
+              'tftb.generators']
 )
