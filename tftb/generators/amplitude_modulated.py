@@ -1,117 +1,114 @@
 import numpy as np
 
 
-def amgauss(N, t0=None, T=None):
-    """
-    Generate a gaussian amplitude modulation.
+def amgauss(n_points, t0=None, spread=None):
+    """Generate a Gaussian amplitude modulator.
 
-    Parameters
-    ----------
-    N : int
-        Length of the signal.
-
-    t0 : int, optional
-        Time center. Default is N/2
-
-    T : float, optional
-        Time spreading. Default is 2 * sqrt(N)
-
-    Returns
-    -------
-    y : 1-D ndarray, shape (N,)
-        Gaussian amplitude modulated signal.
-
+    :param n_points: Number of points in the output.
+    :param t0: Center of the Gaussian function.
+    :param spread: Standard deviation of the Gaussian.
+    :type n_points: int
+    :type t0: float
+    :type spread: float
+    :return: Gaussian function centered at time `t0`.
+    :rtype: numpy.ndarray
     """
     if t0 is None:
-        t0 = np.round(N/2)
+        t0 = np.round(n_points / 2)
 
-    if T is None:
-        T = 2*np.sqrt(N);
+    if spread is None:
+        spread = 2 * np.sqrt(n_points)
 
-
-    if N <= 0:
-        raise TypeError
+    if n_points <= 0:
+        raise TypeError("n_points should be >= 0")
     else:
-        tmt0 = np.arange(1, N+1, dtype=float) - t0
-        y = np.exp(-((tmt0/T)**2)*np.pi)
+        tmt0 = np.arange(1, n_points + 1, dtype=float) - t0
+        y = np.exp(-((tmt0 / spread) ** 2) * np.pi)
         return y
 
 
-def amexpos(N, kind=None, t0=None, T=None):
-    """
-    Generate an exponential amplitude modulation.
+def amexpos(n_points, kind="bilateral", t0=None, spread=None):
+    """Exponential amplitude modulation.
 
-    Parameters
-    ----------
-    N : int
-        Length of the desired output.
+    `amexpos` generates an exponential amplitude modulation starting at time
+    `t0` and spread proportioanl to `spread`.
 
-    kind : str, optional
-        If "bilateral", generates a two-sided exponential amplitude modulation.
-        (default None)
-
-    t0 : int, optional
-        Arrival time of the exponential, default is N/2
-
-    T : float, optional
-        Time spreading. Default is 2*sqrt(N)
-
-    Returns
-    -------
-    y : 1-D ndarray
-        The modulated signal.
-
+    :param n_points: Number of points.
+    :param kind: "bilateral" (default) or "unilateral"
+    :param t0: Time center.
+    :param spread: Standard deviation.
+    :type n_points: int
+    :type kind: str
+    :type t0: float
+    :type spread: float
+    :return: exponential function
+    :rtype: numpy.ndarray
     """
     if t0 is None:
-        t0 = np.round(N/2)
-    if T is None:
-        T = 2*np.sqrt(N)
+        t0 = np.round(n_points / 2)
+    if spread is None:
+        spread = 2 * np.sqrt(n_points)
 
-    if N <= 0:
+    if n_points <= 0:
         raise TypeError
     else:
-        tmt0 = np.arange(N) - t0
+        tmt0 = np.arange(n_points) - t0
         if kind == "bilateral":
-            y = np.exp(-np.sqrt(2*np.pi)*np.abs(tmt0)/T)
+            y = np.exp(-np.sqrt(2 * np.pi) * np.abs(tmt0) / spread)
         else:
-            y = np.exp(-np.sqrt(np.pi)*tmt0/T)*(tmt0>=0.0)
+            y = np.exp(-np.sqrt(np.pi) * tmt0 / spread) * (tmt0 >= 0.0)
         return y
 
 
-def amrect(N, t0=None, T=None):
-    if t0 is None:
-        t0 = np.round(N/2)
-    if T is None:
-        T = 2*np.sqrt(N)
+def amrect(n_points, t0=None, spread=None):
+    """Generate a rectangular amplitude modulation.
 
-    if N <= 0:
+    :param n_points: Number of points in the function.
+    :param t0: Time center
+    :param spread: standard deviation of the function.
+    :type n_points: int
+    :type t0: float
+    :type spread: float
+    :return: A rectangular amplitude modulator.
+    :rtype: numpy.ndarray.
+    """
+    if t0 is None:
+        t0 = np.round(n_points / 2)
+    if spread is None:
+        spread = 2 * np.sqrt(n_points)
+
+    if n_points <= 0:
         raise TypeError
     else:
-        tmt0 = np.arange(N) - t0
-        y = np.abs(tmt0) <= 0.5*T*np.sqrt(3.0/np.pi)
+        tmt0 = np.arange(n_points) - t0
+        y = np.abs(tmt0) <= 0.5 * spread * np.sqrt(3.0 / np.pi)
         return y
 
 
-def amtriang(N, t0=None, T=None):
-    if t0 is None:
-        t0 = np.round(N/2)
-    if T is None:
-        T = 2*np.sqrt(N)
+def amtriang(n_points, t0=None, spread=None):
+    """Generate a triangular amplitude modulation.
 
-    if N <= 0:
+    :param n_points: Number of points in the function.
+    :param t0: Time center
+    :param spread: standard deviation of the function.
+    :type n_points: int
+    :type t0: float
+    :type spread: float
+    :return: A triangular amplitude modulator.
+    :rtype: numpy.ndarray.
+    """
+    if t0 is None:
+        t0 = np.round(n_points / 2)
+    if spread is None:
+        spread = 2 * np.sqrt(n_points)
+
+    if n_points <= 0:
         raise TypeError
     else:
-        tmt0 = np.arange(N) - t0
-        L = np.sqrt(10.0/np.pi)*T/2.0
-        t = np.amin(np.vstack((L+tmt0, L-tmt0)).T, axis=1)
-        t = np.hstack((t.reshape((len(t),1)),np.zeros((len(t),1))))
-        y = np.amax( t, axis=1)/L
+        tmt0 = np.arange(n_points) - t0
+        L = np.sqrt(10.0 / np.pi) * spread / 2.0
+        t = np.amin(np.vstack((L + tmt0, L - tmt0)).spread, axis=1)
+        t = np.hstack((t.reshape((len(t), 1)), np.zeros((len(t), 1))))
+        y = np.amax(t, axis=1) / L
 
-        
         return y
-
-if __name__ == "__main__":
-    from matplotlib.pyplot import plot, show
-    y = amtriang(64)
-    plot(y)
-    show()
