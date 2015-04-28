@@ -27,7 +27,7 @@ def amgauss(n_points, t0=None, spread=None):
         return y
 
 
-def amexpos(n_points, kind="bilateral", t0=None, spread=None):
+def amexpos(n_points, t0=None, spread=None, kind="bilateral"):
     """Exponential amplitude modulation.
 
     `amexpos` generates an exponential amplitude modulation starting at time
@@ -107,7 +107,7 @@ def amtriang(n_points, t0=None, spread=None):
     else:
         tmt0 = np.arange(n_points) - t0
         L = np.sqrt(10.0 / np.pi) * spread / 2.0
-        t = np.amin(np.vstack((L + tmt0, L - tmt0)).spread, axis=1)
+        t = np.amin(np.vstack((L + tmt0, L - tmt0)).T, axis=1)
         t = np.hstack((t.reshape((len(t), 1)), np.zeros((len(t), 1))))
         y = np.amax(t, axis=1) / L
 
