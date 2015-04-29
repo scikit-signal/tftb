@@ -42,24 +42,12 @@ def fmhyp(n_points, p1, p2):
     :return: vector containing the modulated signal samples.
     :rtype: numpy.ndarray
     """
-    if (len(p1) != 2) or (len(p2) != 2):
-        raise TypeError
-    elif n_points <= 0:
-        raise TypeError
-
-    if (p1[0] > n_points) or (p1[0] < 1):
-        raise TypeError
-    elif (p2[0] > n_points) or (p2[0] < 1):
-        raise TypeError
-    elif (p1[1] < 0) or (p2[1] < 0):
-        raise TypeError
-
     c = (p2[1] - p1[1]) / (1.0 / p2[0] - 1 / p1[0])
     f0 = p1[1] - c / p1[0]
 
-    t = np.arange(n_points)
+    t = np.arange(1, n_points + 1)
     phi = 2 * np.pi * (f0 * t + c * np.log(np.abs(t)))
-    iflaw = (f0 + c * np.abs(t)) ** -1
+    iflaw = (f0 + c / np.abs(t))
 
     a, b = iflaw < 0, iflaw > 0.5
     aliasing = np.logical_or(a, b)
@@ -131,32 +119,30 @@ def fmodany(iflaw, t0=1):
     return y
 
 
-def fmpar(n_points, p1, p2=None, p3=None):
+def fmpar(n_points, coefficients):
     """Parabolic frequency modulated signal.
 
     :param n_points: number of points
-    :param p1, p2, p3: coefficients of the parabolic function.
+    :param coefficients: coefficients of the parabolic function.
     :type n_points: int
-    :type p1: float
-    :type p2: float
-    :type p3: float
+    :type coefficients: tuple
     :return: Signal with parabolic frequency modulation law.
     :rtype:
     """
-    a0, a1, a2 = p1
+    a0, a1, a2 = coefficients
     t = np.arange(n_points)
     phi = 2 * np.pi * (a0 * t + (a1 / 2 * t) ** 2 + (a2 / 3 * t) ** 3)
-    iflaw = a0 + a1 * t + (a2 * t) ** 2
+    iflaw = a0 + a1 * t + a2 * (t ** 2)
     a, b = iflaw < 0, iflaw > 0.5
     aliasing = np.logical_or(a, b)
     if np.any(aliasing):
         msg = "Signal may be undersampled or may have negative frequencies."
         warnings.warn(msg, UserWarning)
     x = np.exp(1j * phi)
-    return x
+    return x, iflaw
 
 
-def fmpower(n_points, k, p1, p2=None):
+def fmpower(n_points, k, coefficients):
     """Generate signal with power law frequency modulation.
 
     :param n_points: number of points.
@@ -169,7 +155,13 @@ def fmpower(n_points, k, p1, p2=None):
     :return: vector of modulated signal samples.
     :rtype: numpy.ndarray
     """
-    f0, c = p1
+    if len(coefficients) == 2:
+        f0, c = coefficients
+    elif len(coefficients) > 2:
+        p1 = coefficients[:2]
+        p2 = coefficients[2:]
+        c = (p2[1] - p1[1]) / (1.0 / (p2[0] ** k) - 1.0 / (p1[0] ** k))
+        f0 = p1[1] - c / (p1[0] ** k)
     t = np.arange(n_points)
     phi = 2 * np.pi * (f0 * t + c / (1 - k) * np.abs(t) ** (1 - k))
     iflaw = (f0 + c * np.abs(t) ** (-k))
@@ -180,12 +172,12 @@ def fmpower(n_points, k, p1, p2=None):
         warnings.warn(msg, UserWarning)
 
     x = np.exp(1j * phi)
-    return x
+    return x, iflaw
 
 
 def fmsin(n_points, fnormin=0.05, fnormax=0.45, period=None, t0=None,
           fnorm0=None, pm1=1):
-    """Sinusodial frequency modulation
+    """Sinusodial frequency modulation.
 
     :param n_points: number of points
     :param fnormin: smallest normalized frequency
