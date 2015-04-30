@@ -1,31 +1,12 @@
 import unittest
 import numpy as np
 from numpy import pi
-import tftb.generators.amplitude_modulated as am
 from scipy.signal import argrelmax
+from tftb.tests.base import TestBase
+import tftb.generators.amplitude_modulated as am
 
 
-class TestAmplitudeModulated(unittest.TestCase):
-
-    def assert_is_concave(self, signal):
-        second_derivative = np.diff(np.diff(signal))
-        if not np.all(second_derivative < 0):
-            raise AssertionError("Signal is not concave.")
-
-    def assert_is_convex(self, signal):
-        second_derivative = np.diff(np.diff(signal))
-        if not np.all(second_derivative > 0):
-            raise AssertionError("Signal is not convex.")
-
-    def assert_is_monotonic_increasing(self, signal):
-        derivative = np.diff(signal)
-        if not np.all(derivative >= 0):
-            raise AssertionError("Signal is not monotonically increasing.")
-
-    def assert_is_monotonic_decreasing(self, signal):
-        derivative = np.diff(signal)
-        if not np.all(derivative <= 0):
-            raise AssertionError("Signal is not monotonically decreasing.")
+class TestAmplitudeModulated(TestBase):
 
     def test_amgauss(self):
         """Test if the gaussian amplitude modulator works correctly."""

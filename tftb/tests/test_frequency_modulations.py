@@ -10,21 +10,12 @@
 
 import unittest
 import numpy as np
-from scipy import angle
+from tftb.tests.base import TestBase
 from tftb.generators import frequency_modulated as fm
 
 
-class TestFrequencyModulated(unittest.TestCase):
+class TestFrequencyModulated(TestBase):
     """Tests for the frequency_modulated module."""
-
-    def assert_is_analytic(self, signal):
-        """Assert that signal is analytic."""
-        omega = angle(signal)
-        recons = np.exp(1j * omega)
-        real_identical = np.allclose(np.real(recons), np.real(signal))
-        imag_identical = np.allclose(np.imag(recons), np.imag(signal))
-        if not (imag_identical and real_identical):
-            raise AssertionError("Signal is not analytic.")
 
     def test_fmconst(self):
         """Test constant frequency modulation."""
