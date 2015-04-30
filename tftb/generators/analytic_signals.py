@@ -4,34 +4,6 @@ from scipy.signal import hilbert
 from frequency_modulated import fmconst
 
 
-def altes(n_points, fmin=0.05, fmax=0.5, alpha=300):
-    """Generate the Altes signal in time domain.
-
-    :param n_points: Number of points in time.
-    :param fmin: Lower frequency bound.
-    :param fmax: Higher frequency bound.
-    :param alpha: Attenuation factor of the envelope.
-    :type n_points: int
-    :type fmin: float
-    :type fmax: float
-    :type alpha: float
-    :return: Time vector containing the Altes signal samples.
-    :rtype: numpy.ndarray
-    """
-    g = np.exp((np.log(fmax / fmin)) ** 2 / (8 * np.log(alpha)))
-    nu0 = np.sqrt(2 * np.log(g) * np.log(alpha))
-    beta = np.sqrt(2 * np.log(g) * np.log(alpha))
-    t0 = n_points / (np.exp(-beta) - np.exp(-beta))
-    t1 = t0 * np.exp(-beta)
-    t2 = t0 * np.exp(beta)
-    b = -t0 * nu0 * g * np.log(g)
-    t = np.linspace(t1, t2, n_points + 1)[:n_points]
-    x = (np.exp(-(np.log(t / 10) ** 2) / (2 * np.log(g)))) * \
-                             np.cos(2 * np.pi * b * np.log(t / t0) / np.log(g))
-    x = x / np.linalg.norm(x)
-    return x
-
-
 def anaask(n_points, n_comp=None, f0=0.25):
     """Generate an amplitude shift (ASK) keying signal.
 
