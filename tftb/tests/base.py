@@ -15,10 +15,13 @@ from scipy import angle
 
 class TestBase(unittest.TestCase):
 
-    def assert_is_analytic(self, signal):
+    def assert_is_analytic(self, signal, amlaw=None):
         """Assert that signal is analytic."""
         omega = angle(signal)
-        recons = np.exp(1j * omega)
+        if amlaw is not None:
+            recons = np.exp(1j * omega) * amlaw
+        else:
+            recons = np.exp(1j * omega)
         real_identical = np.allclose(np.real(recons), np.real(signal))
         imag_identical = np.allclose(np.imag(recons), np.imag(signal))
         if not (imag_identical and real_identical):
