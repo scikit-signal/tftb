@@ -24,8 +24,8 @@ def altes(n_points, fmin=0.05, fmax=0.5, alpha=300):
     t2 = t0 * np.exp(beta)
     b = -t0 * nu0 * g * np.log(g)
     t = np.linspace(t1, t2, n_points + 1)[:n_points]
-    x = (np.exp(-(np.log(t / 10) ** 2) / (2 * np.log(g)))) * \
-                             np.cos(2 * np.pi * b * np.log(t / t0) / np.log(g))
+    x = np.exp(-(np.log(t / t0) ** 2) / (2 * np.log(g))) * \
+        np.cos(2 * pi * b * np.log(t / t0) / np.log(g))
     x = x / np.linalg.norm(x)
     return x
 
@@ -65,14 +65,14 @@ def doppler(n_points, s_freq, f0, distance, v_target, t0=None, v_wave=340.0):
     elif v_target < 0:
         raise TypeError("v_target must be positive")
 
-    tmt0 = (np.arange(n_points) - t0) / s_freq
+    tmt0 = (np.arange(1, n_points + 1) - t0) / s_freq
     dist = np.sqrt(distance ** 2 + (v_target * tmt0) ** 2)
     fm = np.exp(1j * 2 * pi * f0 * (tmt0 - dist / v_wave))
     if np.abs(f0) < np.spacing(1):
         am = 0
     else:
         am = 1. / np.sqrt(dist)
-    iflaw = (1 - v_target ** 2 * tmt0 / dist / v_wave) * f0 * s_freq
+    iflaw = (1 - v_target ** 2 * tmt0 / dist / v_wave) * f0 / s_freq
     return fm, am, iflaw
 
 
@@ -137,8 +137,8 @@ def gdpower(n_points, degree=0, rate=1):
     """
     t0 = 0
     lnu = np.round(n_points / 2)
-    nu = np.linspace(0, lnu + 1, 0.5)
-    nu = nu[1:lnu]
+    nu = np.linspace(0, 0.5, lnu + 1)
+    nu = nu[1:]
     am = nu ** ((degree - 2) / 6)
 
     if rate == 0:
@@ -148,7 +148,7 @@ def gdpower(n_points, degree=0, rate=1):
 
     if (degree < 1) and (degree != 0):
         d = n_points ** (degree * rate)
-        t0 = n_points / 10
+        t0 = n_points / 10.0
         tfx[:lnu] = np.exp(-1j * 2 * pi * (t0 * nu + d * nu ** degree / degree)) * am
         x = np.fft.ifft(tfx)
     elif degree == 1:
@@ -165,7 +165,7 @@ def gdpower(n_points, degree=0, rate=1):
         x = np.fft.ifft(tfx)
 
     if degree != 1:
-        gpd = t0 + np.abs(np.sign(rate) - 1) / 2 * (n_points + 1) + rate * nu ** (degree - 1)
+        gpd = t0 + np.abs(np.sign(rate) - 1) / 2 * (n_points + 1) + d * nu ** (degree - 1)
     else:
         gpd = t0 * np.ones((n_points / 2,))
 
