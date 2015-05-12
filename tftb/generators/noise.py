@@ -46,5 +46,46 @@ def noisecg(n_points, a1=None, a2=None):
     return noise
 
 
+def dopnoise(n_points, s_freq, f_target, distance, v_target,
+        time_center=None, c=340):
+    """Generate complex noisy doppler signal, normalized to have unit energy.
+
+    :param n_points: Number of points.
+    :param s_freq: Sampling frequency.
+    :param f_target: Frequency of target.
+    :param distance: Distnace from line to observer.
+    :param v_target: velocity of target relative to observer.
+    :param time_center: Time center. (Default n_points / 2)
+    :param c: Wave velocity (Default 340 m/s)
+    :type n_points: int
+    :type s_freq: float
+    :type f_target: float
+    :type distance: float
+    :type v_target: float
+    :type time_center: float
+    :type c: float
+    :return: tuple (output signal, instantaneous frequency law.)
+    :rtype: tuple(array-like)
+    """
+    if time_center is None:
+        time_center = np.floor(n_points / 2.0)
+
+    r = 0.9
+    rr = r ** 2
+    r2 = 2 * r
+    vv = v_target ** 2
+    x = np.random.randn(2 * n_points,)
+    tmt0 = (np.arange(1, 2 * n_points + 1, dtype=float) - time_center - n_points) / s_freq
+    dist = np.sqrt(distance ** 2 + (v_target * tmt0) ** 2)
+    iflaw = (1 - vv * tmt0 / dist / c) * f_target / s_freq
+    y = np.zeros((2 * n_points,))
+    for t in xrange(2, 2 * n_points):
+        y[t] = x[t] - rr * (x[t - 2] + y[t - 2]) + r2 * np.cos(2.0 * np.pi * iflaw[t]) * y[t - 1]
+    y = hilbert(y[(n_points + 1): (2 * n_points + 1)]) / np.sqrt(dist[(n_points + 1): (2 * n_points + 1)])
+    y = y / np.sqrt(np.sum(np.abs(y) ** 2))
+    iflaw = iflaw[(n_points + 1):(2 * n_points + 1)]
+    return y, iflaw
+
+
 if __name__ == "__main__":
     n = noisecg(128)
