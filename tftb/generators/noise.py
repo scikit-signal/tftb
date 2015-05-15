@@ -1,5 +1,5 @@
 import numpy as np
-from utils import nextpow2
+from tftb.utils import nextpow2
 from scipy.signal import hilbert
 
 

@@ -1,18 +1,6 @@
 import numpy as np
 
 
-def nextpow2(n):
-    """Compute the exponent of the next higher power of 2.
-
-    :param n: Number whose next higest power of 2 needs to be computed.
-    :type n: int, np.ndarray
-    :rtype: int, np.ndarray
-    """
-    m_f = np.log2(n)
-    m_i = np.ceil(m_f)
-    return m_i
-
-
 def sigmerge(x1, x2, ratio=0.0):
     """
     Add two signals with a specific energy ratio in decibels.
@@ -34,7 +22,3 @@ def sigmerge(x1, x2, ratio=0.0):
     h = np.sqrt(ex1 / (ex2 * 10 ** (ratio / 10.0)))
     sig = x1 + h * x2
     return sig
-
-
-if __name__ == "__main__":
-    print nextpow2(128)
