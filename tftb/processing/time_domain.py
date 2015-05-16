@@ -31,8 +31,8 @@ def group_delay(x, fnorm=None):
     :param fnorm: normalized frequency at which to calculate the group delay.
     :type x: numpy.ndarray
     :type fnorm: float
-:return: group delay
-:rtype: numpy.ndarray
+    :return: group delay
+    :rtype: numpy.ndarray
     """
     if x.ndim != 1:
         if 1 not in x.shape:
