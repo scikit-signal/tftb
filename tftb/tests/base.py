@@ -15,6 +15,12 @@ from scipy import angle
 
 class TestBase(unittest.TestCase):
 
+    def assert_is_linear(self, signal, decimals=5):
+        """Assert that the signal is linear."""
+        derivative = np.diff(signal)
+        derivative = np.around(derivative, decimals)
+        self.assertEqual(np.unique(derivative).shape[0], 1)
+
     def assert_is_analytic(self, signal, amlaw=None):
         """Assert that signal is analytic."""
         omega = angle(signal)

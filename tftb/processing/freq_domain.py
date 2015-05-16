@@ -2,7 +2,7 @@ import numpy as np
 from scipy import angle
 
 
-def locfreq(sig):
+def locfreq(signal):
     """
     Compute the frequency localization characteristics.
 
@@ -11,21 +11,20 @@ def locfreq(sig):
     :return: average normalized frequency center, frequency spreading
     :rtype: tuple
     """
-    if sig.ndim > 1:
-        if 1 not in sig.shape:
+    if signal.ndim > 1:
+        if 1 not in signal.shape:
             raise TypeError
         else:
-            sig = sig.ravel()
-    N = float(len(sig))
-    No2r = np.round(N / 2)
-    No2f = np.floor(N / 2)
-    Sig = np.fft.fft(sig)
-    Sig2 = np.abs(Sig) ** 2
-    Sig2 = Sig2 / Sig2.mean()
-    freqs = np.r_[np.arange(No2f), np.arange(-No2r, 0)] / N
-    fm = np.mean(freqs * Sig2)
-    B = 2 * np.sqrt(np.pi * np.mean(((freqs - fm)**2) * Sig2))
-    return fm, B
+            signal = signal.ravel()
+    no2r = np.round(signal.shape[0] / 2.0)
+    no2f = np.floor(signal.shape[0] / 2.0)
+    sig = np.fft.fft(signal)
+    sig = np.abs(sig) ** 2
+    sig = sig / sig.mean()
+    freqs = np.hstack((np.arange(no2f), np.arange(-no2r, 0))) / signal.shape[0]
+    fm = np.mean(freqs * sig)
+    bw = 2 * np.sqrt(np.pi * np.mean(((freqs - fm) ** 2) * sig))
+    return fm, bw
 
 
 def inst_freq(x, t=None, L=1):
