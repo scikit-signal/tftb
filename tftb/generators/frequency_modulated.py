@@ -73,7 +73,7 @@ def fmlin(n_points, fnormi=0.0, fnormf=0.5, t0=None):
     :type fnormf: float
     :type t0: float
     :return: The modulated signal, and the instantaneous amplitude law.
-    :rtype: numpy.ndarray
+    :rtype: tuple(array-like)
     """
     if t0 is None:
         t0 = np.round(n_points / 2)
