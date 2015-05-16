@@ -11,13 +11,20 @@
 import unittest
 from tftb.tests.base import TestBase
 from tftb.generators import misc
+from tftb.processing.utils import derive_window
 import numpy as np
-from scipy.signal import argrelmax, argrelmin
+from scipy.signal import argrelmax, argrelmin, hanning
 
 
 class TestMisc(TestBase):
 
-    def test_altest(self):
+    def test_window_derivative(self):
+        window = hanning(210)
+        derivative = derive_window(window)
+        ix_win_maxima = np.argmax(window)
+        self.assertAlmostEqual(derivative[ix_win_maxima], 0.0, places=3)
+
+    def test_altes(self):
         ideal = np.array([0.00200822, -0.21928398, 0.66719239, 0.66719239,
                           -0.17666382, -0.17009953, -0.038399, -0.00083597])
         actual = misc.altes(8, 0.1, 0.5)
