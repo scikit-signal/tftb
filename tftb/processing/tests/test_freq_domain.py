@@ -18,11 +18,17 @@ from tftb.tests.base import TestBase
 class TestFrequencyDomainProcessing(TestBase):
 
     def test_instfreq(self):
-        signal, iflaw = fm.fmlin(128, 0.05, 0.3, 50)
+        signal, _ = fm.fmlin(128, 0.05, 0.3, 50)
         ifreq = fproc.inst_freq(signal)
         self.assertAlmostEqual(ifreq.min(), 0.05, places=2)
         self.assertAlmostEqual(ifreq.max(), 0.3, places=2)
         self.assert_is_linear(ifreq)
+
+    def test_locfreq(self):
+        signal, _ = fm.fmlin(128, 0.05, 0.3, 50)
+        input_avg_freq = (0.05 + 0.3) / 2.0
+        avg_norm_freq, bandwidth = fproc.locfreq(signal)
+        self.assertAlmostEqual(avg_norm_freq, input_avg_freq, places=2)
 
 
 if __name__ == '__main__':
