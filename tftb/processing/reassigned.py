@@ -81,11 +81,11 @@ def spectrogram(signal, time_samples=None, n_fbins=None, window=None):
     tf3 = np.real(tf3)
 
     rtfr = np.zeros((n_fbins, time_samples.shape[0]))
-    ix = np.arange(time_samples.min(), time_samples.max() + 1)
+    ix = np.arange(time_samples.min(), time_samples.max() + 1) - 1
     threshold = 1e-6 * np.mean(np.abs(signal[ix])**2)
     for icol in xrange(time_samples.shape[0]):
         for jcol in xrange(n_fbins):
-            if np.abs(tfr[icol, jcol]) > threshold:
+            if np.abs(tfr[jcol, icol]) > threshold:
                 icolhat = icol + tf2[jcol, icol]
                 icolhat = np.min([np.max([icolhat, 1]), time_samples.shape[0]])
                 jcolhat = jcol - tf3[jcol, icol]
