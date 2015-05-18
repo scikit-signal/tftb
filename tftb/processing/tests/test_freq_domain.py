@@ -10,8 +10,10 @@
 
 
 import unittest
+import numpy as np
 from tftb.processing import freq_domain as fproc
 from tftb.generators import frequency_modulated as fm
+from tftb.generators import amplitude_modulated as am
 from tftb.tests.base import TestBase
 
 
@@ -29,6 +31,13 @@ class TestFrequencyDomainProcessing(TestBase):
         input_avg_freq = (0.05 + 0.3) / 2.0
         avg_norm_freq, bandwidth = fproc.locfreq(signal)
         self.assertAlmostEqual(avg_norm_freq, input_avg_freq, places=2)
+
+    def test_group_delay(self):
+        n_points = 128
+        signal = am.amgauss(n_points, 64, 30) * fm.fmlin(n_points, 0.1, 0.4)[0]
+        fnorm = np.arange(0.1, 0.38, step=0.04)
+        grp_dlay = fproc.group_delay(signal, fnorm)
+        self.assert_is_linear(grp_dlay, 0)
 
 
 if __name__ == '__main__':
