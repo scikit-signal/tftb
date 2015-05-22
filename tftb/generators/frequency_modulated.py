@@ -176,7 +176,7 @@ def fmpower(n_points, k, coefficients):
 
 
 def fmsin(n_points, fnormin=0.05, fnormax=0.45, period=None, t0=None,
-          fnorm0=None, pm1=1):
+          fnorm0=0.25, pm1=1):
     """Sinusodial frequency modulation.
 
     :param n_points: number of points
@@ -196,6 +196,11 @@ def fmsin(n_points, fnormin=0.05, fnormax=0.45, period=None, t0=None,
     :return: output signal
     :rtype: numpy.ndarray
     """
+    if period is None:
+        period = n_points
+    if t0 is None:
+        t0 = n_points / 2.0
+
     fnormid = 0.5 * (fnormax + fnormin)
     delta = 0.5 * (fnormax - fnormin)
     phi = -pm1 * np.arccos((fnorm0 - fnormid) / delta)
