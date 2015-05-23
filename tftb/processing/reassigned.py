@@ -48,16 +48,16 @@ def spectrogram(signal, time_samples=None, n_fbins=None, window=None):
     elif window.shape[0] % 2 == 0:
         raise ValueError('The smoothing window must have an odd length.')
 
-    tfr = np.zeros((n_fbins, time_samples.shape[0]))
-    tf2 = np.zeros((n_fbins, time_samples.shape[0]))
-    tf3 = np.zeros((n_fbins, time_samples.shape[0]))
+    tfr = np.zeros((n_fbins, time_samples.shape[0]), dtype=complex)
+    tf2 = np.zeros((n_fbins, time_samples.shape[0]), dtype=complex)
+    tf3 = np.zeros((n_fbins, time_samples.shape[0]), dtype=complex)
     lh = (window.shape[0] - 1) / 2
     th = window * np.arange(-lh, lh + 1)
     dwin = derive_window(window)
 
     for icol in xrange(time_samples.shape[0]):
         ti = time_samples[icol]
-        tau = np.arange(-np.min([np.round(n_fbins / 2) - 1, lh, ti - 1]),
+        tau = np.arange(-np.min([np.round(n_fbins / 2) - 1, lh, ti]),
                         np.min([np.round(n_fbins / 2) - 1, lh, signal.shape[0] - ti]) + 1)
         indices = np.remainder(n_fbins + tau, n_fbins)
         norm_h = np.linalg.norm(window[lh + tau], ord=2)
@@ -100,9 +100,10 @@ def spectrogram(signal, time_samples=None, n_fbins=None, window=None):
 
 
 if __name__ == '__main__':
-    from tftb.generators.api import fmlin
-    from scipy.signal import kaiser
-    signal = fmlin(128, 0.1, 0.4)[0]
-    time_samples = np.arange(1, 129, step=2)
-    window = kaiser(17, beta=3 * np.pi)
-    a, b, c = spectrogram(signal, time_samples, 64, window)
+    from tftb.generators.api import amexpos, fmconst, sigmerge, noisecg
+    transsig = amexpos(64, kind='unilateral') * fmconst(64)[0]
+    signal = np.hstack((np.zeros((100,)), transsig, np.zeros((92,))))
+    signal = sigmerge(signal, noisecg(256), -5)
+    tfr, _, _ = spectrogram(signal)
+    from matplotlib.pyplot import imshow, show
+    imshow(tfr), show()
