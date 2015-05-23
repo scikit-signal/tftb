@@ -60,7 +60,7 @@ class TestCohen(TestBase):
         signal = signal / 128.0
         tfr = cohen.pseudo_wigner_ville(signal)
         x = np.sum(np.sum(tfr))
-        y = np.sum(np.abs(signal) ** 2)
+        y = np.sum(np.abs(signal) ** 2) * 128
         self.assertAlmostEqual(x, y, places=3)
 
     def test_pseudo_wv_reality(self):
