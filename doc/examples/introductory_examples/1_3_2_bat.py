@@ -41,11 +41,11 @@ plt.show()
 
 # Pseudo Wigner Ville spectrum of the bat signal
 tfr = pseudo_wigner_ville(bat_signal)
-# threshold = np.amax(tfr) * 0.05
-# tfr[tfr <= threshold] = 0.0
-plt.contour(tfr)
+threshold = np.amax(tfr) * 0.05
+tfr[tfr <= threshold] = 0.0
+plt.contour(t0[:n], f0[:n], tfr, 5)
 plt.grid()
-plt.title('Wigner-Ville distribution of Noisy Signal (threshold = 5%)')
+plt.title('Pseudo Wigner-Ville distribution of Bat Sonar (threshold = 5%)')
 plt.xlabel('Time')
 plt.ylabel('Normalized Frequency')
 plt.show()
