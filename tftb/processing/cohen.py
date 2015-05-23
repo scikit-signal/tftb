@@ -54,19 +54,21 @@ def pseudo_wigner_ville(signal, time_samples=None, freq_bins=None, window=None):
     for icol in xrange(time_samples.shape[0]):
         ti = time_samples[icol]
         taumaxvals = (ti, signal.shape[0] - ti - 1,
-                      np.round(signal.shape[0] / 2.0), lh)
+                      np.round(freq_bins / 2.0), lh)
         taumax = np.min(taumaxvals)
         tau = np.arange(-taumax, taumax + 1).astype(int)
         indices = np.remainder(freq_bins + tau, freq_bins).astype(int)
-        tfr[indices, icol] = window[lh + tau] * signal[ti + tau - 1] * \
-            np.conj(signal[ti - tau - 1])
+        tfr[indices, icol] = window[lh + tau] * signal[ti + tau] * \
+            np.conj(signal[ti - tau])
         tau = np.round(freq_bins / 2.0)
         if (ti <= signal.shape[0] - tau) and (ti >= tau + 1) and (tau <= lh):
-            tfr[int(tau), icol] = 0.5 * (window[lh + tau] * signal[ti + tau - 1] *
-                    np.conj(signal[ti - tau - 1]) + window[lh - tau] *
-                    signal[ti - tau - 1] * np.conj(signal[ti + tau - 1]))
+            from IPython.core.debugger import Tracer
+            Tracer()()
+            tfr[int(tau), icol] = 0.5 * (window[lh + tau] * signal[ti + tau, 0] *
+                    np.conj(signal[ti - tau, 0]) + window[lh - tau] *
+                    signal[ti - tau, 0] * np.conj(signal[ti + tau, 0]))
 
-    tfr = np.fft.fft(tfr)
+    tfr = np.fft.fft(tfr, axis=0)
     return np.real(tfr)
 
 
@@ -112,9 +114,9 @@ def wigner_ville(signal, time_samples=None, freq_bins=None):
 
 
 if __name__ == '__main__':
-    from tftb.generators.api import fmsin
-    signal, _ = fmsin(128)
-    tfr = wigner_ville(signal)
+    from tftb.generators.api import fmlin
+    signal, _ = fmlin(128, 0.1, 0.4)
+    tfr = pseudo_wigner_ville(signal)
     from matplotlib.pyplot import imshow, show
-    imshow(tfr)
+    imshow(tfr, extent=[0, 1, 0, 1])
     show()
