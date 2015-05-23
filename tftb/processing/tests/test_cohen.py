@@ -54,5 +54,20 @@ class TestCohen(TestBase):
         tfr = cohen.wigner_ville(signal)
         self.assertTrue(np.all(tfr[:, :64] == 0))
 
+    def test_pseudo_wv_energy(self):
+        """Test the energy property of the pseudo WV representation."""
+        signal, _ = fmsin(128)
+        signal = signal / 128.0
+        tfr = cohen.pseudo_wigner_ville(signal)
+        x = np.sum(np.sum(tfr))
+        y = np.sum(np.abs(signal) ** 2)
+        self.assertAlmostEqual(x, y, places=3)
+
+    def test_pseudo_wv_reality(self):
+        """Test the reality property of the pseudo WV representation."""
+        signal, _ = fmsin(128)
+        tfr = cohen.pseudo_wigner_ville(signal)
+        self.assertTrue(np.all(np.isreal(tfr)))
+
 if __name__ == '__main__':
     unittest.main()
