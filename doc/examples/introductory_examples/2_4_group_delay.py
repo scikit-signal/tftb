@@ -7,7 +7,7 @@
 # Distributed under terms of the MIT license.
 
 """
-Example in section 1.3.1 of the tutorial.
+Example in section 2.4 of the tutorial.
 """
 
 from tftb.generators.api import fmlin
