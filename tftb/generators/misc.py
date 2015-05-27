@@ -1,5 +1,6 @@
 import numpy as np
 from numpy import pi
+from tftb.generators.api import amgauss, fmconst
 
 
 def altes(n_points, fmin=0.05, fmax=0.5, alpha=300):
@@ -28,6 +29,27 @@ def altes(n_points, fmin=0.05, fmax=0.5, alpha=300):
         np.cos(2 * pi * b * np.log(t / t0) / np.log(g))
     x = x / np.linalg.norm(x)
     return x
+
+
+def atoms(n_points, coordinates):
+    """Compute linear combination of elementary Gaussian atoms.
+
+    :param n_points: Number of points in a signal
+    :param coordinates: matrix of time-frequency centers
+    :type n_points: int
+    :type coordinates: array-like
+    :return: signal
+    :rtype: array-like
+    """
+    signal = np.zeros((n_points,), dtype=complex)
+    n_atoms = coordinates.shape[0]
+    for k in xrange(n_atoms):
+        t0 = np.round(np.max((np.min((coordinates[k, 0], n_points)), 1)))
+        f0 = np.max((np.min((coordinates[k, 1], 0.5)), 0.0))
+        T = coordinates[k, 2]
+        A = coordinates[k, 3]
+        signal += A * amgauss(n_points, t0, T) * fmconst(n_points, f0, t0)[0]
+    return signal
 
 
 def doppler(n_points, s_freq, f0, distance, v_target, t0=None, v_wave=340.0):
@@ -175,6 +197,8 @@ def gdpower(n_points, degree=0, rate=1):
     return x, gpd, nu
 
 if __name__ == "__main__":
-    from matplotlib.pyplot import plot, show
-    plot(mexhat())
-    show()
+    coords = np.array([[45, .25, 32, 1], [85, .25, 32, 1]])
+    sig = atoms(128, coords)
+    import matplotlib.pyplot as plt
+    plt.plot(np.real(sig))
+    plt.show()
