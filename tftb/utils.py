@@ -38,6 +38,17 @@ def divider(N):
     return n, m
 
 
+def nearest_odd(N):
+    """Get the nearest odd number for each value of N."""
+    if isinstance(N, np.ndarray):
+        y = np.floor(N)
+        y[np.remainder(y, 2) == 0] = np.ceil(N[np.remainder(y, 2) == 0])
+        y[np.remainder(y, 2) == 0] += 1
+        return y
+    if N % 2 == 0:
+        return N + 1
+    return N
+
+
 if __name__ == '__main__':
-    for i in [4, 9, 15, 256]:
-        print divider(i)
+    print nearest_odd(np.arange(10))
