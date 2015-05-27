@@ -5,4 +5,4 @@ from utils import sigmerge
 from noise import dopnoise, noisecg, noisecu
 from analytic_signals import (anaask, anabpsk, anafsk, anapulse, anaqpsk,
         anasing, anastep, hilbert)
-from misc import doppler, gdpower, klauder, mexhat, altes
+from misc import doppler, gdpower, klauder, mexhat, altes, atoms
