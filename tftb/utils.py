@@ -21,3 +21,23 @@ def nextpow2(n):
     m_f = np.log2(n)
     m_i = np.ceil(m_f)
     return m_i
+
+
+def divider(N):
+    """Compute two factors of N such that they are as close as possible to sqrt(N).
+
+    :param N: Number to be divided.
+    """
+    n = np.floor(np.sqrt(N))
+    while True:
+        old = n
+        m = np.ceil(N / float(n))
+        n = np.floor(N / float(m))
+        if n == old:
+            break
+    return n, m
+
+
+if __name__ == '__main__':
+    for i in [4, 9, 15, 256]:
+        print divider(i)
