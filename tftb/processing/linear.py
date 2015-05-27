@@ -7,7 +7,7 @@
 # Distributed under terms of the MIT license.
 
 """
-Short-time Fourier Transform.
+Linear Time Frequency Processing.
 """
 
 import numpy as np
