@@ -16,6 +16,61 @@ import numpy as np
 from tftb.utils import nextpow2
 
 
+def spectrogram(signal, time_instants=None, n_fbins=None, window=None):
+    """Compute the spectrogram of a signal.
+
+    :param signal: Signal to be analyzed.
+    :param time_instants: timestamps of the signal.
+    :param n_fbins: number of frequency bins
+    :param window: analysis window
+    :type signal: array-like
+    :type time_instants: array-like
+    :type n_fbins: int
+    :type window: array-like
+    :return: time frequency representation
+    :rtype: array-like
+    """
+    if time_instants is None:
+        time_instants = np.arange(signal.shape[0])
+
+    if n_fbins is None:
+        n_fbins = signal.shape[0]
+
+    if window is None:
+        hlength = np.floor(signal.shape[0] / 4.0)
+        hlength += 1 - np.remainder(hlength, 2)
+        from scipy.signal import hamming
+        window = hamming(hlength)
+    else:
+        hlength = window.shape[0]
+        if hlength % 2 == 0:
+            raise ValueError("Smoothing window should have an odd length.")
+
+    if 2 ** nextpow2(n_fbins) != n_fbins:
+        msg = "For faster computation, the frequency bins should be a power of 2."
+        warnings.warn(msg, UserWarning)
+
+    lh = (window.shape[0] - 1) / 2
+    tfr = np.zeros((n_fbins, time_instants.shape[0]), dtype=complex)
+    for icol in xrange(time_instants.shape[0]):
+        ti = time_instants[icol]
+        start = min([np.round(n_fbins / 2.0) - 1, lh, ti - 1])
+        end = min([np.round(n_fbins / 2.0) - 1, lh, signal.shape[0] - ti - 1])
+        tau = np.arange(-start, end)
+        indices = np.remainder(n_fbins + tau, n_fbins).astype(int)
+        tfr[indices, icol] = signal[ti + tau] * np.conj(window[lh + tau]) / np.linalg.norm(window[lh + tau])
+
+    if n_fbins % 2 == 0:
+        left = np.arange(n_fbins / 2, dtype=float) / n_fbins
+        right = np.arange(-n_fbins / 2, 0, dtype=float) / n_fbins
+    else:
+        left = np.arange((n_fbins - 1) / 2, dtype=float) / n_fbins
+        right = np.arange(-(n_fbins - 1) / 2, 0, dtype=float) / n_fbins
+    frequencies = np.hstack((left, right))
+
+    return np.abs(np.fft.fft(tfr, axis=0)) ** 2, time_instants, frequencies
+
+
 def pseudo_wigner_ville(signal, time_samples=None, freq_bins=None, window=None):
     """Compute the Pseudo Wigner Ville time frequency distribution.
 
@@ -62,8 +117,6 @@ def pseudo_wigner_ville(signal, time_samples=None, freq_bins=None, window=None):
             np.conj(signal[ti - tau])
         tau = np.round(freq_bins / 2.0)
         if (ti <= signal.shape[0] - tau) and (ti >= tau + 1) and (tau <= lh):
-            from IPython.core.debugger import Tracer
-            Tracer()()
             tfr[int(tau), icol] = 0.5 * (window[lh + tau] * signal[ti + tau, 0] *
                     np.conj(signal[ti - tau, 0]) + window[lh - tau] *
                     signal[ti - tau, 0] * np.conj(signal[ti + tau, 0]))
@@ -116,7 +169,9 @@ def wigner_ville(signal, time_samples=None, freq_bins=None):
 if __name__ == '__main__':
     from tftb.generators.api import fmlin
     signal, _ = fmlin(128, 0.1, 0.4)
-    tfr = pseudo_wigner_ville(signal)
-    from matplotlib.pyplot import imshow, show
-    imshow(tfr, extent=[0, 1, 0, 1])
-    show()
+    from scipy.signal import kaiser
+    window = kaiser(17, 3 * np.pi)
+    tfr, time, freq = spectrogram(signal, n_fbins=64, window=window)
+    import matplotlib.pyplot as plt
+    plt.imshow(tfr)
+    plt.show()
