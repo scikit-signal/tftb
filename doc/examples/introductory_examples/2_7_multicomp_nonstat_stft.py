@@ -12,7 +12,7 @@ Short time Fourier transform of a multi-component nonstationary signal.
 """
 
 from tftb.generators.api import fmlin
-from tftb.processing.stft import stft
+from tftb.processing.linear import stft
 import matplotlib.pyplot as plt
 from scipy.signal import hamming
 import numpy as np
