@@ -33,6 +33,15 @@ def integrate(y, x):
     return np.dot(dy, dx)
 
 
+def integ2d(mat, x, y):
+    m, n = mat.shape
+    mat = np.sum(mat.T, axis=0).T - mat[:, 0] / 2 - mat[:, n - 1] / 2
+    mat *= (x[1] - x[0])
+    dmat = mat[:(m - 1)] + mat[1:m]
+    dy = (y[1:m] - y[:(m - 1)]) / 2
+    return np.sum(dmat * dy)
+
+
 def scale(X, a, fmin, fmax, N):
     """Scale a signal with the Mellin transform.
 
@@ -96,12 +105,5 @@ def scale(X, a, fmin, fmax, N):
     return S
 
 if __name__ == '__main__':
-    # sig=klauder(128); S=scale(sig,2,.05,.45,128);
-    # subplot(211); plot(sig); subplot(212); plot(real(S(65:192)));
-    from tftb.generators.api import klauder
-    sig = klauder(128)
-    S = scale(sig, 2, 0.05, 0.45, 128)
-    import matplotlib.pyplot as plt
-    plt.subplot(211), plt.plot(sig)
-    plt.subplot(212), plt.plot(np.real(S[64:]))
-    plt.show()
+    from tftb.generators.api import altes
+    S = altes(256, 0.1, 0.45, 10000)
