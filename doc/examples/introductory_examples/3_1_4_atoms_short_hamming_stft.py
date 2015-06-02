@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from tftb.generators.api import atoms
 from scipy.signal import hamming
-from tftb.processing.stft import stft
+from tftb.processing.linear import stft
 
 coords = np.array([[45, .25, 32, 1], [85, .25, 32, 1]])
 sig = atoms(128, coords)
