@@ -71,6 +71,84 @@ def spectrogram(signal, time_instants=None, n_fbins=None, window=None):
     return np.abs(np.fft.fft(tfr, axis=0)) ** 2, time_instants, frequencies
 
 
+def smoothed_pseudo_wigner_ville(signal, timestamps=None, freq_bins=None,
+                                twindow=None, fwindow=None):
+    """Smoothed Pseudo Wigner-Ville time-frequency distribution.
+    :param signal: signal to be analyzed
+    :param timestamps: time instants of the signal
+    :param freq_bins: number of frequency bins
+    :param twindow: time smoothing window
+    :param fwindow: frequency smoothing window
+    :type signal: array-like
+    :type timestamps: array-like
+    :type freq_bins: int
+    :type twindow: array-like
+    :type fwindow: array-like
+    :return: Smoothed pseudo Wigner Ville distribution
+    :rtype: array-like
+    """
+    if timestamps is None:
+        timestamps = np.arange(signal.shape[0])
+
+    if freq_bins is None:
+        freq_bins = signal.shape[0]
+
+    if 2 ** nextpow2(freq_bins) != freq_bins:
+        msg = "For faster computation, the frequency bins should be a power of 2."
+        warnings.warn(msg, UserWarning)
+
+    if fwindow is None:
+        winlength = np.floor(freq_bins / 4.0)
+        winlength = winlength + 1 - np.remainder(winlength, 2)
+        from scipy.signal import hamming
+        fwindow = hamming(int(winlength))
+    elif fwindow.shape[0] % 2 == 0:
+        raise ValueError('The smoothing fwindow must have an odd length.')
+
+    if twindow is None:
+        timelength = np.floor(freq_bins / 10.0)
+        timelength += 1 - np.remainder(timelength, 2)
+        from scipy.signal import hamming
+        twindow = hamming(int(timelength))
+    elif twindow.shape[0] % 2 == 0:
+        raise ValueError('The smoothing fwindow must have an odd length.')
+
+    tfr = np.zeros((freq_bins, timestamps.shape[0]), dtype=complex)
+    lg = (twindow.shape[0] - 1) / 2
+    lh = (fwindow.shape[0] - 1) / 2
+    for icol in xrange(timestamps.shape[0]):
+        ti = timestamps[icol]
+        taumax = min([ti + lg - 1, signal.shape[0] - ti + lg,
+                      np.round(freq_bins / 2.0) - 1, lh])
+        points = np.arange(-min([lg, signal.shape[0] - ti]),
+                           min([lg, ti - 1]) + 1)
+        g2 = twindow[lg + points]
+        g2 = g2 / np.sum(g2)
+        tfr[0, icol] = np.sum(g2 * signal[ti - points - 1] * np.conj(signal[ti - points - 1]))
+        for tau in xrange(int(taumax)):
+            points = np.arange(-min([lg, signal.shape[0] - ti - tau]),
+                               min([lg, ti - 1 - tau]) + 1)
+            g2 = twindow[lg + points]
+            g2 = g2 / np.sum(g2)
+            R = np.sum(g2 * signal[ti + tau - points - 1] * np.conj(signal[ti - tau - points - 1]))
+            tfr[1 + tau, icol] = fwindow[lh + tau + 1] * R
+            R = np.sum(g2 * signal[ti - tau - points - 1] * np.conj(signal[ti + tau - points - 1]))
+            tfr[freq_bins - tau - 1, icol] = fwindow[lh - tau + 1] * R
+        tau = np.round(freq_bins / 2.0)
+        if (ti <= signal.shape[0] - tau) and (ti >= tau + 1) and (tau <= lh):
+            points = np.arange(-min([lg, signal.shape[0] - ti - tau]),
+                               min([lg, ti - 1 - tau]) + 1)
+            g2 = twindow[lg + 1 + points]
+            g2 = g2 / np.sum(g2)
+            _x = np.sum(g2 * signal[ti + tau - points] * np.conj(signal[ti - tau - points]))
+            _x *= fwindow[lh + tau + 1]
+            _y = np.sum(g2 * signal[ti - tau - points] * np.conj(signal[ti + tau - points]))
+            _y *= fwindow[lh - tau + 1]
+            tfr[tau, icol] = (_x + _y) * 0.5
+    tfr = np.fft.fft(tfr, axis=0)
+    return np.real(tfr)
+
+
 def pseudo_wigner_ville(signal, time_samples=None, freq_bins=None, window=None):
     """Compute the Pseudo Wigner Ville time frequency distribution.
 
@@ -97,7 +175,7 @@ def pseudo_wigner_ville(signal, time_samples=None, freq_bins=None, window=None):
         warnings.warn(msg, UserWarning)
 
     if window is None:
-        winlength = np.floor(signal.shape[0] / 4.0)
+        winlength = np.floor(freq_bins / 4.0)
         winlength = winlength + 1 - np.remainder(winlength, 2)
         from scipy.signal import hamming
         window = hamming(int(winlength))
@@ -168,10 +246,13 @@ def wigner_ville(signal, time_samples=None, freq_bins=None):
 
 if __name__ == '__main__':
     from tftb.generators.api import fmlin
-    signal, _ = fmlin(128, 0.1, 0.4)
+    signal, _ = fmlin(128, 0.05, 0.15)
+    signal += fmlin(128, 0.3, 0.4)[0]
     from scipy.signal import kaiser
-    window = kaiser(17, 3 * np.pi)
-    tfr, time, freq = spectrogram(signal, n_fbins=64, window=window)
+    twindow = kaiser(15, 3 * np.pi)
+    fwindow = kaiser(63, 3 * np.pi)
+    tfr = smoothed_pseudo_wigner_ville(signal, freq_bins=64, twindow=twindow,
+                                  fwindow=fwindow)
     import matplotlib.pyplot as plt
     plt.imshow(tfr)
     plt.show()
