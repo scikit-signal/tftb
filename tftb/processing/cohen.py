@@ -273,11 +273,7 @@ def margenau_hill(signal, timestamps=None, n_fbins=None):
         ti = timestamps[icol]
         tau = np.arange(-min((n_fbins - ti, xrow - ti)) + 1, ti)
         indices = np.remainder(n_fbins + tau, n_fbins)
-        try:
-            tfr[indices, icol] = signal[ti] * np.conj(signal[ti - tau])
-        except IndexError:
-            from IPython.core.debugger import Tracer
-            Tracer()()
+        tfr[indices, icol] = signal[ti] * np.conj(signal[ti - tau])
 
     tfr = np.real(np.fft.fft(tfr, axis=0))
     if n_fbins % 2 == 0:
