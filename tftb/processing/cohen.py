@@ -244,15 +244,53 @@ def wigner_ville(signal, time_samples=None, freq_bins=None):
     return tfr
 
 
+def margenau_hill(signal, timestamps=None, n_fbins=None):
+    """Margenau-Hill time frequency distribution.
+
+    :param signal: Signal to be analyzed.
+    :param timestamps: Time instants
+    :param n_fbins: number of frequency bins
+    :type signal: array-like
+    :type timestamps: array-like
+    :type n_fbins: int
+    :return: Margenau Hill representation, timestamps, frequency vector
+    :rtype: tuple
+    """
+    xrow = signal.shape[0]
+    if timestamps is None:
+        timestamps = np.arange(xrow)
+    tcol = timestamps.shape[0]
+
+    if n_fbins is None:
+        n_fbins = xrow
+
+    if 2 ** nextpow2(n_fbins) != n_fbins:
+        msg = "For faster computation, the frequency bins should be a power of 2."
+        warnings.warn(msg, UserWarning)
+
+    tfr = np.zeros((n_fbins, tcol), dtype=complex)
+    for icol in xrange(tcol):
+        ti = timestamps[icol]
+        tau = np.arange(-min((n_fbins - ti, xrow - ti)) + 1, ti)
+        indices = np.remainder(n_fbins + tau, n_fbins)
+        tfr[indices, icol] = signal[ti] * np.conj(signal[ti - tau])
+
+    tfr = np.real(np.fft.fft(tfr, axis=0))
+    if n_fbins % 2 == 0:
+        freq = np.hstack((np.arange(n_fbins / 2), np.arange(-n_fbins / 2, 0))) / n_fbins
+    else:
+        freq = np.hstack((np.arange((n_fbins - 1) / 2), np.arange(-(n_fbins - 1) / 2, 0))) / n_fbins
+
+    return tfr, timestamps, freq
+
+
 if __name__ == '__main__':
     from tftb.generators.api import fmlin
-    signal, _ = fmlin(128, 0.05, 0.15)
-    signal += fmlin(128, 0.3, 0.4)[0]
-    from scipy.signal import kaiser
-    twindow = kaiser(15, 3 * np.pi)
-    fwindow = kaiser(63, 3 * np.pi)
-    tfr = smoothed_pseudo_wigner_ville(signal, freq_bins=64, twindow=twindow,
-                                  fwindow=fwindow)
+    sig = fmlin(128, 0.1, 0.4)[0]
+    tfr, t, f = margenau_hill(sig)
+    threshold = np.abs(tfr) * 0.05
+    tfr[np.abs(tfr) <= threshold] = 0
     import matplotlib.pyplot as plt
-    plt.imshow(tfr)
+    plt.imshow(np.abs(tfr) ** 2, extent=[t.min(), t.max(), f.min(), f.max()],
+               aspect='auto')
     plt.show()
