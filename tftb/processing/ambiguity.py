@@ -36,7 +36,7 @@ def narrow_band(signal, lag=None, n_fbins=None):
         lag = np.arange(tau_start, tau_end)
     taucol = lag.shape[0]
 
-    n_fbins = init_default_args(signal, n_fbin=n_nbins)
+    n_fbins = init_default_args(signal, n_fbins=n_fbins)[0]
 
     naf = np.zeros((n_fbins, taucol), dtype=complex)
     for icol in xrange(taucol):

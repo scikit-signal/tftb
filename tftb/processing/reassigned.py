@@ -14,6 +14,25 @@ from tftb.processing.utils import derive_window
 from tftb.utils import init_default_args
 
 
+def morlet_scalogram(signal, timestamps=None, n_fbins=None, tbp=0.25):
+    """morlet_scalogram
+
+    :param signal:
+    :param timestamps:
+    :param n_fbins:
+    :param tbp:
+    :type signal:
+    :type timestamps:
+    :type n_fbins:
+    :type tbp:
+:return:
+:rtype:
+    """
+    xrow = signal.shape[0]
+    timestamps, n_fbins = init_default_args(signal, timestamps=timestamps,
+                                            n_fbins=n_fbins)
+
+
 def smoothed_pseudo_wigner_ville(signal, timestamps=None, n_fbins=None,
         twindow=None, fwindow=None):
     """smoothed_pseudo_wigner_ville
@@ -141,7 +160,7 @@ def spectrogram(signal, time_samples=None, n_fbins=None, window=None):
         time_samples = np.arange(signal.shape[0])
     elif np.unique(np.diff(time_samples)).shape[0] > 1:
         raise ValueError('Time instants must be regularly sampled.')
-    n_fbins = init_default_args(signal, n_fbins=n_fbins)
+    n_fbins = init_default_args(signal, n_fbins=n_fbins)[0]
     if window is None:
         wlength = int(np.floor(signal.shape[0] / 4.0))
         wlength += 1 - np.remainder(wlength, 2)
