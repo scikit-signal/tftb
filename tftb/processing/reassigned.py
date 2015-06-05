@@ -8,11 +8,10 @@
 
 """Reassigned TF processing."""
 
-import warnings
 import numpy as np
 import scipy.signal as ssig
 from tftb.processing.utils import derive_window
-from tftb.utils import nextpow2
+from tftb.utils import init_default_args
 
 
 def smoothed_pseudo_wigner_ville(signal, timestamps=None, n_fbins=None,
@@ -34,15 +33,8 @@ def smoothed_pseudo_wigner_ville(signal, timestamps=None, n_fbins=None,
     """
     xrow = signal.shape[0]
 
-    if timestamps is None:
-        timestamps = np.arange(xrow)
-
-    if n_fbins is None:
-        n_fbins = xrow
-    elif 2 ** nextpow2(n_fbins) != n_fbins:
-        msg = "For faster computations, n_fbins should be a power of 2."
-        warnings.warn(msg, UserWarning)
-
+    timestamps, n_fbins = init_default_args(signal, timestamps=timestamps,
+                                            n_fbins=n_fbins)
     if fwindow is None:
         hlength = np.floor(n_fbins / 4.0)
         hlength += 1 - (hlength % 2)
@@ -149,11 +141,7 @@ def spectrogram(signal, time_samples=None, n_fbins=None, window=None):
         time_samples = np.arange(signal.shape[0])
     elif np.unique(np.diff(time_samples)).shape[0] > 1:
         raise ValueError('Time instants must be regularly sampled.')
-    if n_fbins is None:
-        n_fbins = signal.shape[0]
-    elif 2 ** nextpow2(n_fbins) != n_fbins:
-        msg = "For faster computations, n_fbins should be a power of 2."
-        warnings.warn(msg, UserWarning)
+    n_fbins = init_default_args(signal, n_fbins=n_fbins)
     if window is None:
         wlength = int(np.floor(signal.shape[0] / 4.0))
         wlength += 1 - np.remainder(wlength, 2)

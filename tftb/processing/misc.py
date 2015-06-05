@@ -11,6 +11,7 @@ Miscellaneous functions.
 """
 
 import numpy as np
+from tftb.utils import init_default_args
 
 
 def ideal_tfr(iflaws, timestamps=None, n_fbins=None):
@@ -26,13 +27,10 @@ def ideal_tfr(iflaws, timestamps=None, n_fbins=None):
 :rtype:
     """
     ifrow, ifcol = iflaws.shape
+    timestamps, n_fbins = init_default_args(iflaws[0, :],
+            timestamps=timestamps, n_fbins=n_fbins)
 
-    if timestamps is None:
-        timestamps = np.arange(ifcol)
     tcol = timestamps.shape[0]
-
-    if n_fbins is None:
-        n_fbins = ifcol
 
     tfr = np.zeros((n_fbins, tcol))
     for icol in xrange(tcol):
