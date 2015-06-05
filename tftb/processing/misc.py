@@ -38,14 +38,10 @@ def ideal_tfr(iflaws, timestamps=None, n_fbins=None):
     for icol in xrange(tcol):
         ti = timestamps[icol]
         for fi in xrange(ifrow):
-            try:
-                if np.isnan(iflaws[fi, ti]):
-                    tfr[ti, fi] = np.nan
-                else:
-                    tfr[int(np.round(iflaws[fi, ti] * 2 * (n_fbins - 1))), icol] = 1
-            except IndexError:
-                from IPython.core.debugger import Tracer
-                Tracer()()
+            if np.isnan(iflaws[fi, ti]):
+                tfr[ti, fi] = np.nan
+            else:
+                tfr[int(np.round(iflaws[fi, ti] * 2 * (n_fbins - 1))), icol] = 1
     freqs = np.arange(n_fbins, dtype=float) / n_fbins * 0.5
     return tfr, timestamps, freqs
 
