@@ -15,6 +15,119 @@ from tftb.processing.utils import derive_window
 from tftb.utils import nextpow2
 
 
+def smoothed_pseudo_wigner_ville(signal, timestamps=None, n_fbins=None,
+        twindow=None, fwindow=None):
+    """smoothed_pseudo_wigner_ville
+
+    :param signal:
+    :param timestamps:
+    :param n_fbins:
+    :param twindow:
+    :param fwindow:
+    :type signal:
+    :type timestamps:
+    :type n_fbins:
+    :type twindow:
+    :type fwindow:
+:return:
+:rtype:
+    """
+    xrow = signal.shape[0]
+
+    if timestamps is None:
+        timestamps = np.arange(xrow)
+
+    if n_fbins is None:
+        n_fbins = xrow
+    elif 2 ** nextpow2(n_fbins) != n_fbins:
+        msg = "For faster computations, n_fbins should be a power of 2."
+        warnings.warn(msg, UserWarning)
+
+    if fwindow is None:
+        hlength = np.floor(n_fbins / 4.0)
+        hlength += 1 - (hlength % 2)
+        fwindow = ssig.hamming(hlength)
+    elif fwindow.shape[0] % 2 == 0:
+        raise ValueError('The smoothing window must have an odd length.')
+    lh = (fwindow.shape[0] - 1) / 2
+
+    if twindow is None:
+        glength = np.floor(n_fbins / 4.0)
+        glength += 1 - (glength % 2)
+        twindow = ssig.hamming(glength)
+    elif twindow.shape[0] % 2 == 0:
+        raise ValueError('The smoothing window must have an odd length.')
+    lg = (twindow.shape[0] - 1) / 2
+
+    tcol = timestamps.shape[0]
+    deltat = timestamps[1:] - timestamps[:-1]
+    if deltat.min() != deltat.max():
+        raise ValueError("Time instants must be regularly sampled.")
+    else:
+        dt = deltat.min()
+
+    tfr = np.zeros((n_fbins, tcol), dtype=complex)
+    tf2 = np.zeros((n_fbins, tcol), dtype=complex)
+    tf3 = np.zeros((n_fbins, tcol), dtype=complex)
+    dh = derive_window(fwindow)
+
+    for icol in xrange(tcol):
+        ti = timestamps[icol]
+        taumax = min([ti + lg - 1, xrow - ti + lg, np.round(n_fbins / 2.0) - 1,
+                      lh])
+        points = np.arange(-min([lg, xrow - ti]), min([lg, ti - 1]) + 1)
+        g2 = twindow[lg + points]
+        g2 = g2 / g2.sum()
+        tg2 = g2 * points
+        xx = signal[ti - 1 - points] * np.conj(signal[ti - 1 - points])
+        tfr[0, icol] = (g2 * xx).sum()
+        tf2[0, icol] = (tg2 * xx).sum()
+        tf3[0, icol] = dh[lh + 1] * tfr[0, icol]
+
+        for tau in xrange(int(taumax)):
+            points = np.arange(-min([lg, xrow - ti - tau]),
+                               min([lg, ti - tau - 1]) + 1)
+            g2 = twindow[lg + points]
+            g2 = g2 / g2.sum()
+            tg2 = g2 * points
+            xx = signal[ti + tau - 1 - points] * np.conj(signal[ti - tau - 1 - points])
+            tfr[tau, icol] = (g2 * xx).sum() * fwindow[lh + tau]
+            tf2[tau, icol] = fwindow[lh + tau] * (tg2 * xx).sum()
+            tf3[tau, icol] = dh[lh + tau] * (g2 * xx).sum()
+            tfr[n_fbins - tau - 1, icol] = (g2 * np.conj(xx)).sum() * fwindow[lh - tau]
+            tf2[n_fbins - tau - 1, icol] = (tg2 * np.conj(xx)).sum() * fwindow[lh - tau]
+            tf3[n_fbins - tau - 1, icol] = dh[lh - tau] * (g2 * np.conj(xx)).sum()
+
+    tfr = np.real(np.fft.fft(tfr, axis=0)).ravel()
+    tf2 = np.real(np.fft.fft(tf2, axis=0)).ravel()
+    tf3 = np.imag(np.fft.fft(tf3, axis=0)).ravel()
+
+    no_warn_mask = tfr != 0
+    tf2[no_warn_mask] = np.round(tf2[no_warn_mask] / tfr[no_warn_mask] / dt)
+    tf3[no_warn_mask] = np.round(n_fbins * tf3[no_warn_mask] /
+            tfr[no_warn_mask] / (2 * np.pi))
+    tfr, tf2, tf3 = [x.reshape(n_fbins, tcol).astype(complex) for x in (tfr, tf2, tf3)]
+    tf3 = np.real(tf3)
+
+    rtfr = np.zeros((n_fbins, tcol), dtype=complex)
+    ex = np.mean(np.abs(signal) ** 2)
+    threshold = ex * 1.0e-6
+
+    for icol in xrange(tcol):
+        for jcol in xrange(n_fbins):
+            if np.abs(tfr[jcol, icol]) > threshold:
+                icolhat = min(max([icol - tf2[jcol, icol], 1]), tcol)
+                jcolhat = jcol - tf3[jcol, icol]
+                jcolhat = (((int(jcolhat) - 1) % n_fbins) + n_fbins) % n_fbins + 1
+                rtfr[jcol, icol] += tfr[jcol, icol]
+                tf2[jcol, icol] = jcolhat + 1j * icolhat
+            else:
+                tf2[jcol, icol] = np.inf * (1 + 1j)
+                rtfr[jcol, icol] += tfr[jcol, icol]
+
+    return tfr, rtfr, tf2
+
+
 def spectrogram(signal, time_samples=None, n_fbins=None, window=None):
     """Compute the spectrogram and reassigned spectrogram.
 
@@ -99,10 +212,15 @@ def spectrogram(signal, time_samples=None, n_fbins=None, window=None):
 
 
 if __name__ == '__main__':
-    from tftb.generators.api import amexpos, fmconst, sigmerge, noisecg
-    transsig = amexpos(64, kind='unilateral') * fmconst(64)[0]
-    signal = np.hstack((np.zeros((100,)), transsig, np.zeros((92,))))
-    signal = sigmerge(signal, noisecg(256), -5)
-    tfr, _, _ = spectrogram(signal)
-    from matplotlib.pyplot import imshow, show
-    imshow(tfr), show()
+    from tftb.generators.api import fmlin
+    sig = fmlin(128, 0.05, 0.15)[0] + fmlin(128, 0.3, 0.4)[0]
+    t = np.arange(128, step=2)
+    twindow = ssig.kaiser(15, 3 * np.pi)
+    fwindow = ssig.kaiser(63, 3 * np.pi)
+    tfr, rtfr, tf2 = smoothed_pseudo_wigner_ville(sig, t, 64, twindow, fwindow)
+    threshold = np.amax(np.abs(rtfr) ** 2) * 0.05
+    rtfr[np.abs(rtfr) ** 2 <= threshold] = 0 + 0 * 1j
+    import matplotlib.pyplot as plt
+    plt.imshow(np.abs(rtfr) ** 2, origin='bottomleft', extent=[0, 120, 0, 0.5],
+               aspect='auto')
+    plt.show()
