@@ -176,7 +176,7 @@ def fmpower(n_points, k, coefficients):
 
 
 def fmsin(n_points, fnormin=0.05, fnormax=0.45, period=None, t0=None,
-          fnorm0=0.25, pm1=1):
+          fnorm0=None, pm1=1):
     """Sinusodial frequency modulation.
 
     :param n_points: number of points
@@ -200,6 +200,8 @@ def fmsin(n_points, fnormin=0.05, fnormax=0.45, period=None, t0=None,
         period = n_points
     if t0 is None:
         t0 = n_points / 2.0
+    if fnorm0 is None:
+        fnorm0 = 0.5 * (fnormin + fnormax)
 
     fnormid = 0.5 * (fnormax + fnormin)
     delta = 0.5 * (fnormax - fnormin)
@@ -210,3 +212,9 @@ def fmsin(n_points, fnormin=0.05, fnormax=0.45, period=None, t0=None,
     y = np.exp(1j * phase)
     iflaw = fnormid + delta * np.cos(2 * pi * t / period + phi)
     return y, iflaw
+
+if __name__ == '__main__':
+    x2, if2 = fmsin(70, 0.35, 0.45, 60)
+    from matplotlib.pyplot import plot, show
+    plot(if2), show()
+    plot(np.real(x2)), show()
