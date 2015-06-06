@@ -88,7 +88,7 @@ def ridges(tfr, re_mat, timestamps=None, method='rsp'):
                 freq_points = np.arange(indices.shape[0])[indices] / (2.0 * n_fbins)
     elif method in ("rsp", "type1"):
         for icol in xrange(tfrcol):
-            ti = timestamps[ti]
+            ti = timestamps[icol]
             condt1 = np.real(re_mat[:, icol]) - freqs == 0
             condt2 = np.imag(re_mat[:, icol]) - icol == 0
             condt3 = tfr[:, icol] > threshold
