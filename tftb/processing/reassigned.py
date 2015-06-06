@@ -14,6 +14,84 @@ from tftb.processing.utils import derive_window
 from tftb.utils import init_default_args
 
 
+def pseudo_wigner_ville(signal, timestamps=None, n_fbins=None, fwindow=None):
+    """pseudo_wigner_ville
+
+    :param signal:
+    :param timestamps:
+    :param n_fbins:
+    :param fwindow:
+    :type signal:
+    :type timestamps:
+    :type n_fbins:
+    :type fwindow:
+:return:
+:rtype:
+    """
+    xrow = signal.shape[0]
+    timestamps, n_fbins = init_default_args(signal, timestamps=timestamps,
+                                            n_fbins=n_fbins)
+    tcol = timestamps.shape[0]
+
+    if fwindow is None:
+        hlength = np.floor(n_fbins / 4.0)
+        if hlength % 2 == 0:
+            hlength += 1
+        fwindow = ssig.hamming(hlength)
+    elif fwindow.shape[0] % 2 == 0:
+        raise ValueError('The smoothing fwindow must have an odd length.')
+    lh = (fwindow.shape[0] - 1) / 2
+    fwindow = fwindow / fwindow[lh]
+
+    tfr = np.zeros((n_fbins, tcol), dtype=complex)
+    tf2 = np.zeros((n_fbins, tcol), dtype=complex)
+    dh = derive_window(fwindow)
+    for icol in xrange(tcol):
+        ti = timestamps[icol]
+        taumax = min([ti - 1, xrow - ti, np.round(n_fbins / 2.0) - 1, lh])
+        tau = np.arange(-taumax, taumax + 1)
+        indices = np.remainder(n_fbins + tau, n_fbins) + 1
+        tfr[indices - 1, icol] = fwindow[lh + tau] * signal[ti + tau - 1] * np.conj(signal[ti - tau - 1])
+        tf2[indices - 1, icol] = dh[lh + tau] * signal[ti + tau - 1] * np.conj(signal[ti - tau - 1])
+        tau = np.round(n_fbins / 2)
+        if (ti <= (xrow - tau)) and (ti > (tau + 1)) and (tau <= lh):
+            _x = fwindow[lh + 1 + tau] * signal[ti + tau] * np.conj(signal[ti - tau])
+            _y = fwindow[lh + 1 - tau] * signal[ti - tau] * np.conj(signal[ti + tau])
+            tfr[tau + 1, icol] = (_x + _y) * 0.5
+            _x = dh[lh + 1 + tau] * signal[ti + tau] * np.conj(signal[ti - tau])
+            _y = dh[lh + 1 - tau] * signal[ti - tau] * np.conj(signal[ti + tau])
+            tf2[tau + 1, icol] = (_x + _y) * 0.5
+    tfr = np.real(np.fft.fft(tfr, axis=0))
+    tf2 = np.imag(np.fft.fft(tf2, axis=0))
+    tfr = tfr.ravel()
+    tf2 = tf2.ravel()
+    no_warn_mask = tfr != 0
+    tf2[no_warn_mask] *= n_fbins / tfr[no_warn_mask] / (2 * np.pi)
+    tf2[no_warn_mask] = np.round(tf2[no_warn_mask])
+    tfr = tfr.reshape(n_fbins, tcol)
+    tf2 = tf2.reshape(n_fbins, tcol)
+
+    rtfr = np.zeros((n_fbins, tcol), dtype=complex)
+    tmin = timestamps.min()
+    tmax = timestamps.max()
+    threshold = 1.0e-6 * (np.abs(signal[tmin:(tmax + 1)]) ** 2).mean()
+
+    for icol in xrange(tcol):
+        for jcol in xrange(n_fbins):
+            if np.abs(tfr[jcol, icol]) > threshold:
+                jcolhat = jcol - tf2[jcol, icol]
+                jcolhat = np.remainder(np.remainder(jcolhat - 1,
+                                                    n_fbins) + n_fbins, n_fbins)
+                jcolhat += 1
+                rtfr[jcolhat - 1, icol] += tfr[jcol, icol]
+                tf2[jcol, icol] = jcolhat
+            else:
+                tf2[jcol, icol] = np.inf
+                rtfr[jcol, icol] += tfr[jcol, icol]
+
+    return tfr, rtfr, tf2
+
+
 def pseudo_margenau_hill(signal, timestamps=None, n_fbins=None, fwindow=None):
     """pseudo_margenau_hill
 
@@ -465,7 +543,7 @@ if __name__ == '__main__':
     ts = np.arange(128, step=2)
     sig = fmlin(128, 0.1, 0.4)[0]
     fwindow = ssig.kaiser(17, beta=3 * np.pi)
-    _, rtfr, _ = pseudo_margenau_hill(sig, timestamps=ts, n_fbins=64, fwindow=fwindow)
+    _, rtfr, _ = pseudo_wigner_ville(sig, timestamps=ts, n_fbins=64, fwindow=fwindow)
     rtfr = np.abs(rtfr) ** 2
     threshold = np.amax(rtfr) * 0.05
     rtfr[rtfr <= threshold] = 0.0
