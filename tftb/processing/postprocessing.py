@@ -13,6 +13,36 @@ Postprocessing functions.
 import numpy as np
 
 
+def friedman_density(tfr, re_mat, timestamps=None):
+    """friedman_density
+
+    :param tfr:
+    :param re_mat:
+    :param timestamps:
+    :type tfr:
+    :type re_mat:
+    :type timestamps:
+:return:
+:rtype:
+    """
+    tfrrow, tfrcol = tfr.shape
+    hatrow, hatcol = re_mat.shape
+    if timestamps is None:
+        timestamps = np.arange(tfrcol)
+
+    tifd = np.zeros((tfrrow, tfrcol))
+    bins = 0.5 + np.arange(tfrrow)
+    threshold = np.sum(np.sum(tfr)) * 0.5 / tfr.size
+
+    for j in xrange(tfrcol):
+        indices = tfr[:, j] > threshold
+        if np.any(indices):
+            occurences, trash = np.hist(np.real(re_mat[indices, j]), bins)
+            tifd[:, j] = occurences
+    tifd = tifd / np.sum(np.sum(tifd))
+    return tifd
+
+
 def ridges(tfr, re_mat, timestamps=None, method='rsp'):
     """ridges
 
@@ -70,22 +100,10 @@ def ridges(tfr, re_mat, timestamps=None, method='rsp'):
     return time_points, freq_points
 
 if __name__ == '__main__':
-    import matplotlib.pyplot as plt
     from tftb.generators.api import fmlin
     from scipy.signal import kaiser
-    from tftb.processing.reassigned import smoothed_pseudo_wigner_ville, spectrogram
+    from tftb.processing.reassigned import pseudo_wigner_ville
     sig = fmlin(128, 0.1, 0.4)[0]
-    twindow = kaiser(21, beta=3 * np.pi)
     fwindow = kaiser(47, beta=3 * np.pi)
-    tfr, rtfr, hat = smoothed_pseudo_wigner_ville(sig, twindow=twindow,
-                                                  fwindow=fwindow)
-    ts, fs = ridges(tfr, hat, method='rspwv')
-    plt.figure(1)
-    plt.plot(ts, fs, '.')
-    plt.axis([0, 128, 0, 0.5])
-    tfr, rtfr, hat = spectrogram(sig, window=fwindow)
-    ts, fs = ridges(tfr, hat, method='rspwv')
-    plt.figure(2)
-    plt.plot(ts, fs, '.')
-    plt.axis([0, 128, 0, 0.5])
-    plt.show()
+    tfr, rtfr, hat = pseudo_wigner_ville(sig, fwindow=fwindow)
+    tifd = friedman_density(tfr, hat, 'rpwv')
