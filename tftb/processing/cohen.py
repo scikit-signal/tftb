@@ -14,6 +14,49 @@ import numpy as np
 from tftb.utils import init_default_args
 
 
+def pseudo_page(signal, timestamps=None, n_fbins=None, fwindow=None):
+    """pseudo_page
+
+    :param signal:
+    :param timestamps:
+    :param n_fbins:
+    :type signal:
+    :type timestamps:
+    :type n_fbins:
+:return:
+:rtype:
+    """
+    timestamps, n_fbins = init_default_args(signal, timestamps=timestamps,
+                                            n_fbins=n_fbins)
+    tcol = timestamps.shape[0]
+
+    if fwindow is None:
+        hlength = np.floor(n_fbins / 4.0)
+        if hlength % 2 == 0:
+            hlength += 1
+        from scipy.signal import hamming
+        fwindow = hamming(hlength)
+    elif fwindow.shape[0] % 2 == 0:
+        raise ValueError('The smoothing fwindow must have an odd length.')
+    lh = (fwindow.shape[0] - 1) / 2
+    fwindow = fwindow / fwindow[lh]
+
+    tfr = np.zeros((n_fbins, tcol), dtype=complex)
+    for icol in xrange(tcol):
+        tau = np.arange(min([n_fbins - 1, lh, icol - 1]) + 1)
+        indices = np.remainder(n_fbins + tau, n_fbins) + 1
+        tfr[indices, icol] = fwindow[lh + tau] * signal[icol] * np.conj(
+                signal[icol - tau])
+    tfr = np.real(np.fft.fft(tfr, axis=0))
+
+    if n_fbins % 2 == 0:
+        freq = np.hstack((np.arange(n_fbins / 2), np.arange(-n_fbins / 2, 0))) / n_fbins
+    else:
+        freq = np.hstack((np.arange((n_fbins - 1) / 2), np.arange(-(n_fbins - 1) / 2, 0))) / n_fbins
+
+    return tfr, timestamps, freq
+
+
 def page(signal, timestamps=None, n_fbins=None):
     """page
 
@@ -285,7 +328,7 @@ if __name__ == '__main__':
     from tftb.generators.api import fmlin
     import matplotlib.pyplot as plt
     sig = fmlin(128, 0.1, 0.4)[0]
-    tfr, ts, f = page(sig)
+    tfr, ts, f = pseudo_page(sig)
     tfr = np.abs(tfr) ** 2
     threshold = np.amax(tfr) * 0.05
     tfr[tfr <= threshold] = 0.0
