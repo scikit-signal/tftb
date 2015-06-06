@@ -32,12 +32,13 @@ def friedman_density(tfr, re_mat, timestamps=None):
 
     tifd = np.zeros((tfrrow, tfrcol))
     bins = 0.5 + np.arange(tfrrow)
+    bin_edges = np.r_[-np.Inf, 0.5 * (bins[:-1] + bins[1:]), np.Inf]
     threshold = np.sum(np.sum(tfr)) * 0.5 / tfr.size
 
     for j in xrange(tfrcol):
         indices = tfr[:, j] > threshold
         if np.any(indices):
-            occurences, trash = np.hist(np.real(re_mat[indices, j]), bins)
+            occurences, _ = np.histogram(np.real(re_mat[indices, j]), bin_edges)
             tifd[:, j] = occurences
     tifd = tifd / np.sum(np.sum(tifd))
     return tifd
