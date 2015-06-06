@@ -11,15 +11,14 @@
 import unittest
 import numpy as np
 from scipy import angle
+from tftb.utils import is_linear
 
 
 class TestBase(unittest.TestCase):
 
     def assert_is_linear(self, signal, decimals=5):
         """Assert that the signal is linear."""
-        derivative = np.diff(signal)
-        derivative = np.around(derivative, decimals)
-        self.assertEqual(np.unique(derivative).shape[0], 1)
+        self.assertTrue(is_linear(signal, decimals=decimals))
 
     def assert_is_analytic(self, signal, amlaw=None):
         """Assert that signal is analytic."""
