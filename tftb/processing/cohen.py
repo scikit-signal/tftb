@@ -10,10 +10,8 @@
 Bilinear Time-Frequency Processing in the Cohen’s Class.
 """
 
-import warnings
 import numpy as np
-
-from tftb.utils import nextpow2
+from tftb.utils import init_default_args
 
 
 def spectrogram(signal, time_instants=None, n_fbins=None, window=None):
@@ -30,11 +28,8 @@ def spectrogram(signal, time_instants=None, n_fbins=None, window=None):
     :return: time frequency representation
     :rtype: array-like
     """
-    if time_instants is None:
-        time_instants = np.arange(signal.shape[0])
-
-    if n_fbins is None:
-        n_fbins = signal.shape[0]
+    time_instants, n_fbins = init_default_args(signal,
+            timestamps=time_instants, n_fbins=n_fbins)
 
     if window is None:
         hlength = np.floor(signal.shape[0] / 4.0)
@@ -45,10 +40,6 @@ def spectrogram(signal, time_instants=None, n_fbins=None, window=None):
         hlength = window.shape[0]
         if hlength % 2 == 0:
             raise ValueError("Smoothing window should have an odd length.")
-
-    if 2 ** nextpow2(n_fbins) != n_fbins:
-        msg = "For faster computation, the frequency bins should be a power of 2."
-        warnings.warn(msg, UserWarning)
 
     lh = (window.shape[0] - 1) / 2
     tfr = np.zeros((n_fbins, time_instants.shape[0]), dtype=complex)
@@ -87,15 +78,8 @@ def smoothed_pseudo_wigner_ville(signal, timestamps=None, freq_bins=None,
     :return: Smoothed pseudo Wigner Ville distribution
     :rtype: array-like
     """
-    if timestamps is None:
-        timestamps = np.arange(signal.shape[0])
-
-    if freq_bins is None:
-        freq_bins = signal.shape[0]
-
-    if 2 ** nextpow2(freq_bins) != freq_bins:
-        msg = "For faster computation, the frequency bins should be a power of 2."
-        warnings.warn(msg, UserWarning)
+    timestamps, freq_bins = init_default_args(signal, timestamps=timestamps,
+                                              n_fbins=freq_bins)
 
     if fwindow is None:
         winlength = np.floor(freq_bins / 4.0)
@@ -164,15 +148,8 @@ def pseudo_wigner_ville(signal, time_samples=None, freq_bins=None, window=None):
     :return: Pseudo Wigner Ville time frequency distribution.
     :rtype: array-like
     """
-    if time_samples is None:
-        time_samples = np.arange(signal.shape[0])
-
-    if freq_bins is None:
-        freq_bins = signal.shape[0]
-
-    if 2 ** nextpow2(freq_bins) != freq_bins:
-        msg = "For faster computation, the frequency bins should be a power of 2."
-        warnings.warn(msg, UserWarning)
+    time_samples, freq_bins = init_default_args(signal, timestamps=time_samples,
+                                                n_fbins=freq_bins)
 
     if window is None:
         winlength = np.floor(freq_bins / 4.0)
@@ -215,15 +192,8 @@ def wigner_ville(signal, time_samples=None, freq_bins=None):
     :return: Wigner Ville time frequency distribution.
     :rtype: array-like
     """
-    if time_samples is None:
-        time_samples = np.arange(signal.shape[0])
-
-    if freq_bins is None:
-        freq_bins = signal.shape[0]
-
-    if 2 ** nextpow2(freq_bins) != freq_bins:
-        msg = "For faster computation, the frequency bins should be a power of 2."
-        warnings.warn(msg, UserWarning)
+    time_samples, freq_bins = init_default_args(signal, timestamps=time_samples,
+                                                n_fbins=freq_bins)
 
     tfr = np.zeros((freq_bins, time_samples.shape[0]), dtype=complex)
 
@@ -256,17 +226,10 @@ def margenau_hill(signal, timestamps=None, n_fbins=None):
     :return: Margenau Hill representation, timestamps, frequency vector
     :rtype: tuple
     """
+    timestamps, n_fbins = init_default_args(signal, timestamps=timestamps,
+                                            n_fbins=n_fbins)
     xrow = signal.shape[0]
-    if timestamps is None:
-        timestamps = np.arange(xrow)
     tcol = timestamps.shape[0]
-
-    if n_fbins is None:
-        n_fbins = xrow
-
-    if 2 ** nextpow2(n_fbins) != n_fbins:
-        msg = "For faster computation, the frequency bins should be a power of 2."
-        warnings.warn(msg, UserWarning)
 
     tfr = np.zeros((n_fbins, tcol), dtype=complex)
     for icol in xrange(tcol):

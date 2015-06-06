@@ -9,6 +9,31 @@
 """Miscellaneous utilities."""
 
 import numpy as np
+import warnings
+
+
+def init_default_args(signal, **kwargs):
+    """init_default_args
+
+    :param x:
+    :param **kwargs:
+    :type x:
+    :type **kwargs:
+:return:
+:rtype:
+    """
+    for varname, value in kwargs.iteritems():
+        if "time" in varname:
+            if value is None:
+                kwargs[varname] = np.arange(signal.shape[0])
+        elif ("n_fbins" in varname) or ("freq_bins" in varname):
+            if value is None:
+                kwargs[varname] = signal.shape[0]
+            elif 2 ** nextpow2(value) != value:
+                msg = "For faster computations, n_fbins should be a power of 2."
+                warnings.warn(msg, UserWarning)
+
+    return kwargs.values()
 
 
 def izak(x):
@@ -78,4 +103,4 @@ def modulo(x, N):
 
 
 if __name__ == '__main__':
-    print nearest_odd(np.arange(10))
+    print init_default_args(np.arange(10), timestamps=range(10), n_fbins=3)
