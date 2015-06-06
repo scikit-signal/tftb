@@ -31,6 +31,102 @@ def morlet_scalogram(signal, timestamps=None, n_fbins=None, tbp=0.25):
     xrow = signal.shape[0]
     timestamps, n_fbins = init_default_args(signal, timestamps=timestamps,
                                             n_fbins=n_fbins)
+    k = 0.001
+    tcol = timestamps.shape[0]
+    deltat = timestamps[1:] - timestamps[:-1]
+    if deltat.min() != deltat.max():
+        raise ValueError("Time instants must be regularly sampled.")
+    else:
+        dt = deltat.min()
+
+    tfr = np.zeros((n_fbins, tcol), dtype=complex)
+    tf2 = np.zeros((n_fbins, tcol), dtype=complex)
+    M = np.ceil(tbp * n_fbins * np.sqrt(2 * np.log(1 / k)))
+    tau = np.arange(M + int(np.round(n_fbins / 2)) + 1)
+    hstar = np.exp(-(tau / (n_fbins * tbp)) ** 2 / 2.0) * np.exp(-1j * 2 *
+            np.pi * tau / n_fbins)
+    thstar = tau * hstar
+
+    for m in xrange(1, int(np.round(n_fbins / 2))):
+        factor = np.sqrt(m / (tbp * n_fbins))
+        for icol in xrange(tcol):
+            ti = timestamps[icol]
+            tau_neg = np.arange(1, min([np.ceil(M / m), ti - 1]) + 1).astype(int)
+            tau_pos = np.arange(min([np.ceil(M / m), xrow - ti]) + 1).astype(int)
+            # positive frequencies
+            tfr[m, icol] = np.dot(hstar[m * tau_pos - 1],
+                                  signal[ti + tau_pos - 1])
+            tf2[m, icol] = np.dot(thstar[m * tau_pos - 1],
+                                  signal[ti + tau_pos - 1])
+            if tau_neg.shape[0] > 0:
+                tfr[m, icol] += np.dot(np.conj(hstar[tau_neg * m]),
+                                       signal[ti - tau_neg])
+                tf2[m, icol] -= np.dot(np.conj(thstar[tau_neg * m]),
+                                       signal[ti - tau_neg])
+            # negative frequencies
+            tfr[n_fbins - m, icol] = np.dot(np.conj(hstar[tau_pos * m - 1]),
+                                            signal[ti + tau_pos - 1])
+            tf2[n_fbins - m, icol] = np.dot(np.conj(thstar[tau_pos * m - 1]),
+                                            signal[ti + tau_pos - 1])
+            if tau_neg.shape[0] > 0:
+                tfr[n_fbins - m, icol] += np.dot(hstar[tau_neg * m],
+                                                 signal[ti - tau_neg])
+                tf2[n_fbins - m, icol] -= np.dot(thstar[tau_neg * m],
+                                                 signal[ti - tau_neg])
+        tfr[m, :] *= factor
+        tf2[m, :] *= factor / m
+        tfr[n_fbins - m, :] *= factor
+        tf2[n_fbins - m, :] *= factor / m
+
+    m = int(np.round(n_fbins / 2.0))
+    factor = np.sqrt(m / (tbp * n_fbins))
+    for icol in xrange(tcol):
+        ti = timestamps[icol]
+        tau_neg = np.arange(1, min([np.ceil(M / m), ti - 1]) + 1).astype(int)
+        tau_pos = np.arange(min([np.ceil(M / m), xrow - ti]) + 1).astype(int)
+        tau_pos -= 1
+        tau_neg -= 1
+
+        tfr[m, icol] = np.dot(hstar[m * tau_pos], signal[ti + tau_pos])
+        tf2[m, icol] = np.dot(thstar[m * tau_pos], signal[ti + tau_pos])
+        if tau_neg.shape[0] > 0:
+            tfr[m, icol] += np.dot(np.conj(hstar[tau_neg * m]),
+                                   signal[ti - tau_neg])
+            tf2[m, icol] -= np.dot(np.conj(thstar[tau_neg * m]),
+                                   signal[ti - tau_neg])
+    tfr[m, :] *= factor
+    tf2[m, :] *= factor / m
+
+    tfr, tf2 = tfr.ravel(), tf2.ravel()
+    no_warn_mask = tfr != 0
+    tf2[no_warn_mask] = tf2[no_warn_mask] / tfr[no_warn_mask]
+    tfr = np.abs(tfr) ** 2
+    tfr = tfr.reshape(n_fbins, tcol)
+    tf2 = tf2.reshape(n_fbins, tcol).astype(complex)
+
+    rtfr = np.zeros((n_fbins, tcol), dtype=complex)
+    ex = np.mean(np.abs(signal) ** 2)
+    threshold = ex * 1.0e-6
+    factor = 2 * np.pi * n_fbins * (tbp ** 2)
+    for icol in xrange(tcol):
+        for jcol in xrange(n_fbins):
+            if tfr[jcol, icol] > threshold:
+                icolhat = icol + np.round(np.real(tf2[jcol, icol] / dt))
+                icolhat = min([max([icolhat, 1]), tcol])
+                m = np.remainder(jcol + np.round(n_fbins / 2.0) - 2,
+                                 n_fbins)
+                m -= np.round(n_fbins / 2.0) + 1
+                jcolhat = jcol + np.round(np.imag((m ** 2) * tf2[jcol, icol] / factor))
+                jcolhat = np.remainder(
+                        np.remainder(jcolhat - 1, n_fbins) + n_fbins,
+                        n_fbins) + 1
+                rtfr[jcolhat - 1, icolhat - 1] += tfr[jcol, icol]
+                tf2[jcol, icol] = jcolhat + 1j * icolhat
+            else:
+                tf2[jcol, icol] = np.inf * (1 + 1j)
+                rtfr[jcol, icol] += tfr[jcol, icol]
+
+    return tfr, rtfr, tf2
 
 
 def smoothed_pseudo_wigner_ville(signal, timestamps=None, n_fbins=None,
@@ -220,14 +316,11 @@ def spectrogram(signal, time_samples=None, n_fbins=None, window=None):
 
 if __name__ == '__main__':
     from tftb.generators.api import fmlin
-    sig = fmlin(128, 0.05, 0.15)[0] + fmlin(128, 0.3, 0.4)[0]
-    t = np.arange(128, step=2)
-    twindow = ssig.kaiser(15, 3 * np.pi)
-    fwindow = ssig.kaiser(63, 3 * np.pi)
-    tfr, rtfr, tf2 = smoothed_pseudo_wigner_ville(sig, t, 64, twindow, fwindow)
-    threshold = np.amax(np.abs(rtfr) ** 2) * 0.05
-    rtfr[np.abs(rtfr) ** 2 <= threshold] = 0 + 0 * 1j
     import matplotlib.pyplot as plt
-    plt.imshow(np.abs(rtfr) ** 2, origin='bottomleft', extent=[0, 120, 0, 0.5],
-               aspect='auto')
+    sig = fmlin(64, 0.1, 0.4)[0]
+    _, rtfr, _ = morlet_scalogram(sig, tbp=2.1)
+    rtfr = np.abs(rtfr) ** 2
+    threshold = np.amax(rtfr) * 0.05
+    rtfr[rtfr <= threshold] = 0.0
+    plt.imshow(rtfr[:32, :], aspect='auto', origin="bottomleft", extent=[0, 64, 0, 0.5])
     plt.show()
