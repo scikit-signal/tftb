@@ -12,6 +12,10 @@ import numpy as np
 import warnings
 
 
+TYPE1 = ['pmh', 'rpmh', 'sp', 'rsp', 'ppage', 'rppag', 'mhs', 'rgab', 'mh',
+         'mmce', 'rmsc', 'page', 'gabor', 'ri', 'msc', 'type1', 'stft']
+
+
 def is_linear(x, decimals=5):
     """Check if an array is linear."""
     derivative = np.diff(x)
