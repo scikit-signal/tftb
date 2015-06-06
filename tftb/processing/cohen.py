@@ -14,6 +14,40 @@ import numpy as np
 from tftb.utils import init_default_args
 
 
+def page(signal, timestamps=None, n_fbins=None):
+    """page
+
+    :param signal:
+    :param timestamps:
+    :param n_fbins:
+    :type signal:
+    :type timestamps:
+    :type n_fbins:
+:return:
+:rtype:
+    """
+    timestamps, n_fbins = init_default_args(signal, timestamps=timestamps,
+                                            n_fbins=n_fbins)
+    xrow = signal.shape[0]
+    tcol = timestamps.shape[0]
+    tfr = np.zeros((n_fbins, tcol), dtype=complex)
+
+    for icol in xrange(tcol):
+        ti = timestamps[icol]
+        tau = np.arange(-min([n_fbins - ti, xrow - ti]), ti)
+        indices = np.remainder(n_fbins + tau, n_fbins)
+        tfr[indices, icol] = np.dot(signal[ti],
+                                    np.conj(signal[ti - tau - 1]))
+    tfr = np.real(np.fft.fft(tfr, axis=0))
+
+    if n_fbins % 2 == 0:
+        freq = np.hstack((np.arange(n_fbins / 2), np.arange(-n_fbins / 2, 0))) / n_fbins
+    else:
+        freq = np.hstack((np.arange((n_fbins - 1) / 2), np.arange(-(n_fbins - 1) / 2, 0))) / n_fbins
+
+    return tfr, timestamps, freq
+
+
 def spectrogram(signal, time_instants=None, n_fbins=None, window=None):
     """Compute the spectrogram of a signal.
 
@@ -249,11 +283,12 @@ def margenau_hill(signal, timestamps=None, n_fbins=None):
 
 if __name__ == '__main__':
     from tftb.generators.api import fmlin
-    sig = fmlin(128, 0.1, 0.4)[0]
-    tfr, t, f = margenau_hill(sig)
-    threshold = np.abs(tfr) * 0.05
-    tfr[np.abs(tfr) <= threshold] = 0
     import matplotlib.pyplot as plt
-    plt.imshow(np.abs(tfr) ** 2, extent=[t.min(), t.max(), f.min(), f.max()],
-               aspect='auto')
+    sig = fmlin(128, 0.1, 0.4)[0]
+    tfr, ts, f = page(sig)
+    tfr = np.abs(tfr) ** 2
+    threshold = np.amax(tfr) * 0.05
+    tfr[tfr <= threshold] = 0.0
+    plt.imshow(tfr[:64, :], aspect='auto', origin='bottomleft',
+               extent=[ts.min(), ts.max(), f.min(), f.max()])
     plt.show()
