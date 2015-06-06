@@ -12,6 +12,13 @@ import numpy as np
 import warnings
 
 
+def is_linear(x, decimals=5):
+    """Check if an array is linear."""
+    derivative = np.diff(x)
+    derivative = np.around(derivative, decimals)
+    return np.unique(derivative).shape[0] == 1
+
+
 def init_default_args(signal, **kwargs):
     """init_default_args
 
