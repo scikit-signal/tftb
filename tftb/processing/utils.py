@@ -11,6 +11,30 @@
 import numpy as np
 
 
+def integrate_2d(mat, x=None, y=None):
+    """integrate_2d
+
+    :param mat:
+    :param x:
+    :param y:
+    :type mat:
+    :type x:
+    :type y:
+:return:
+:rtype:
+    """
+    m, n = mat.shape
+    if x is None:
+        x = np.arange(n)
+    if y is None:
+        y = np.arange(m)
+
+    mat = (mat.sum(1) - mat[:, 0] / 2.0 - mat[:, n - 1] / 2.0) * (x[1] - x[0])
+    dmat = mat[:(m - 1)] + mat[1:]
+    dy = (y[1:] - y[:(m - 1)]) / 2.0
+    return np.sum(dmat * dy)
+
+
 def derive_window(window):
     """Calculate derivative of a window function.
 
@@ -32,10 +56,5 @@ def derive_window(window):
     return dw
 
 if __name__ == '__main__':
-    import matplotlib.pyplot as plt
-    from scipy.signal import hanning
-    window = hanning(210)
-    derivative = derive_window(window)
-    plt.plot(window, 'b')
-    plt.plot(derivative, 'g')
-    plt.show()
+    x = np.arange(1, 16).reshape(5, 3)
+    print integrate_2d(x)
