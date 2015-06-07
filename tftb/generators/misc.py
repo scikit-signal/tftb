@@ -41,6 +41,8 @@ def atoms(n_points, coordinates):
     :return: signal
     :rtype: array-like
     """
+    # FIXME: This function produces incorrect output when coordinates are
+    # one-dimensional.
     signal = np.zeros((n_points,), dtype=complex)
     n_atoms = coordinates.shape[0]
     for k in xrange(n_atoms):

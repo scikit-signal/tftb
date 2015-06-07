@@ -12,6 +12,38 @@ Postprocessing functions.
 
 import numpy as np
 from tftb.utils import init_default_args
+from tftb.processing.utils import integrate_2d
+
+
+def renyi_information(tfr, timestamps=None, freq=None, alpha=3.0):
+    """renyi_information
+
+    :param tfr:
+    :param timestamps:
+    :param freq:
+    :param alpha:
+    :type tfr:
+    :type timestamps:
+    :type freq:
+    :type alpha:
+:return:
+:rtype:
+    """
+    if alpha == 1 and tfr.min().min() < 0:
+        raise ValueError("Distribution with negative values not allowed.")
+    m, n = tfr.shape
+    if timestamps is None:
+        timestamps = np.arange(n)
+    if freq is None:
+        freq = np.arange(m)
+    freq.sort()
+    tfr = tfr / integrate_2d(tfr, timestamps, freq)
+    if alpha == 1:
+        R = -integrate_2d(tfr * np.log2(tfr + np.spacing(1)), timestamps, freq)
+    else:
+        R = np.log2(integrate_2d(tfr ** alpha, timestamps, freq) + np.spacing(1))
+        R = R / (1 - alpha)
+    return R
 
 
 def ideal_tfr(iflaws, timestamps=None, n_fbins=None):
@@ -132,10 +164,8 @@ def ridges(tfr, re_mat, timestamps=None, method='rsp'):
     return time_points, freq_points
 
 if __name__ == '__main__':
-    from tftb.generators.api import fmlin
-    from scipy.signal import kaiser
-    from tftb.processing.reassigned import pseudo_wigner_ville
-    sig = fmlin(128, 0.1, 0.4)[0]
-    fwindow = kaiser(47, beta=3 * np.pi)
-    tfr, rtfr, hat = pseudo_wigner_ville(sig, fwindow=fwindow)
-    tifd = friedman_density(tfr, hat, 'rpwv')
+    from tftb.generators.api import atoms
+    from tftb.processing.cohen import spectrogram
+    s = atoms(64, np.array([[16, .2, 10, 1], [40, 0.4, 12, 1]]))
+    tfr, t, f = spectrogram(s)
+    print renyi_information(tfr, t, f)
