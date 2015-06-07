@@ -15,6 +15,59 @@ from tftb.utils import init_default_args
 from tftb.processing.utils import integrate_2d
 
 
+def hough_transform(image, m=None, n=None):
+    """hough_transform
+
+    :param image:
+    :param m:
+    :param n:
+    :type image:
+    :type m:
+    :type n:
+:return:
+:rtype:
+    """
+    xmax, ymax = image.shape
+    if m is None:
+        m = xmax
+    if n is None:
+        n = ymax
+
+    rhomax = np.sqrt((xmax ** 2) + (ymax ** 2)) / 2.0
+    deltar = rhomax / (m - 1.0)
+    deltat = 2 * np.pi / n
+
+    ht = np.zeros((m, n))
+    imax = np.amax(image)
+
+    if xmax % 2 != 0:
+        xc = (xmax + 1) / 2
+        xf = xc - 1
+    else:
+        xc = xf = xmax / 2
+    x0 = 1 - xc
+
+    if ymax % 2 != 0:
+        yc = (ymax + 1) / 2
+        yf = yc - 1
+    else:
+        yc = yf = ymax / 2
+    y0 = 1 - yc
+
+    for x in xrange(x0, xf + 1):
+        for y in xrange(y0, yf + 1):
+            if np.abs(image[x + xc - 1, y + yc - 1]) > imax / 20.0:
+                for theta in np.linspace(0, 2 * np.pi - deltat, n):
+                    rho = x * np.cos(theta) - y * np.sin(theta)
+                    if (rho >= 0) and (rho <= rhomax):
+                        ht[int(np.round(rho / deltar)),
+                           int(np.round(theta / deltat))] += image[x + xc - 1,
+                                                                   y + yc - 1]
+    rho = np.linspace(0, rhomax, n)
+    theta = np.linspace(0, 2 * np.pi - deltat, n)
+    return ht, rho, theta
+
+
 def renyi_information(tfr, timestamps=None, freq=None, alpha=3.0):
     """renyi_information
 
@@ -164,8 +217,15 @@ def ridges(tfr, re_mat, timestamps=None, method='rsp'):
     return time_points, freq_points
 
 if __name__ == '__main__':
-    from tftb.generators.api import atoms
-    from tftb.processing.cohen import spectrogram
-    s = atoms(64, np.array([[16, .2, 10, 1], [40, 0.4, 12, 1]]))
-    tfr, t, f = spectrogram(s)
-    print renyi_information(tfr, t, f)
+    from tftb.generators.api import fmlin
+    from tftb.processing.cohen import wigner_ville
+    from mpl_toolkits.mplot3d import Axes3D
+    import matplotlib.pyplot as plt
+    y = fmlin(64, 0.1, 0.3)[0]
+    image = wigner_ville(y, np.arange(64), 64)
+    ht, rho, theta = hough_transform(image, 64, 64)
+    theta, rho = np.meshgrid(theta, rho)
+    fig = plt.figure()
+    ax = fig.gca(projection='3d')
+    ax.plot_wireframe(theta, rho, ht)
+    plt.show()
