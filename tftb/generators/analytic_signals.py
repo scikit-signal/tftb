@@ -130,15 +130,16 @@ def anasing(n_points, t0=None, h=0.0):
     """
     """Refer to the wiki page on `Lipschitz condition`, good test case."""
     if t0 is None:
-        t0 = n_points / 2
+        t0 = n_points / 2.0
     if h <= 0:
-        step = 1.0 / n_points
-        f = np.arange(step, 0.5 - 1.0 / n_points + 2*step, step=step)
-        y = np.zeros((n_points / 2,), dtype=float)
-        y[:n_points / 2] = (f ** (-1 - h)) ** np.exp(-1j * 2 * pi * f * (t0 - 1))
+        start, end = 1.0 / n_points, 0.5 - 1.0 / n_points
+        N = end / start
+        f = np.linspace(start, end, N)
+        y = np.zeros((n_points / 2.0,), dtype=complex)
+        y[1:n_points / 2] = (f ** (-1 - h)) * np.exp(-1j * 2 * pi * f * (t0 - 1))
         x = np.real(np.fft.ifft(y, n_points))
         x = x / x.max()
-        x = x - np.sign(x.min() * np.abs(x.min()))
+        x = x - np.sign(x.min()) * np.abs(x.min())
     else:
         t = np.arange(n_points)
         x = np.abs(t - t0) ** h
@@ -163,3 +164,8 @@ def anastep(n_points, ti=None):
     x = t > ti
     y = hilbert(x.astype(float))
     return y
+
+if __name__ == '__main__':
+    sig = anasing(64)
+    from matplotlib.pyplot import plot, show
+    plot(np.real(sig)), show()

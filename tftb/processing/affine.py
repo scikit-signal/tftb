@@ -90,6 +90,7 @@ def unterberger(signal, timestamps=None, form='A', fmin=None, fmax=None,
     else:
         m0 = 0
         m1 = m
+    m1 = int(np.round(m1))
 
     if n_voices is None:
         nq = np.ceil((bw * T * (1 + 2.0 / R) * np.log((1 + R / 2.0) / (1 - R / 2.0))) / 2)
