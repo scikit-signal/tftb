@@ -10,10 +10,133 @@
 Bilinear Time-Frequency Processing in the Cohen’s Class.
 """
 
-import warnings
 import numpy as np
+from tftb.utils import init_default_args
 
-from tftb.utils import nextpow2
+
+def pseudo_margenau_hill(signal, timestamps=None, n_fbins=None, fwindow=None):
+    """pseudo_margenau_hill
+
+    :param signal:
+    :param timestamps:
+    :param n_fbins:
+    :param fwindow:
+    :type signal:
+    :type timestamps:
+    :type n_fbins:
+    :type fwindow:
+:return:
+:rtype:
+    """
+    xrow = signal.shape[0]
+    timestamps, n_fbins = init_default_args(signal, timestamps=timestamps,
+                                            n_fbins=n_fbins)
+    tcol = timestamps.shape[0]
+
+    if fwindow is None:
+        hlength = np.floor(n_fbins / 4.0)
+        if hlength % 2 == 0:
+            hlength += 1
+        from scipy.signal import hamming
+        fwindow = hamming(hlength)
+    elif fwindow.shape[0] % 2 == 0:
+        raise ValueError('The smoothing fwindow must have an odd length.')
+    lh = (fwindow.shape[0] - 1) / 2
+    fwindow = fwindow / fwindow[lh]
+
+    tfr = np.zeros((n_fbins, tcol), dtype=complex)
+    for icol in xrange(tcol):
+        start = min([np.round(n_fbins / 2.0) - 1, lh, xrow - icol])
+        end = min([np.round(n_fbins / 2.0) - 1, lh, icol - 1])
+        tau = np.arange(-start, end + 1)
+        indices = np.remainder(n_fbins + tau, n_fbins)
+        tfr[indices, icol] = fwindow[lh + tau] * signal[icol] * np.conj(signal[icol - tau - 1])
+
+    tfr = np.real(np.fft.fft(tfr, axis=0))
+
+    if n_fbins % 2 == 0:
+        freq = np.hstack((np.arange(n_fbins / 2), np.arange(-n_fbins / 2, 0))) / n_fbins
+    else:
+        freq = np.hstack((np.arange((n_fbins - 1) / 2), np.arange(-(n_fbins - 1) / 2, 0))) / n_fbins
+
+    return tfr, timestamps, freq
+
+
+def pseudo_page(signal, timestamps=None, n_fbins=None, fwindow=None):
+    """pseudo_page
+
+    :param signal:
+    :param timestamps:
+    :param n_fbins:
+    :type signal:
+    :type timestamps:
+    :type n_fbins:
+:return:
+:rtype:
+    """
+    timestamps, n_fbins = init_default_args(signal, timestamps=timestamps,
+                                            n_fbins=n_fbins)
+    tcol = timestamps.shape[0]
+
+    if fwindow is None:
+        hlength = np.floor(n_fbins / 4.0)
+        if hlength % 2 == 0:
+            hlength += 1
+        from scipy.signal import hamming
+        fwindow = hamming(hlength)
+    elif fwindow.shape[0] % 2 == 0:
+        raise ValueError('The smoothing fwindow must have an odd length.')
+    lh = (fwindow.shape[0] - 1) / 2
+    fwindow = fwindow / fwindow[lh]
+
+    tfr = np.zeros((n_fbins, tcol), dtype=complex)
+    for icol in xrange(tcol):
+        tau = np.arange(min([n_fbins - 1, lh, icol - 1]) + 1)
+        indices = np.remainder(n_fbins + tau, n_fbins) + 1
+        tfr[indices, icol] = fwindow[lh + tau] * signal[icol] * np.conj(
+                signal[icol - tau])
+    tfr = np.real(np.fft.fft(tfr, axis=0))
+
+    if n_fbins % 2 == 0:
+        freq = np.hstack((np.arange(n_fbins / 2), np.arange(-n_fbins / 2, 0))) / n_fbins
+    else:
+        freq = np.hstack((np.arange((n_fbins - 1) / 2), np.arange(-(n_fbins - 1) / 2, 0))) / n_fbins
+
+    return tfr, timestamps, freq
+
+
+def page(signal, timestamps=None, n_fbins=None):
+    """page
+
+    :param signal:
+    :param timestamps:
+    :param n_fbins:
+    :type signal:
+    :type timestamps:
+    :type n_fbins:
+:return:
+:rtype:
+    """
+    timestamps, n_fbins = init_default_args(signal, timestamps=timestamps,
+                                            n_fbins=n_fbins)
+    xrow = signal.shape[0]
+    tcol = timestamps.shape[0]
+    tfr = np.zeros((n_fbins, tcol), dtype=complex)
+
+    for icol in xrange(tcol):
+        ti = timestamps[icol]
+        tau = np.arange(-min([n_fbins - ti, xrow - ti]), ti)
+        indices = np.remainder(n_fbins + tau, n_fbins)
+        tfr[indices, icol] = np.dot(signal[ti],
+                                    np.conj(signal[ti - tau - 1]))
+    tfr = np.real(np.fft.fft(tfr, axis=0))
+
+    if n_fbins % 2 == 0:
+        freq = np.hstack((np.arange(n_fbins / 2), np.arange(-n_fbins / 2, 0))) / n_fbins
+    else:
+        freq = np.hstack((np.arange((n_fbins - 1) / 2), np.arange(-(n_fbins - 1) / 2, 0))) / n_fbins
+
+    return tfr, timestamps, freq
 
 
 def spectrogram(signal, time_instants=None, n_fbins=None, window=None):
@@ -30,11 +153,8 @@ def spectrogram(signal, time_instants=None, n_fbins=None, window=None):
     :return: time frequency representation
     :rtype: array-like
     """
-    if time_instants is None:
-        time_instants = np.arange(signal.shape[0])
-
-    if n_fbins is None:
-        n_fbins = signal.shape[0]
+    time_instants, n_fbins = init_default_args(signal,
+            timestamps=time_instants, n_fbins=n_fbins)
 
     if window is None:
         hlength = np.floor(signal.shape[0] / 4.0)
@@ -45,10 +165,6 @@ def spectrogram(signal, time_instants=None, n_fbins=None, window=None):
         hlength = window.shape[0]
         if hlength % 2 == 0:
             raise ValueError("Smoothing window should have an odd length.")
-
-    if 2 ** nextpow2(n_fbins) != n_fbins:
-        msg = "For faster computation, the frequency bins should be a power of 2."
-        warnings.warn(msg, UserWarning)
 
     lh = (window.shape[0] - 1) / 2
     tfr = np.zeros((n_fbins, time_instants.shape[0]), dtype=complex)
@@ -87,15 +203,8 @@ def smoothed_pseudo_wigner_ville(signal, timestamps=None, freq_bins=None,
     :return: Smoothed pseudo Wigner Ville distribution
     :rtype: array-like
     """
-    if timestamps is None:
-        timestamps = np.arange(signal.shape[0])
-
-    if freq_bins is None:
-        freq_bins = signal.shape[0]
-
-    if 2 ** nextpow2(freq_bins) != freq_bins:
-        msg = "For faster computation, the frequency bins should be a power of 2."
-        warnings.warn(msg, UserWarning)
+    timestamps, freq_bins = init_default_args(signal, timestamps=timestamps,
+                                              n_fbins=freq_bins)
 
     if fwindow is None:
         winlength = np.floor(freq_bins / 4.0)
@@ -164,15 +273,8 @@ def pseudo_wigner_ville(signal, time_samples=None, freq_bins=None, window=None):
     :return: Pseudo Wigner Ville time frequency distribution.
     :rtype: array-like
     """
-    if time_samples is None:
-        time_samples = np.arange(signal.shape[0])
-
-    if freq_bins is None:
-        freq_bins = signal.shape[0]
-
-    if 2 ** nextpow2(freq_bins) != freq_bins:
-        msg = "For faster computation, the frequency bins should be a power of 2."
-        warnings.warn(msg, UserWarning)
+    time_samples, freq_bins = init_default_args(signal, timestamps=time_samples,
+                                                n_fbins=freq_bins)
 
     if window is None:
         winlength = np.floor(freq_bins / 4.0)
@@ -215,15 +317,8 @@ def wigner_ville(signal, time_samples=None, freq_bins=None):
     :return: Wigner Ville time frequency distribution.
     :rtype: array-like
     """
-    if time_samples is None:
-        time_samples = np.arange(signal.shape[0])
-
-    if freq_bins is None:
-        freq_bins = signal.shape[0]
-
-    if 2 ** nextpow2(freq_bins) != freq_bins:
-        msg = "For faster computation, the frequency bins should be a power of 2."
-        warnings.warn(msg, UserWarning)
+    time_samples, freq_bins = init_default_args(signal, timestamps=time_samples,
+                                                n_fbins=freq_bins)
 
     tfr = np.zeros((freq_bins, time_samples.shape[0]), dtype=complex)
 
@@ -256,17 +351,10 @@ def margenau_hill(signal, timestamps=None, n_fbins=None):
     :return: Margenau Hill representation, timestamps, frequency vector
     :rtype: tuple
     """
+    timestamps, n_fbins = init_default_args(signal, timestamps=timestamps,
+                                            n_fbins=n_fbins)
     xrow = signal.shape[0]
-    if timestamps is None:
-        timestamps = np.arange(xrow)
     tcol = timestamps.shape[0]
-
-    if n_fbins is None:
-        n_fbins = xrow
-
-    if 2 ** nextpow2(n_fbins) != n_fbins:
-        msg = "For faster computation, the frequency bins should be a power of 2."
-        warnings.warn(msg, UserWarning)
 
     tfr = np.zeros((n_fbins, tcol), dtype=complex)
     for icol in xrange(tcol):
@@ -286,11 +374,15 @@ def margenau_hill(signal, timestamps=None, n_fbins=None):
 
 if __name__ == '__main__':
     from tftb.generators.api import fmlin
-    sig = fmlin(128, 0.1, 0.4)[0]
-    tfr, t, f = margenau_hill(sig)
-    threshold = np.abs(tfr) * 0.05
-    tfr[np.abs(tfr) <= threshold] = 0
     import matplotlib.pyplot as plt
-    plt.imshow(np.abs(tfr) ** 2, extent=[t.min(), t.max(), f.min(), f.max()],
-               aspect='auto')
+    from scipy.signal import kaiser
+    sig = fmlin(128, 0.1, 0.4)[0]
+    fwindow = kaiser(63, beta=3 * np.pi)
+    tfr, ts, _ = pseudo_margenau_hill(sig, fwindow=fwindow)
+    f = np.linspace(0, 0.5, 128)
+    tfr = np.abs(tfr) ** 2
+    threshold = np.amax(tfr) * 0.05
+    tfr[tfr <= threshold] = 0.0
+    plt.imshow(tfr[:64, :], aspect='auto', origin='bottomleft',
+               extent=[ts.min(), ts.max(), f.min(), f.max()])
     plt.show()

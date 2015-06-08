@@ -74,18 +74,14 @@ def translate_funcline(funcline):
 
                 return {output_arguments}
             """)
-    try:
-        match = re.search(OUTPUTARGPATTERN, funcline).group()
-        outargs = match.replace('[', '').replace(']', '').replace(',', ', ')
-        match = re.search(FUNCNAMEPATTERN, funcline).group()
-        funcname = match.replace('=', '').replace('(', '')
-        match = re.search(INPUTARGPATTERN, funcline).group()
-        inargs = match.replace('(', '').replace(')', '').replace(',', ', ')
-        return pyfuncstring.format(funcname=funcname, output_arguments=outargs,
-                                   input_arguments=inargs)
-    except AttributeError:
-        from IPython.core.debugger import Tracer
-        Tracer()()
+    match = re.search(OUTPUTARGPATTERN, funcline).group()
+    outargs = match.replace('[', '').replace(']', '').replace(',', ', ')
+    match = re.search(FUNCNAMEPATTERN, funcline).group()
+    funcname = match.replace('=', '').replace('(', '')
+    match = re.search(INPUTARGPATTERN, funcline).group()
+    inargs = match.replace('(', '').replace(')', '').replace(',', ', ')
+    return pyfuncstring.format(funcname=funcname, output_arguments=outargs,
+                               input_arguments=inargs)
 
 
 if __name__ == '__main__':

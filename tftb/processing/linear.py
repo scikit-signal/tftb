@@ -11,7 +11,7 @@ Linear Time Frequency Processing.
 """
 
 import numpy as np
-from tftb.utils import nearest_odd, divider, modulo, izak
+from tftb.utils import nearest_odd, divider, modulo, izak, init_default_args
 
 
 def gabor(signal, n_coeff=None, q_oversample=None, window=None):
@@ -90,10 +90,8 @@ def stft(signal, time_instants=None, n_fbins=None, window=None):
     :rtype: tuple
     """
     signal = signal.ravel()
-    if time_instants is None:
-        time_instants = np.arange(1, signal.shape[0])
-    if n_fbins is None:
-        n_fbins = signal.shape[0]
+    time_instants, n_fbins = init_default_args(signal, timestamps=time_instants,
+                                               n_fbins=n_fbins)
     if window is None:
         hlength = np.floor(n_fbins / 4.0)
         hlength = hlength + 1 - np.remainder(hlength, 2)
