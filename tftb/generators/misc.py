@@ -1,6 +1,7 @@
 import numpy as np
 from numpy import pi
-from tftb.generators.api import amgauss, fmconst
+from tftb.generators.amplitude_modulated import amgauss
+from tftb.generators.frequency_modulated import fmconst
 
 
 def altes(n_points, fmin=0.05, fmax=0.5, alpha=300):
