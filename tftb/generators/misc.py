@@ -169,12 +169,17 @@ def gdpower(n_points, degree=0, rate=1):
     if rate == 0:
         raise TypeError("rate must be non-zero")
 
-    tfx = np.zeros((n_points,), dtype=float)
+    tfx = np.zeros((n_points,), dtype=complex)
 
     if (degree < 1) and (degree != 0):
         d = n_points ** (degree * rate)
         t0 = n_points / 10.0
         tfx[:lnu] = np.exp(-1j * 2 * pi * (t0 * nu + d * nu ** degree / degree)) * am
+        x = np.fft.ifft(tfx)
+    elif degree == 0:
+        d = rate
+        t0 = n_points / 10.0
+        tfx[:lnu] = np.exp(-1j * 2 * np.pi * (t0 * nu + d * np.log(nu))) * am
         x = np.fft.ifft(tfx)
     elif degree == 1:
         from analytic_signals import anapulse
@@ -186,6 +191,7 @@ def gdpower(n_points, degree=0, rate=1):
         x = np.fft.ifft(tfx)
     else:
         t0 = n_points / 10
+        d = n_points * 2 ** (degree - 1) * rate
         tfx[:lnu] = np.exp(-1j * 2 * pi * (t0 * nu + d * np.log(nu))) * am
         x = np.fft.ifft(tfx)
 
@@ -200,8 +206,7 @@ def gdpower(n_points, degree=0, rate=1):
     return x, gpd, nu
 
 if __name__ == "__main__":
-    coords = np.array([[45, .25, 32, 1], [85, .25, 32, 1]])
-    sig = atoms(128, coords)
+    sig = gdpower(128)[0]
     import matplotlib.pyplot as plt
     plt.plot(np.real(sig))
     plt.show()

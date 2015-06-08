@@ -6,3 +6,4 @@ from tftb.processing.cohen import (wigner_ville, pseudo_wigner_ville,
 from tftb.processing.reassigned import spectrogram as reassigned_spectrogram
 from tftb.processing.reassigned import smoothed_pseudo_wigner_ville as reassigned_smoothed_pseudo_wigner_ville
 from tftb.processing.postprocessing import ideal_tfr, renyi_information
+from tftb.processing.affine import scalogram, bertrand, d_flandrin, unterberger

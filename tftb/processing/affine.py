@@ -20,6 +20,12 @@ from tftb.processing.utils import integrate_2d
 from tftb.utils import nextpow2
 
 
+def umaxdfla_solve(ratio):
+    coeffs = [(1.0 - ratio) / 16, (1.0 + ratio) / 2, 1 - ratio]
+    roots = np.roots(coeffs)
+    return np.min(np.abs(roots - 0))
+
+
 def unterberger(signal, timestamps=None, form='A', fmin=None, fmax=None,
                 n_voices=None):
     """unterberger
@@ -84,6 +90,7 @@ def unterberger(signal, timestamps=None, form='A', fmin=None, fmax=None,
     else:
         m0 = 0
         m1 = m
+    m1 = int(np.round(m1))
 
     if n_voices is None:
         nq = np.ceil((bw * T * (1 + 2.0 / R) * np.log((1 + R / 2.0) / (1 - R / 2.0))) / 2)
@@ -210,8 +217,7 @@ def d_flandrin(signal, timestamps=None, fmin=None, fmax=None, n_voices=None):
             fmax = 0.05 * np.ceil(f[indmax] / 0.05)
     bw = fmax - fmin
     R = bw / (fmin + fmax) * 2.0
-    umaxdfla = lambda x: ((1 + x / 4.0) / (1 - x / 4.0)) ** 2 - fmax / fmin
-    umax = newton(umaxdfla, 0)
+    umax = umaxdfla_solve(fmax / fmin)
     teq = m / (fmax * umax)
     if teq < 2 * m:
         m0 = np.round((2 * m ** 2) / teq - m) + 1
@@ -219,6 +225,7 @@ def d_flandrin(signal, timestamps=None, fmin=None, fmax=None, n_voices=None):
     else:
         m0 = 0
     m1 = m + m0
+    m1 = int(np.round(m1))
 
     if n_voices is None:
         nq = np.ceil((bw * T * (1 + 2.0 / R) * np.log((1 + R / 2.0) / (1 - R / 2.0))) / 2)
