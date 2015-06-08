@@ -1,6 +1,7 @@
 import numpy as np
 from numpy import pi
-from tftb.generators.api import amgauss, fmconst
+from tftb.generators.amplitude_modulated import amgauss
+from tftb.generators.frequency_modulated import fmconst
 
 
 def altes(n_points, fmin=0.05, fmax=0.5, alpha=300):
@@ -41,6 +42,8 @@ def atoms(n_points, coordinates):
     :return: signal
     :rtype: array-like
     """
+    # FIXME: This function produces incorrect output when coordinates are
+    # one-dimensional.
     signal = np.zeros((n_points,), dtype=complex)
     n_atoms = coordinates.shape[0]
     for k in xrange(n_atoms):
