@@ -1,3 +1,5 @@
+[![Documentation Status](https://readthedocs.org/projects/pytftb/badge/?version=latest)](https://readthedocs.org/projects/pytftb/?badge=latest)
+
 pytftb
 ======
 
