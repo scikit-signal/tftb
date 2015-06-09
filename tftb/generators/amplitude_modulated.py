@@ -2,16 +2,26 @@ import numpy as np
 
 
 def amgauss(n_points, t0=None, spread=None):
-    """Generate a Gaussian amplitude modulator.
+    """Generate a Gaussian amplitude modulated signal.
 
     :param n_points: Number of points in the output.
-    :param t0: Center of the Gaussian function.
-    :param spread: Standard deviation of the Gaussian.
+    :param t0: Center of the Gaussian function. (default: t0 / 2)
+    :param spread: Standard deviation of the Gaussian. (default 2 *
+        sqrt(n_points)
     :type n_points: int
     :type t0: float
     :type spread: float
-    :return: Gaussian function centered at time `t0`.
+    :return: Gaussian function centered at time ``t0``.
     :rtype: numpy.ndarray
+    :Example:
+    >>> x = amgauss(160)
+    >>> plot(x)
+
+    .. plot:: docstring_plots/generators/amplitude_modulated/amgauss1.py
+    >>> x = amgauss(160, 90)
+    >>> plot(x)
+
+    .. plot:: docstring_plots/generators/amplitude_modulated/amgauss2.py
     """
     if t0 is None:
         t0 = np.round(n_points / 2)
@@ -43,6 +53,15 @@ def amexpos(n_points, t0=None, spread=None, kind="bilateral"):
     :type spread: float
     :return: exponential function
     :rtype: numpy.ndarray
+    :Examples:
+    >>> x = amexpos(160)
+    >>> plot(x)
+
+    .. plot:: docstring_plots/generators/amplitude_modulated/amexpos_bilateral.py
+    >>> x = amexpos(160, kind='unilateral')
+    >>> plot(x)
+
+    .. plot:: docstring_plots/generators/amplitude_modulated/amexpos_unilateral.py
     """
     if t0 is None:
         t0 = np.round(n_points / 2)
@@ -71,6 +90,11 @@ def amrect(n_points, t0=None, spread=None):
     :type spread: float
     :return: A rectangular amplitude modulator.
     :rtype: numpy.ndarray.
+    :Examples:
+    >>> x = amrect(160, 90, 40.0)
+    >>> plot(x)
+
+    .. plot:: docstring_plots/generators/amplitude_modulated/amrect1.py
     """
     if t0 is None:
         t0 = np.round(n_points / 2)
@@ -96,6 +120,11 @@ def amtriang(n_points, t0=None, spread=None):
     :type spread: float
     :return: A triangular amplitude modulator.
     :rtype: numpy.ndarray.
+    :Examples:
+    >>> x = amtriang(160)
+    >>> plot(x)
+
+    .. plot:: docstring_plots/generators/amplitude_modulated/amtriang1.py
     """
     if t0 is None:
         t0 = np.round(n_points / 2)

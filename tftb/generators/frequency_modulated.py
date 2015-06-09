@@ -15,6 +15,11 @@ def fmconst(n_points, fnorm=0.25, t0=None):
     :type t0: float
     :return: frequency modulation signal with frequency fnorm
     :rtype: numpy.ndarray
+    :Examples:
+    >>> z = amgauss(128, 50, 30) * fmconst(128, 0.05, 50)[0]
+    >>> plot(real(z))
+
+    .. plot:: docstring_plots/generators/frequency_modulated/fmconst.py
     """
     if t0 is None:
         t0 = np.round(n_points / 2)
@@ -41,6 +46,12 @@ def fmhyp(n_points, p1, p2):
     :type p2: float
     :return: vector containing the modulated signal samples.
     :rtype: numpy.ndarray
+    :Examples:
+    >>> signal, iflaw = fmhyp(128, (1, 0.5), (32, 0.1))
+    >>> subplot(211), plot(real(signal))
+    >>> subplot(212), plot(iflaw)
+
+    .. plot:: docstring_plots/generators/frequency_modulated/fmhyp.py
     """
     c = (p2[1] - p1[1]) / (1.0 / p2[0] - 1 / p1[0])
     f0 = p1[1] - c / p1[0]
@@ -74,6 +85,11 @@ def fmlin(n_points, fnormi=0.0, fnormf=0.5, t0=None):
     :type t0: float
     :return: The modulated signal, and the instantaneous amplitude law.
     :rtype: tuple(array-like)
+    :Examples:
+    >>> z = amgauss(128, 50, 40) * fmlin(128, 0.05, 0.3, 50)[0]
+    >>> plot(real(z))
+
+    .. plot:: docstring_plots/generators/frequency_modulated/fmlin.py
     """
     if t0 is None:
         t0 = np.round(n_points / 2)
@@ -103,6 +119,15 @@ def fmodany(iflaw, t0=1):
     :type t0: float
     :return: output signal
     :rtype:
+    :Examples:
+    >>> y1, ifl1 = fmlin(100)  # A linear instantaneous frequency law.
+    >>> y2, ifl2 = fmsin(100)  # A sinusoidal instantaneous frequency law.
+    >>> iflaw = np.append(ifl1, ifl2)  # combination of the two
+    >>> sig = fmodany(iflaw)
+    >>> subplot(211), plot(real(sig))
+    >>> subplot(212), plot(iflaw)
+
+    .. plot:: docstring_plots/generators/frequency_modulated/fmodany.py
     """
     if len(iflaw.shape) > 1:
         if iflaw.shape[1] != 1:
@@ -127,7 +152,13 @@ def fmpar(n_points, coefficients):
     :type n_points: int
     :type coefficients: tuple
     :return: Signal with parabolic frequency modulation law.
-    :rtype:
+    :rtype: tuple
+    :Examples:
+    >>> x, iflaw = fmpar(128, (0.4, -0.0112, 8.6806e-05))
+    >>> subplot(211), plot(real(x))
+    >>> subplot(212), plot(iflaw)
+
+    .. plot:: docstring_plots/generators/frequency_modulated/fmpar.py
     """
     a0, a1, a2 = coefficients
     t = np.arange(n_points)
@@ -154,6 +185,12 @@ def fmpower(n_points, k, coefficients):
     :type p2: float
     :return: vector of modulated signal samples.
     :rtype: numpy.ndarray
+    :Examples:
+    >>> x, iflaw = fmpower(128, 0.5, (1, 0.5, 100, 0.1))
+    >>> subplot(211), plot(real(x))
+    >>> subplot(212), plot(iflaw)
+
+    .. plot:: docstring_plots/generators/frequency_modulated/fmpower.py
     """
     if len(coefficients) == 2:
         f0, c = coefficients
@@ -195,6 +232,11 @@ def fmsin(n_points, fnormin=0.05, fnormax=0.45, period=None, t0=None,
     :type pm1: int
     :return: output signal
     :rtype: numpy.ndarray
+    :Examples:
+    >>> z = fmsin(140, period=100, t0=20, fnorm0=0.3, pm1=-1)
+    >>> plot(real(z))
+
+    .. plot:: docstring_plots/generators/frequency_modulated/fmsin.py
     """
     if period is None:
         period = n_points
@@ -207,8 +249,7 @@ def fmsin(n_points, fnormin=0.05, fnormax=0.45, period=None, t0=None,
     delta = 0.5 * (fnormax - fnormin)
     phi = -pm1 * np.arccos((fnorm0 - fnormid) / delta)
     t = np.arange(n_points) - t0
-    phase = 2 * pi * fnormid * t + delta * period * \
-            (np.sin(2 * pi * t / period + phi)) - np.sin(phi)
+    phase = 2 * pi * fnormid * t + delta * period * (np.sin(2 * pi * t / period + phi)) - np.sin(phi)
     y = np.exp(1j * phase)
     iflaw = fnormid + delta * np.cos(2 * pi * t / period + phi)
     return y, iflaw

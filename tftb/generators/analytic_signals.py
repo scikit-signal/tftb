@@ -15,6 +15,12 @@ def anaask(n_points, n_comp=None, f0=0.25):
     :type f0: float
     :return: Tuple containing the modulated signal and the amplitude modulation.
     :rtype: tuple(numpy.ndarray)
+    :Examples:
+    >>> x, am = anaask(512, 64, 0.05)
+    >>> subplot(211), plot(real(x))
+    >>> subplot(212), plot(am)
+
+    .. plot:: docstring_plots/generators/analytic_signals/anaask.py
     """
     if n_comp is None:
         n_comp = np.round(n_points / 2)
@@ -39,6 +45,12 @@ def anabpsk(n_points, n_comp=None, f0=0.25):
     :type f0: float
     :return: BPSK signal
     :rtype: numpy.ndarray
+    :Examples:
+    >>> x, am = anabpsk(300, 30, 0.1)
+    >>> subplot(211), plot(real(x))
+    >>> subplot(212), plot(am)
+
+    .. plot:: docstring_plots/generators/analytic_signals/anabpsk.py
     """
     if n_comp is None:
         n_comp = np.round(n_points / 5)
@@ -62,6 +74,12 @@ def anafsk(n_points, n_comp=None, Nbf=4):
     :type Nbf: int
     :return: FSK signal.
     :rtype: numpy.ndarray
+    :Examples:
+    >>> x, am = anafsk(512, 54.0, 5.0)
+    >>> subplot(211), plot(real(x))
+    >>> subplot(212), plot(am)
+
+    .. plot:: docstring_plots/generators/analytic_signals/anafsk.py
     """
     if n_comp is None:
         n_comp = np.round(n_points / 5)
@@ -81,6 +99,11 @@ def anapulse(n_points, ti=None):
     :type ti: float
     :return: analytic impulse signal.
     :rtype: numpy.ndarray
+    :Examples:
+    >>> x = 2.5 * anapulse(512, 301)
+    >>> plot(real(x))
+
+    .. plot:: docstring_plots/generators/analytic_signals/anapulse.py
     """
     if ti is None:
         ti = np.round(n_points / 2)
@@ -99,8 +122,15 @@ def anaqpsk(n_points, n_comp=None, f0=0.25):
     :type n_points: int
     :type n_comp: int
     :type f0: float
-    :return: complex phase modulated signal of normalized frequency f0
-    :rtype: numpy.ndarray
+    :return: complex phase modulated signal of normalized frequency f0 and
+        initial phase.
+    :rtype: tuple
+    :Examples:
+    >>> x, phase = anaqpsk(512, 64.0, 0.05)
+    >>> subplot(211), plot(real(x))
+    >>> subplot(212), plot(phase)
+
+    .. plot:: docstring_plots/generators/analytic_signals/anaqpsk.py
     """
     if n_comp is None:
         n_comp = np.round(n_points / 5)
@@ -127,6 +157,11 @@ def anasing(n_points, t0=None, h=0.0):
     :type h: float
     :return: N-point Lipschitz singularity centered around t0
     :rtype: numpy.ndarray
+    :Examples:
+    >>> x = anasing(128)
+    >>> plot(real(x))
+
+    .. plot:: docstring_plots/generators/analytic_signals/anasing.py
     """
     """Refer to the wiki page on `Lipschitz condition`, good test case."""
     if t0 is None:
@@ -157,6 +192,11 @@ def anastep(n_points, ti=None):
     :type ti: float
     :return: output signal
     :rtype: numpy.ndarray
+    :Examples:
+    >>> x = anastep(256, 128)
+    >>> plot(real(x))
+
+    .. plot:: docstring_plots/generators/analytic_signals/anastep.py
     """
     if ti is None:
         ti = np.round(n_points / 2)
