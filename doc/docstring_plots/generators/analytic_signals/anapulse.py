@@ -17,7 +17,7 @@ import numpy as np
 
 x = 2.5 * anapulse(512, 301)
 plt.plot(np.real(x))
-plt.set_xlim(0, 512)
+plt.xlim(0, 512)
 plt.grid()
 plt.title('Analytic Dirac Impulse')
 plt.show()

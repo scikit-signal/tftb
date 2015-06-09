@@ -16,11 +16,11 @@ import matplotlib.pyplot as plt
 
 z, iflaw = fmpar(128, (0.4, -0.0112, 8.6806e-05))
 plt.subplot(211), plt.plot(np.real(z))
-plt.set_xlim(0, 128)
+plt.xlim(0, 128)
 plt.grid()
 plt.title('Parabolic Frequency Modulation')
 plt.subplot(212), plt.plot(iflaw)
-plt.set_xlim(0, 128)
+plt.xlim(0, 128)
 plt.grid()
 plt.title('Instantaneous Frequency')
 plt.show()

@@ -17,11 +17,11 @@ import numpy as np
 
 x, am = anafsk(512, 54.0, 5.0)
 plt.subplot(211), plt.plot(np.real(x))
-plt.set_xlim(0, 512)
+plt.xlim(0, 512)
 plt.grid()
 plt.title('Analytic FSK signal')
 plt.subplot(212), plt.plot(am)
-plt.set_xlim(0, 512)
+plt.xlim(0, 512)
 plt.grid()
 plt.title('Amplitude Modulation')
 plt.show()

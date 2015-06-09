@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 
 z = amgauss(128, 50.0, 30.0) * fmlin(128, 0.05, 0.3, 50)[0]
 plt.plot(np.real(z))
-plt.set_xlim(0, 128)
+plt.xlim(0, 128)
 plt.grid()
 plt.title('Linear Frequency Modulation')
 plt.show()
