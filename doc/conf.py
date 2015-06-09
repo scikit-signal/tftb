@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # pytftb documentation build configuration file, created by
-# sphinx-quickstart on Tue Jun  9 18:58:37 2015.
+# sphinx-quickstart on Tue Jun  9 21:32:46 2015.
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
@@ -37,6 +37,7 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
+    'matplotlib.sphinxext.plot_directive'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -76,7 +77,7 @@ release = '0.0.1'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = []
+exclude_patterns = ['_build']
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
