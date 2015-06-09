@@ -15,9 +15,11 @@ import matplotlib.pyplot as plt
 
 signal, iflaw = fmhyp(128, (1, 0.5), (32, 0.1))
 plt.subplot(211), plt.plot(np.real(signal))
+plt.set_xlim(0, 128)
 plt.grid()
 plt.title('Hyperbolic Frequency Modulation')
 plt.subplot(212), plt.plot(iflaw)
+plt.set_xlim(0, 128)
 plt.grid()
 plt.title('Instantaneous Frequency')
 plt.show()
