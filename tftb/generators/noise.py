@@ -53,7 +53,7 @@ def noisecg(n_points, a1=None, a2=None):
     >>> subplot(211), plot(real(noise))
     >>> subplot(212), plot(linspace(-0.5, 0.5, 512), abs(fftshift(fft(noise))) ** 2)
 
-    .. plot:: docstring_plots/generators/noise/noisecu.py
+    .. plot:: docstring_plots/generators/noise/noisecg.py
     """
     assert n_points > 0
     if n_points <= 2:
