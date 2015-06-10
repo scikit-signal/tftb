@@ -39,4 +39,6 @@ ax2.set_xlabel('Normalized frequency')
 ax2.grid()
 ax2.set_xlim(-0.5, 0.5)
 
+plt.subplots_adjust(hspace=0.5)
+
 plt.show()

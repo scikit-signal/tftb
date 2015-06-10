@@ -32,4 +32,7 @@ plt.plot(dsp)
 plt.grid(True)
 plt.title('Spectrum')
 plt.xlabel('Frequency (Hz)')
+
+plt.subplots_adjust(hspace=0.5)
+
 plt.show()

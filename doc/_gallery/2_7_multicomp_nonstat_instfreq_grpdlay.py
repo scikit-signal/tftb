@@ -46,4 +46,6 @@ plt.title('Group Delay')
 plt.xlabel('Time')
 plt.ylabel('Normalized Frequency')
 
+plt.subplots_adjust(hspace=0.5)
+
 plt.show()

@@ -34,11 +34,12 @@ iflaw[0, :] = np.hstack((if1, np.nan * np.ones((8,)), if2))
 iflaw[1, :] = np.hstack((np.nan * np.ones((68,)), if3))
 
 tfr, t, f = ideal_tfr(iflaw)
+plt.figure(figsize=(10, 8))
 plt.subplot(221)
 plt.contour(t, f, tfr, 1)
 plt.grid(True)
+plt.gca().set_xticklabels([])
 plt.title("Ideal instantaneous frequencies")
-plt.xlabel('Time')
 plt.ylabel('Normalized Frequencies')
 
 tfr, _, _ = spectrogram(sig)
@@ -47,9 +48,9 @@ tfr[np.abs(tfr) <= threshold] = 0.0
 plt.subplot(222)
 plt.imshow(np.abs(tfr)[:64, :], extent=[0, 128, 0, 0.5], aspect='auto', origin='bottomleft')
 plt.grid(True)
+plt.gca().set_xticklabels([])
+plt.gca().set_yticklabels([])
 plt.title("Spectrogram")
-plt.xlabel('Time')
-plt.ylabel('Normalized Frequencies')
 
 _, tfr, _ = re_spectrogram(sig)
 tfr = tfr[:64, :]
@@ -68,9 +69,9 @@ threshold = np.amax(np.abs(rtfr) ** 2) * 0.05
 rtfr[np.abs(rtfr) ** 2 <= threshold] = 0.0
 plt.subplot(224)
 plt.imshow(np.abs(rtfr) ** 2, extent=[0, 128, 0, 0.5], aspect='auto', origin='bottomleft')
+plt.gca().set_yticklabels([])
 plt.grid(True)
 plt.title("Reassigned Morlet Scalogram")
 plt.xlabel('Time')
-plt.ylabel('Normalized Frequencies')
 
 plt.show()

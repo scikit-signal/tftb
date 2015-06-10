@@ -53,4 +53,6 @@ plt.title("Time-Bandwidth product: {0}".format(T2 * B2))
 plt.xlabel('Time')
 plt.ylabel('Normalized Frequency')
 
+plt.subplots_adjust(hspace=0.5)
+
 plt.show()

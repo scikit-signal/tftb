@@ -27,17 +27,16 @@ spec, t3, f3 = spectrogram(sig)
 plt.subplot(221)
 plt.contour(t, f, ideal, 1)
 plt.grid(True)
+plt.gca().set_xticklabels([])
 plt.title("Ideal time-frequency distro")
-plt.xlabel('Time')
 plt.ylabel('Normalized Frequency')
 
 # Spectrogram
 plt.subplot(222)
 plt.contour(t3, f3[:64], spec[:64, :])
 plt.grid(True)
+plt.gca().set_xticklabels([])
 plt.title("Spectrogram")
-plt.xlabel('Time')
-plt.ylabel('Normalized Frequency')
 
 # Reassigned Spectrogram
 plt.subplot(212)

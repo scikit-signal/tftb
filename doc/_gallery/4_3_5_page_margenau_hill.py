@@ -36,11 +36,13 @@ tfr, t, f = pseudo_page(sig)
 tfr = np.abs(tfr) ** 2
 threshold = np.amax(tfr) * 0.05
 tfr[tfr <= threshold] = 0.0
+
+plt.figure(figsize=(10, 8))
 plt.subplot(221)
 plt.imshow(tfr[:64, :], extent=[0, 128, 0, 0.5], aspect='auto', origin='bottomleft')
+plt.gca().set_xticklabels([])
 plt.grid(True)
 plt.title("Pseudo Page distribution")
-plt.xlabel('Time')
 plt.ylabel('Normalized Frequencies')
 
 _, tfr, _ = re_pseudo_page(sig)
@@ -51,8 +53,8 @@ plt.subplot(222)
 plt.imshow(tfr[:64, :], extent=[0, 128, 0, 0.5], aspect='auto', origin='bottomleft')
 plt.grid(True)
 plt.title("Reassigned Pseudo Page distribution")
-plt.xlabel('Time')
-plt.ylabel('Normalized Frequencies')
+plt.gca().set_xticklabels([])
+plt.gca().set_yticklabels([])
 
 tfr, _, _ = pseudo_margenau_hill(sig)
 tfr = np.abs(tfr) ** 2
@@ -71,9 +73,9 @@ threshold = np.amax(tfr) * 0.05
 tfr[tfr <= threshold] = 0.0
 plt.subplot(224)
 plt.imshow(tfr[:64, :], extent=[0, 128, 0, 0.5], aspect='auto', origin='bottomleft')
+plt.gca().set_yticklabels([])
 plt.grid(True)
 plt.title("Reassigned Pseudo Margenau Hill distribution")
 plt.xlabel('Time')
-plt.ylabel('Normalized Frequencies')
 
 plt.show()

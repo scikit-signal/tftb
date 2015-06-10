@@ -22,9 +22,9 @@ sig = fmlin(N1)[0]
 window = np.exp(np.log(0.005) * np.linspace(-1, 1, Ng) ** 2)
 window = window / np.linalg.norm(window)
 tfr, dgr, h = gabor(sig, 16, Q, window)
-time = np.arange(256)
-freq = np.linspace(0, 0.5, 128)
-plt.matshow(tfr, aspect='auto', extent=[0, 255, 0, 0.5])
+
+plt.imshow(np.flipud(tfr)[8:, :], aspect='auto', extent=[0, 16, 0, 0.5],
+           interpolation='none')
 plt.xlabel('Time')
 plt.ylabel('Normalized frequency')
 plt.title('Squared modulus of the Gabor coefficients')
