@@ -26,7 +26,7 @@ N = 128
 x1, _ = fmlin(N, 0, 0.2)
 x2, _ = fmlin(N, 0.3, 0.5)
 x = x1 + x2
-ifr = inst_freq(x)
+ifr = inst_freq(x)[0]
 fn = np.arange(0.51, step=0.01)
 gd = group_delay(x, fn)
 
@@ -45,5 +45,7 @@ plt.grid(True)
 plt.title('Group Delay')
 plt.xlabel('Time')
 plt.ylabel('Normalized Frequency')
+
+plt.subplots_adjust(hspace=0.5)
 
 plt.show()

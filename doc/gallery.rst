@@ -6,6 +6,11 @@ Gallery of Time-Frequency Distributions
   :maxdepth: 2
   
 .. plot:: _gallery/1_3_1_chirp.py
+.. plot:: _gallery/1_3_1_chirp_wv.py
+.. plot:: _gallery/1_3_1_chirp_spectrum.py
+.. plot:: _gallery/1_3_1_noisy_chirp.py
+.. plot:: _gallery/1_3_1_noisy_chirp_wv.py
+.. plot:: _gallery/1_3_1_noisy_chirp_spectrum.py
 .. plot:: _gallery/1_3_3_transient.py
 .. plot:: _gallery/1_3_3_transient_spectrogram.py
 .. plot:: _gallery/2_2_1_time_freq_localization.py

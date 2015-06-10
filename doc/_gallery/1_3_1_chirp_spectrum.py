@@ -7,23 +7,24 @@
 # Distributed under terms of the MIT license.
 
 """
-Example in section 1.3.1 of the tutorial.
+Example from section 1.3.1 of the turtorial.
 """
 
 from tftb.generators.api import fmlin
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Generate a chirp signal
-
 n_points = 128
 fmin, fmax = 0.0, 0.5
-
 signal, _ = fmlin(n_points, fmin, fmax)
-plt.plot(np.real(signal))
-plt.xlim(0, n_points)
-plt.title('Linear Frequency Modulation')
-plt.ylabel('Real Part')
-plt.xlabel('Time')
+
+# Plot the energy spectrum of the chirp
+
+dsp1 = np.fft.fftshift(np.abs(np.fft.fft(signal)) ** 2)
+plt.plot(np.arange(-64, 64, dtype=float) / 128.0, dsp1)
+plt.xlim(-0.5, 0.5)
+plt.title('Spectrum')
+plt.ylabel('Squared modulus')
+plt.xlabel('Normalized Frequency')
 plt.grid()
 plt.show()

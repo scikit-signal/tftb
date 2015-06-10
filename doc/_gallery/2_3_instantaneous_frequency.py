@@ -17,5 +17,5 @@ import numpy as np
 
 signal, _ = fmlin(256)
 time_samples = np.arange(3, 257)
-ifr = inst_freq(signal)
+ifr = inst_freq(signal)[0]
 plotifl(time_samples, ifr)

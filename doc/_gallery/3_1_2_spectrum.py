@@ -15,7 +15,7 @@ from scipy.io import loadmat
 import numpy as np
 import matplotlib.pyplot as plt
 
-DATA_PATH = join(abspath(dirname(__file__)), "data", "gabor.mat")
+DATA_PATH = join(abspath(dirname("__file__")), "data", "gabor.mat")
 signal = loadmat(DATA_PATH)['gabor'].ravel()
 time = np.arange(338)
 dsp = np.fft.fftshift(np.abs(np.fft.fft(signal)) ** 2)
@@ -32,4 +32,7 @@ plt.plot(dsp)
 plt.grid(True)
 plt.title('Spectrum')
 plt.xlabel('Frequency (Hz)')
+
+plt.subplots_adjust(hspace=0.5)
+
 plt.show()

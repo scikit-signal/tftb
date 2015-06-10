@@ -29,6 +29,7 @@ plt.xlabel('Normalized frequency')
 plt.ylabel('Squared modulus')
 plt.title('Spectrum')
 plt.grid()
+plt.subplots_adjust(hspace=0.5)
 plt.show()
 
 tm, T = loctime(signal)

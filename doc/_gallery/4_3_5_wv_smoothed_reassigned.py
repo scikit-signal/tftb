@@ -27,11 +27,13 @@ iflaw[0, :] = np.hstack((if1, np.nan * np.ones((8,)), if2))
 iflaw[1, :] = np.hstack((np.nan * np.ones((68,)), if3))
 
 tfr, t, f = ideal_tfr(iflaw)
+
+plt.figure(figsize=(10, 8))
 plt.subplot(221)
 plt.contour(t, f, tfr, 1)
+plt.gca().set_xticklabels([])
 plt.grid(True)
 plt.title("Ideal instantaneous frequencies")
-plt.xlabel('Time')
 plt.ylabel('Normalized Frequencies')
 
 tfr = wigner_ville(sig)
@@ -41,8 +43,8 @@ plt.subplot(222)
 plt.imshow(np.abs(tfr) ** 2, extent=[0, 128, 0, 0.5], aspect='auto', origin='bottomleft')
 plt.grid(True)
 plt.title("WV distro")
-plt.xlabel('Time')
-plt.ylabel('Normalized Frequencies')
+plt.gca().set_xticklabels([])
+plt.gca().set_yticklabels([])
 
 tfr = smoothed_pseudo_wigner_ville(sig)
 threshold = np.amax(np.abs(tfr) ** 2) * 0.05
@@ -62,6 +64,6 @@ plt.imshow(np.abs(rtfr) ** 2, extent=[0, 128, 0, 0.5], aspect='auto', origin='bo
 plt.grid(True)
 plt.title("Reassigned Smoothed Pseudo WV distro")
 plt.xlabel('Time')
-plt.ylabel('Normalized Frequencies')
+plt.gca().set_yticklabels([])
 
 plt.show()
