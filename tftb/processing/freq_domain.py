@@ -10,6 +10,13 @@ def locfreq(signal):
     :type sig: numpy.ndarray
     :return: average normalized frequency center, frequency spreading
     :rtype: tuple
+    :Example:
+    >>> z = amgauss(160, 80, 50)
+    >>> fm, B = locfreq(z)
+    >>> print fm
+    -9.1835e-14
+    >>> print B
+    0.02
     """
     if signal.ndim > 1:
         if 1 not in signal.shape:
@@ -43,6 +50,12 @@ def inst_freq(x, t=None, L=1):
     :type L: int
     :return: instantaneous frequencies of the input signal.
     :rtype: numpy.ndarray
+    :Example:
+    >>> x = fmsin(70, 0.05, 0.35, 25)[0]
+    >>> instf, timestamps = inst_freq(x)
+    >>> plot(timestamps, instf)
+
+    .. plot:: docstring_plots/processing/freq_domain/inst_freq.py
     """
     if x.ndim != 1:
         if 1 not in x.shape:
@@ -60,7 +73,7 @@ def inst_freq(x, t=None, L=1):
         t = np.arange(2, len(x))
 
     fnorm = 0.5 * (angle(-x[t] * np.conj(x[t - 2])) + np.pi) / (2 * np.pi)
-    return fnorm
+    return fnorm, t
 
 
 def group_delay(x, fnorm=None):
@@ -73,6 +86,13 @@ def group_delay(x, fnorm=None):
     :type fnorm: float
     :return: group delay
     :rtype: numpy.ndarray
+    :Example:
+    >>> x = amgauss(128, 64.0, 30) * fmlin(128, 0.1, 0.4)[0]
+    >>> fnorm = np.arange(0.1, 0.38, step=0.04)
+    >>> gd = group_delay(x, fnorm)
+    >>> plot(gd, fnorm)
+
+    .. plot:: docstring_plots/processing/freq_domain/group_delay.py
     """
     if x.ndim != 1:
         if 1 not in x.shape:
@@ -89,12 +109,10 @@ def group_delay(x, fnorm=None):
                                                               3)).astype(int)
         gd = np.fft.fftshift(ratio)
     else:
-        exponent = np.exp(-1j * 2.0 * np.pi * fnorm.reshape(len(fnorm), 1) * \
-                                                              np.arange(len(x)))
+        exponent = np.exp(-1j * 2.0 * np.pi * fnorm.reshape(len(fnorm), 1) * np.arange(len(x)))
         numerator = np.dot(exponent, (x * np.arange(1, x.shape[0] + 1)))
         denominator = np.dot(exponent, x)
         window = np.real(numerator / denominator) >= 1
         ratio = np.real(numerator / denominator) * window.astype(int)
-        gd = ratio * (np.real(numerator / denominator) <= (len(x) +
-                                                              3)).astype(int)
+        gd = ratio * (np.real(numerator / denominator) <= (len(x) + 3)).astype(int)
     return gd
