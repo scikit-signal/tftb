@@ -43,6 +43,13 @@ def derive_window(window):
     :type window: array-like
     :return: Derivative of the input window
     :rtype: array-like
+    :Example:
+    >>> from scipy.signal import hanning
+    >>> window = hanning(210)
+    >>> subplot(211), plot(window)
+    >>> subplot(212), plot(derive_window(window))
+
+    .. plot:: docstring_plots/processing/utils/derive_window.py
     """
     lh = (window.shape[0] - 1) / 2.0
     step_height = (window[0] + window[-1]) / 2.0
