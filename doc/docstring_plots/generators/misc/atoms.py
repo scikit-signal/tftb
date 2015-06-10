@@ -10,13 +10,16 @@
 
 """
 
-from tftb.generators.api import amgauss, fmlin
+
 import numpy as np
 import matplotlib.pyplot as plt
+from tftb.generators.misc import atoms
 
-z = amgauss(128, 50.0, 30.0) * fmlin(128, 0.05, 0.3, 50)[0]
-plt.plot(np.real(z))
-plt.xlim(0, 128)
+coordinates = np.array([[32.0, 0.3, 32.0, 1.0],
+                        [56.0, 0.15, 48.0, 1.22]])
+sig = atoms(128, coordinates)
+plt.plot(np.real(sig))
 plt.grid()
-plt.title('Linear Frequency Modulation')
+plt.xlim(128)
+plt.title('Gaussian Atoms')
 plt.show()

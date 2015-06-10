@@ -17,6 +17,7 @@ import numpy as np
 
 x = anastep(256, 128)
 plt.plot(np.real(x))
+plt.xlim(0, 256)
 plt.grid()
 plt.title('Analytic Step Signal')
 plt.show()

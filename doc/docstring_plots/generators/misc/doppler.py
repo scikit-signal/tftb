@@ -10,17 +10,19 @@
 
 """
 
-from tftb.generators.api import fmpar
+
+from tftb.generators.api import doppler
 import numpy as np
 import matplotlib.pyplot as plt
 
-z, iflaw = fmpar(128, (0.4, -0.0112, 8.6806e-05))
-plt.subplot(211), plt.plot(np.real(z))
-plt.xlim(0, 128)
+fm, am, iflaw = doppler(512, 200.0, 65.0, 10.0, 50.0)
+plt.subplot(211), plt.plot(np.real(am * fm))
+plt.title('Doppler')
 plt.grid()
-plt.title('Parabolic Frequency Modulation')
+plt.xlim(0, 512)
 plt.subplot(212), plt.plot(iflaw)
-plt.xlim(0, 128)
+plt.title('Instantaneous Freqeuncy')
 plt.grid()
-plt.title('Instantaneous Frequency')
+plt.xlim(0, 512)
+
 plt.show()

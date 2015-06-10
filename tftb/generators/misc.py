@@ -17,6 +17,11 @@ def altes(n_points, fmin=0.05, fmax=0.5, alpha=300):
     :type alpha: float
     :return: Time vector containing the Altes signal samples.
     :rtype: numpy.ndarray
+    :Examples:
+    >>> x = altes(128, 0.1, 0.45)
+    >>> plot(x)
+
+    .. plot:: docstring_plots/generators/misc/altes.py
     """
     g = np.exp((np.log(fmax / fmin)) ** 2 / (8 * np.log(alpha)))
     nu0 = np.sqrt(fmin * fmax)
@@ -41,6 +46,13 @@ def atoms(n_points, coordinates):
     :type coordinates: array-like
     :return: signal
     :rtype: array-like
+    :Examples:
+    >>> coordinates = np.array([[32.0, 0.3, 32.0, 1.0],
+                                [0.15, 0.15, 48.0, 1.22]])
+    >>> sig = atoms(128, coordinates)
+    >>> plot(real(sig))
+
+    .. plot:: docstring_plots/generators/misc/atoms.py
     """
     # FIXME: This function produces incorrect output when coordinates are
     # one-dimensional.
@@ -75,6 +87,12 @@ def doppler(n_points, s_freq, f0, distance, v_target, t0=None, v_wave=340.0):
     :return: Tuple containing output frequency modulator, output amplitude \
         modulator, output instantaneous frequency law.
     :rtype: tuple
+    :Example:
+    >>> fm, am, iflaw = doppler(512, 200.0, 65.0, 10.0, 50.0)
+    >>> subplot(211), plot(real(am * fm))
+    >>> subplot(211), plot(iflaw)
+
+    .. plot:: docstring_plots/generators/misc/doppler.py
     """
     if t0 is None:
         t0 = n_points / 2
@@ -112,6 +130,11 @@ def klauder(n_points, attenuation=10.0, f0=0.2):
     :type f0: float
     :return: Time row vector containing klauder samples.
     :rtype: numpy.ndarray
+    :Example:
+    >>> x = klauder(128)
+    >>> plot(x)
+
+    .. plot:: docstring_plots/generators/misc/klauder.py
     """
 
     assert n_points > 0
@@ -137,6 +160,10 @@ def mexhat(nu=0.05):
     :type nu: float
     :return: time vector containing mexhat samples.
     :rtype: numpy.ndarray
+    :Example:
+    >>> plot(mexhat())
+
+    .. plot:: docstring_plots/generators/misc/mexhat.py
     """
     assert (nu <= 0.5) and (nu >= 0)
     n_points = 1.5

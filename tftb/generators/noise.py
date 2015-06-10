@@ -10,13 +10,23 @@ def noisecu(n_points):
     :type n_points: int
     :return: analytic complex uniform white noise signal of length N
     :rtype: numpy.ndarray
+    :Examples:
+    >>> noise = noisecu(512)
+    >>> print noise.mean()
+    0.0
+    >>> print std(noise) ** 2
+    1.0
+    >>> subplot(211), plot(real(noise))
+    >>> subplot(212), plot(linspace(-0.5, 0.5, 512), abs(fftshift(fft(noise))) ** 2)
+
+    .. plot:: docstring_plots/generators/noise/noisecu.py
     """
     if n_points <= 2:
         noise = (np.random.rand(n_points, 1) - 0.5 + 1j * (np.random.rand(n_points, 1) - 0.5)) * np.sqrt(6)
     else:
         noise = np.random.rand(2 ** nextpow2(n_points),) - 0.5
         noise = hilbert(noise) / noise.std() / np.sqrt(2)
-        inds = noise.shape[0] - np.arange(n_points - 1, 1, step=-1)
+        inds = noise.shape[0] - np.arange(n_points - 1, -1, step=-1) - 1
         noise = noise[inds]
     return noise
 
@@ -35,6 +45,15 @@ def noisecg(n_points, a1=None, a2=None):
     :type a2: float
     :return: Analytic complex Gaussian noise of length n_points.
     :rtype: numpy.ndarray
+    >>> noise = noisecg(512)
+    >>> print noise.mean()
+    0.0
+    >>> print std(noise) ** 2
+    1.0
+    >>> subplot(211), plot(real(noise))
+    >>> subplot(212), plot(linspace(-0.5, 0.5, 512), abs(fftshift(fft(noise))) ** 2)
+
+    .. plot:: docstring_plots/generators/noise/noisecu.py
     """
     assert n_points > 0
     if n_points <= 2:
@@ -66,6 +85,13 @@ def dopnoise(n_points, s_freq, f_target, distance, v_target,
     :type c: float
     :return: tuple (output signal, instantaneous frequency law.)
     :rtype: tuple(array-like)
+    :Example:
+    >>> z, iflaw = dopnoise(500, 200.0, 60.0, 10.0, 70.0, 128.0)
+    >>> subplot(211), plot(real(z))
+    >>> ifl = instfreq(z, np.arange(11, 479), 10)
+    >>> subplot(212), plot(iflaw, 'r', ifl, 'g')
+
+    .. plot:: docstring_plots/generators/noise/dopnoise.py
     """
     if time_center is None:
         time_center = np.floor(n_points / 2.0)

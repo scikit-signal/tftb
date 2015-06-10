@@ -17,6 +17,7 @@ import numpy as np
 
 x = anasing(128)
 plt.plot(np.real(x))
+plt.xlim(0, 128)
 plt.grid()
 plt.title('Lipschitz Singularity')
 plt.show()

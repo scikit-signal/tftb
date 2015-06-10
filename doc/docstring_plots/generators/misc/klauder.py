@@ -11,13 +11,12 @@
 """
 
 
-from tftb.generators.api import anapulse
 import matplotlib.pyplot as plt
-import numpy as np
+from tftb.generators.api import klauder
 
-x = 2.5 * anapulse(512, 301)
-plt.plot(np.real(x))
-plt.xlim(0, 512)
+x = klauder(128)
+plt.plot(x)
+plt.xlim(0, 128)
 plt.grid()
-plt.title('Analytic Dirac Impulse')
+plt.title('Klauder Wavelet')
 plt.show()

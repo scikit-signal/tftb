@@ -11,13 +11,10 @@
 """
 
 
-from tftb.generators.api import anapulse
+from tftb.generators.api import mexhat
 import matplotlib.pyplot as plt
-import numpy as np
 
-x = 2.5 * anapulse(512, 301)
-plt.plot(np.real(x))
-plt.xlim(0, 512)
+plt.plot(mexhat())
 plt.grid()
-plt.title('Analytic Dirac Impulse')
+plt.title('Mexican Hat Wavelet')
 plt.show()

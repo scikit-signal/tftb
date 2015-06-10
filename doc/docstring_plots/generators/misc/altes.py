@@ -10,14 +10,12 @@
 
 """
 
-
-from tftb.generators.api import anapulse
+from tftb.generators.misc import altes
 import matplotlib.pyplot as plt
-import numpy as np
 
-x = 2.5 * anapulse(512, 301)
-plt.plot(np.real(x))
-plt.xlim(0, 512)
+x = altes(128, 0.1, 0.45)
+plt.plot(x)
+plt.xlim(0, 128)
 plt.grid()
-plt.title('Analytic Dirac Impulse')
+plt.title("Altes signal")
 plt.show()
