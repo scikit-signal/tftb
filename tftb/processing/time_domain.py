@@ -9,6 +9,13 @@ def loctime(sig):
     :type sig: numpy.ndarray
     :return: Average time center and time spreading
     :rtype: tuple
+    :Example:
+    >>> x = amgauss(160, 80.0, 50.0)
+    >>> tm, T = loctime(x)
+    >>> print tm
+    80.0
+    >>> print T
+    50.0
     """
     if sig.ndim > 2:
         if 1 not in sig.shape:
@@ -21,6 +28,3 @@ def loctime(sig):
     tm = np.mean(t * sig2)
     T = 2 * np.sqrt(np.pi * np.mean(((t - tm)**2) * sig2))
     return tm, T
-
-
-

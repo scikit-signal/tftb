@@ -17,21 +17,34 @@ TYPE1 = ['pmh', 'rpmh', 'sp', 'rsp', 'ppage', 'rppag', 'mhs', 'rgab', 'mh',
 
 
 def is_linear(x, decimals=5):
-    """Check if an array is linear."""
+    """Check if an array is linear.
+
+    :param x: Array to be checked for linearity.
+    :param decimals: decimal places upto which the derivative of the array
+        should be rounded off (default=5)
+    :type x: numpy.ndarray
+    :type decimals: int
+    :return: If the array is linear
+    :rtype: boolean
+    :Example:
+    >>> x = np.linspace(0, 2*pi, 100)
+    >>> is_linear(x)
+    True
+    >>> is_linear(sin(x))
+    False
+    """
     derivative = np.diff(x)
     derivative = np.around(derivative, decimals)
     return np.unique(derivative).shape[0] == 1
 
 
 def init_default_args(signal, **kwargs):
-    """init_default_args
+    """Initialize default arguments for common time frequency representations.
 
-    :param x:
-    :param **kwargs:
-    :type x:
-    :type **kwargs:
-:return:
-:rtype:
+    :param x: signal, based on which default arguments are initialized.
+    :type x: numpy.ndarray
+    :return: tuple of default values
+    :rtype: tuple
     """
     for varname, value in kwargs.iteritems():
         if "time" in varname:
