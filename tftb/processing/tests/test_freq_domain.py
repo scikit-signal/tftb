@@ -21,7 +21,7 @@ class TestFrequencyDomainProcessing(TestBase):
 
     def test_instfreq(self):
         signal, _ = fm.fmlin(128, 0.05, 0.3, 50)
-        ifreq = fproc.inst_freq(signal)
+        ifreq = fproc.inst_freq(signal)[0]
         self.assertAlmostEqual(ifreq.min(), 0.05, places=2)
         self.assertAlmostEqual(ifreq.max(), 0.3, places=2)
         self.assert_is_linear(ifreq)
