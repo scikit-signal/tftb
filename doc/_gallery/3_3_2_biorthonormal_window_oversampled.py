@@ -10,7 +10,7 @@
 Example from section 3.3.2 of the tutorial.
 """
 
-from tftb.generators.api import fmlin
+from tftb.generators import fmlin
 from tftb.processing.linear import gabor
 import matplotlib.pyplot as plt
 import numpy as np

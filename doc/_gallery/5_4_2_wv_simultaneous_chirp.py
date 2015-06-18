@@ -10,7 +10,7 @@
 Wigner Ville distribution of two simultaneous chirps.
 """
 
-from tftb.generators.api import fmlin, sigmerge
+from tftb.generators import fmlin, sigmerge
 from tftb.processing.cohen import wigner_ville
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import numpy as np

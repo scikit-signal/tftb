@@ -10,7 +10,7 @@
 
 """
 
-from tftb.generators.api import amgauss
+from tftb.generators import amgauss
 import matplotlib.pyplot as plt
 
 x = amgauss(160, 90)

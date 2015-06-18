@@ -10,8 +10,8 @@
 Example showing a Unterberger distribution of a hyperbolic group delay signal.
 """
 
-from tftb.processing.api import unterberger
-from tftb.generators.api import gdpower
+from tftb.processing import unterberger
+from tftb.generators import gdpower
 import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import matplotlib.pyplot as plt

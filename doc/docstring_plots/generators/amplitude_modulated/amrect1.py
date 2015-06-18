@@ -10,7 +10,7 @@
 
 """
 
-from tftb.generators.api import amrect
+from tftb.generators import amrect
 import matplotlib.pyplot as plt
 
 x = amrect(160, 90, 40.0)

@@ -10,7 +10,7 @@
 Examples from section 3.4.1 of the tutorial.
 """
 
-from tftb.generators.api import fmlin
+from tftb.generators import fmlin
 from tftb.processing.cohen import spectrogram
 import numpy as np
 import matplotlib.pyplot as plt

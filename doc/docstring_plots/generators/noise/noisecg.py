@@ -12,7 +12,7 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
-from tftb.generators.api import noisecg
+from tftb.generators import noisecg
 
 noise = noisecg(512)
 print noise.mean()

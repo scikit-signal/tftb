@@ -119,7 +119,7 @@ def stft(signal, time_instants=None, n_fbins=None, window=None):
     return tfr, time_instants, freqs
 
 if __name__ == '__main__':
-    from tftb.generators.api import fmlin
+    from tftb.generators import fmlin
     sig, _ = fmlin(128)
     a, b, c = gabor(sig, 64, 32)
     from matplotlib.pyplot import imshow, show

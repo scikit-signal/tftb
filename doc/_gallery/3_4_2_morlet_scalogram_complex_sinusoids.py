@@ -10,8 +10,8 @@
 Example showing a Morlet scalogram of of two simultaneous complex sinusoids.
 """
 
-from tftb.processing.api import scalogram
-from tftb.generators.api import fmconst
+from tftb.processing import scalogram
+from tftb.generators import fmconst
 import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import matplotlib.pyplot as plt

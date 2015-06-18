@@ -9,7 +9,7 @@
 
 """
 
-from tftb.generators.api import fmhyp
+from tftb.generators import fmhyp
 import numpy as np
 import matplotlib.pyplot as plt
 

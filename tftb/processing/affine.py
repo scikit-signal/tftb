@@ -15,7 +15,7 @@ from matplotlib.mlab import find
 from scipy.signal import hilbert
 from scipy.optimize import brenth, newton
 from scipy.interpolate import splrep, splev
-from tftb.generators.api import mexhat, scale
+from tftb.generators import mexhat, scale
 from tftb.processing.utils import integrate_2d
 from tftb.utils import nextpow2
 
@@ -699,7 +699,7 @@ def scalogram(signal, fmin=None, fmax=None, n_voices=None, time_instants=None,
     return tfr, t, f, wt
 
 if __name__ == '__main__':
-    from tftb.generators.api import altes
+    from tftb.generators import altes
     import matplotlib.pyplot as plt
     sig = altes(64, 0.1, 0.45)
     tfr, t, f = smoothed_pseudo_wigner(sig)

@@ -20,14 +20,6 @@ tftb.generators.analytic_signals module
     :undoc-members:
     :show-inheritance:
 
-tftb.generators.api module
---------------------------
-
-.. automodule:: tftb.generators.api
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 tftb.generators.frequency_modulated module
 ------------------------------------------
 

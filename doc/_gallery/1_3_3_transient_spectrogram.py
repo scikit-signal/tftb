@@ -17,7 +17,7 @@ Example in section 1.3.3 of the tutorial.
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.signal import hamming
-from tftb.generators.api import amexpos, fmconst, sigmerge, noisecg
+from tftb.generators import amexpos, fmconst, sigmerge, noisecg
 from tftb.processing.cohen import spectrogram
 
 # Generate a noisy transient signal.

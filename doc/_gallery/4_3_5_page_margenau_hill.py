@@ -18,7 +18,7 @@ their reassinged counterparts.
 
 import numpy as np
 import matplotlib.pyplot as plt
-from tftb.generators.api import fmsin, fmlin, fmconst
+from tftb.generators import fmsin, fmlin, fmconst
 from tftb.processing.cohen import pseudo_page, pseudo_margenau_hill
 from tftb.processing.reassigned import pseudo_page as re_pseudo_page
 from tftb.processing.reassigned import pseudo_margenau_hill as re_pseudo_margenau_hill

@@ -11,7 +11,7 @@
 """
 
 
-from tftb.generators.api import amtriang
+from tftb.generators import amtriang
 import matplotlib.pyplot as plt
 
 x = amtriang(160)

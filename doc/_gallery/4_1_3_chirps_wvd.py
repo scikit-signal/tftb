@@ -10,8 +10,8 @@
 Examples from section 4.1.3 of the tutorial.
 """
 
-from tftb.generators.api import fmlin, amgauss
-from tftb.processing.api import wigner_ville
+from tftb.generators import fmlin, amgauss
+from tftb.processing import wigner_ville
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable

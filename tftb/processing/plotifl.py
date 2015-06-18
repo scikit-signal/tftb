@@ -13,7 +13,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from tftb.processing.freq_domain import inst_freq
-from tftb.generators.api import fmlin
+from tftb.generators import fmlin
 
 
 def plotifl(time_instants, iflaws, signal=None, **kwargs):

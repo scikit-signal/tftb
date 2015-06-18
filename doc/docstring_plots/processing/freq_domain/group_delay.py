@@ -12,8 +12,8 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-from tftb.generators.api import amgauss, fmlin
-from tftb.processing.api import group_delay
+from tftb.generators import amgauss, fmlin
+from tftb.processing import group_delay
 
 x = amgauss(128, 64.0, 30) * fmlin(128, 0.1, 0.4)[0]
 fnorm = np.arange(0.1, 0.38, step=0.04)

@@ -11,8 +11,8 @@ Example from seciton 4.1.1 of the tutorial.
 """
 
 import numpy as np
-from tftb.generators.api import atoms
-from tftb.processing.api import wigner_ville
+from tftb.generators import atoms
+from tftb.processing import wigner_ville
 import matplotlib.pyplot as plt
 
 x = np.array([[32, .15, 20, 1],

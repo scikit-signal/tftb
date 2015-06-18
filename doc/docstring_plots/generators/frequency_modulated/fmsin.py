@@ -10,7 +10,7 @@
 
 """
 
-from tftb.generators.api import fmsin
+from tftb.generators import fmsin
 import numpy as np
 import matplotlib.pyplot as plt
 

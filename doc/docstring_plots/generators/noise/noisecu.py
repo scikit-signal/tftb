@@ -11,7 +11,7 @@
 """
 
 
-from tftb.generators.api import noisecu
+from tftb.generators import noisecu
 import numpy as np
 import matplotlib.pyplot as plt
 

@@ -11,7 +11,7 @@
 """
 
 
-from tftb.generators.api import doppler
+from tftb.generators import doppler
 import numpy as np
 import matplotlib.pyplot as plt
 

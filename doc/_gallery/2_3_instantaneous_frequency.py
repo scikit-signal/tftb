@@ -10,8 +10,8 @@
 Example in section 2.3 of the tutorial.
 """
 
-from tftb.generators.api import fmlin
-from tftb.processing.api import plotifl, inst_freq
+from tftb.generators import fmlin
+from tftb.processing import plotifl, inst_freq
 import numpy as np
 
 

@@ -11,7 +11,7 @@ Example from section 2.6 of the tutorial.
 Doppler Signal.
 """
 
-from tftb.generators.api import doppler
+from tftb.generators import doppler
 from numpy import real
 import matplotlib.pyplot as plt
 

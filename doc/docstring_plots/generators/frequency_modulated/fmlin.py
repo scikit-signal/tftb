@@ -10,7 +10,7 @@
 
 """
 
-from tftb.generators.api import amgauss, fmlin
+from tftb.generators import amgauss, fmlin
 import numpy as np
 import matplotlib.pyplot as plt
 

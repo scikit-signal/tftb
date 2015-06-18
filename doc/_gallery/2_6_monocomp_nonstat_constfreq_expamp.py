@@ -12,7 +12,7 @@ Generating a mono-component nonstationary signal with constant frequency
 modulation and one-sided exponential amplitude modulation.
 """
 
-from tftb.generators.api import fmconst, amexpos
+from tftb.generators import fmconst, amexpos
 import matplotlib.pyplot as plt
 from numpy import real
 

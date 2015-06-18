@@ -12,8 +12,8 @@ Example in section 2.4 of the tutorial.
 
 import numpy as np
 import matplotlib.pyplot as plt
-from tftb.generators.api import amgauss, fmlin
-from tftb.processing.api import loctime, locfreq, inst_freq, group_delay
+from tftb.generators import amgauss, fmlin
+from tftb.processing import loctime, locfreq, inst_freq, group_delay
 
 time_instants = np.arange(2, 256)
 sig1 = amgauss(256, 128, 90) * fmlin(256)[0]

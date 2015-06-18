@@ -55,7 +55,7 @@ def narrow_band(signal, lag=None, n_fbins=None):
     return naf, lag, xi
 
 if __name__ == '__main__':
-    from tftb.generators.api import anabpsk
+    from tftb.generators import anabpsk
     sig = anabpsk(256, 8)[0]
     naf, x, y = narrow_band(sig)
     import matplotlib.pyplot as plt

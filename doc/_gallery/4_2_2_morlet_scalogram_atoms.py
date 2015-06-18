@@ -10,8 +10,8 @@
 Example showing a Morlet scalogram of two atoms.
 """
 
-from tftb.processing.api import scalogram
-from tftb.generators.api import atoms
+from tftb.processing import scalogram
+from tftb.generators import atoms
 import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import matplotlib.pyplot as plt

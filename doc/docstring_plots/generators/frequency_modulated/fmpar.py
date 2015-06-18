@@ -10,7 +10,7 @@
 
 """
 
-from tftb.generators.api import fmpar
+from tftb.generators import fmpar
 import numpy as np
 import matplotlib.pyplot as plt
 

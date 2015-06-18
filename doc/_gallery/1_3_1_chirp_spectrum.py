@@ -10,7 +10,7 @@
 Example from section 1.3.1 of the turtorial.
 """
 
-from tftb.generators.api import fmlin
+from tftb.generators import fmlin
 import matplotlib.pyplot as plt
 import numpy as np
 

@@ -11,8 +11,8 @@
 """
 
 import numpy as np
-from tftb.generators.api import atoms
-from tftb.processing.api import pseudo_wigner_ville
+from tftb.generators import atoms
+from tftb.processing import pseudo_wigner_ville
 import matplotlib.pyplot as plt
 
 x = np.array([[32, .15, 20, 1],

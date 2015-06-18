@@ -10,7 +10,7 @@
 
 """
 
-from tftb.generators.api import fmpower
+from tftb.generators import fmpower
 import numpy as np
 import matplotlib.pyplot as plt
 

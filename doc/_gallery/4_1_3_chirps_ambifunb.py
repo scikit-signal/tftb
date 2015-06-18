@@ -10,7 +10,7 @@
 Examples from section 4.1.3 of the tutorial.
 """
 
-from tftb.generators.api import fmlin, amgauss
+from tftb.generators import fmlin, amgauss
 from tftb.processing.ambiguity import narrow_band
 import numpy as np
 import matplotlib.pyplot as plt

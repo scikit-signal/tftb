@@ -12,7 +12,7 @@ Embedding a mono-component nonstationary signal with linear frequency
 modulation and Gaussian amplitude modulation into Gaussian colored noise.
 """
 
-from tftb.generators.api import fmlin, amgauss, noisecg, sigmerge
+from tftb.generators import fmlin, amgauss, noisecg, sigmerge
 from numpy import real
 import matplotlib.pyplot as plt
 

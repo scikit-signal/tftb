@@ -10,7 +10,7 @@
 
 """
 
-from tftb.generators.api import amexpos
+from tftb.generators import amexpos
 import matplotlib.pyplot as plt
 
 x = amexpos(160)
