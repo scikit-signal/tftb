@@ -11,7 +11,43 @@ Linear Time Frequency Processing.
 """
 
 import numpy as np
-from tftb.utils import nearest_odd, divider, modulo, izak, init_default_args
+from tftb.processing.base import BaseTFRepresentation
+from tftb.utils import nearest_odd, divider, modulo, izak
+
+
+class ShortTimeFourierTransform(BaseTFRepresentation):
+
+    name = "stft"
+
+    def run(self):
+        lh = (self.fwindow.shape[0] - 1) / 2
+        for icol in xrange(self.tfr.shape[1]):
+            ti = self.ts[icol]
+            start = -np.min([np.round(self.n_fbins / 2.0) - 1, lh, ti - 1])
+            end = np.min([np.round(self.n_fbins / 2.0) - 1, lh,
+                          self.signal.shape[0] - ti])
+            tau = np.arange(start, end + 1).astype(int)
+            indices = np.remainder(self.n_fbins + tau, self.n_fbins)
+            self.tfr[indices.astype(int), icol] = self.signal[ti + tau - 1] * \
+                np.conj(self.fwindow[lh + tau])
+        self.tfr = np.fft.fft(self.tfr, axis=0)
+        if self.n_fbins % 2 == 0:
+            freqs = np.hstack((np.arange(self.n_fbins / 2),
+                               np.arange(-self.n_fbins / 2, 0)))
+        else:
+            freqs = np.hstack((np.arange((self.n_fbins - 1) / 2),
+                               np.arange(-(self.n_fbins - 1) / 2, 0)))
+        self.freqs = freqs.astype(float) / self.n_fbins
+        return self.tfr, self.ts, self.freqs
+
+    def plot(self, kind='cmap', sqmod=True, threshold=0.05, **kwargs):
+        self.tfr = self.tfr[:int(self.n_fbins / 2.0), :]
+        self.freqs = self.freqs[:int(self.n_fbins / 2.0)]
+        if sqmod:
+            self.tfr = np.abs(self.tfr) ** 2
+        _threshold = np.amax(self.tfr) * threshold
+        self.tfr[self.tfr <= _threshold] = 0.0
+        super(ShortTimeFourierTransform, self).plot(kind=kind, **kwargs)
 
 
 def gabor(signal, n_coeff=None, q_oversample=None, window=None):
@@ -74,54 +110,9 @@ def gabor(signal, n_coeff=None, q_oversample=None, window=None):
     tfr = np.abs(dgr) ** 2
     return tfr, dgr, gam
 
-
-def stft(signal, time_instants=None, n_fbins=None, window=None):
-    """Compute the short time Fourier transform.
-
-    :param signal: signal to be analyzed.
-    :param time_instants: timestamps of the signal.
-    :param n_fbins: Number of frequency bins.
-    :param window: Window function for frequency smoothing.
-    :type signal: array-like
-    :type time_instants: array-like
-    :type n_fbins: int
-    :type window: array-like
-    :return: tuple of (tfr, timestamps, normalized frequency vector)
-    :rtype: tuple
-    """
-    signal = signal.ravel()
-    time_instants, n_fbins = init_default_args(signal, timestamps=time_instants,
-                                               n_fbins=n_fbins)
-    if window is None:
-        hlength = np.floor(n_fbins / 4.0)
-        hlength = hlength + 1 - np.remainder(hlength, 2)
-        from scipy.signal import hamming
-        window = hamming(int(hlength))
-
-    lh = (window.shape[0] - 1) / 2
-    window = window / np.linalg.norm(window)
-
-    tfr = np.zeros((n_fbins, time_instants.shape[0]), dtype=complex)
-    for icol in xrange(tfr.shape[1]):
-        ti = time_instants[icol]
-        start = -np.min([np.round(n_fbins / 2.0) - 1, lh, ti - 1])
-        end = np.min([np.round(n_fbins / 2.0) - 1, lh, signal.shape[0] - ti])
-        tau = np.arange(start, end + 1).astype(int)
-        indices = np.remainder(n_fbins + tau, n_fbins)
-        tfr[indices.astype(int), icol] = signal[ti + tau - 1] * np.conj(window[lh + tau])
-    tfr = np.fft.fft(tfr, axis=0)
-
-    if n_fbins % 2 == 0:
-        freqs = np.hstack((np.arange(n_fbins / 2), np.arange(-n_fbins / 2, 0)))
-    else:
-        freqs = np.hstack((np.arange((n_fbins - 1) / 2),
-                           np.arange(-(n_fbins - 1) / 2, 0)))
-    return tfr, time_instants, freqs
-
 if __name__ == '__main__':
-    from tftb.generators import fmlin
-    sig, _ = fmlin(128)
-    a, b, c = gabor(sig, 64, 32)
-    from matplotlib.pyplot import imshow, show
-    imshow(a)
-    show()
+    from tftb.generators import fmconst
+    sig = np.r_[fmconst(128, 0.2)[0], fmconst(128, 0.4)[0]]
+    tfr = ShortTimeFourierTransform(sig)
+    tfr.run()
+    tfr.plot()
