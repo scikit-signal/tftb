@@ -11,7 +11,7 @@ Example showing Morlet scalogram of a Dirac impulse.
 """
 
 from tftb.generators import anapulse
-from tftb.processing.api import scalogram
+from tftb.processing import scalogram
 import numpy as np
 import matplotlib.pyplot as plt
 

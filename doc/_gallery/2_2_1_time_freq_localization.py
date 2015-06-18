@@ -11,7 +11,7 @@ Example in section 2.2.1 of the tutorial.
 """
 
 from tftb.generators import fmlin, amgauss
-from tftb.processing.api import loctime, locfreq
+from tftb.processing import loctime, locfreq
 import numpy as np
 import matplotlib.pyplot as plt
 

@@ -12,7 +12,7 @@
 
 import numpy as np
 from tftb.generators import atoms
-from tftb.processing.api import wigner_ville
+from tftb.processing import wigner_ville
 import matplotlib.pyplot as plt
 
 x = np.array([[32, .15, 20, 1],

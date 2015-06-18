@@ -10,7 +10,7 @@
 Morlet Scalograms of Lipschitz singularities.
 """
 
-from tftb.processing.api import scalogram
+from tftb.processing import scalogram
 from tftb.generators import anasing
 import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable

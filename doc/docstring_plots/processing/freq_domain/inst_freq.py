@@ -12,7 +12,7 @@
 
 
 import matplotlib.pyplot as plt
-from tftb.processing.api import inst_freq
+from tftb.processing import inst_freq
 from tftb.generators import fmsin
 
 x = fmsin(70, 0.05, 0.35, 25)[0]

@@ -14,7 +14,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from tftb.generators import atoms
-from tftb.processing.api import margenau_hill
+from tftb.processing import margenau_hill
 
 
 sig = atoms(128, np.array([[32, 0.15, 20, 1], [96, 0.32, 20, 1]]))

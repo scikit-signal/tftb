@@ -22,7 +22,7 @@ from tftb.generators import fmsin, fmlin, fmconst
 from tftb.processing.cohen import spectrogram
 from tftb.processing.reassigned import spectrogram as re_spectrogram
 from tftb.processing.reassigned import morlet_scalogram as re_morlet_scalogram
-from tftb.processing.api import ideal_tfr
+from tftb.processing import ideal_tfr
 
 sig1, if1 = fmsin(60, 0.16, 0.35, 50, 1, 0.35, 1)
 sig2, if2 = fmlin(60, 0.3, 0.1)

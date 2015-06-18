@@ -12,7 +12,7 @@ Examples showing Renyi information measurement.
 
 import numpy as np
 from tftb.generators import atoms
-from tftb.processing.api import renyi_information
+from tftb.processing import renyi_information
 from tftb.processing.cohen import wigner_ville
 
 # FIXME: This is fully wrong.

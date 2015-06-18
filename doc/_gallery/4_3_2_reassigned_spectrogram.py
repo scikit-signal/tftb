@@ -11,7 +11,7 @@ Example of the reassigned spectrogram.
 """
 
 from tftb.generators import fmsin, fmhyp
-from tftb.processing.api import ideal_tfr, reassigned_spectrogram, spectrogram
+from tftb.processing import ideal_tfr, reassigned_spectrogram, spectrogram
 import numpy as np
 import matplotlib.pyplot as plt
 

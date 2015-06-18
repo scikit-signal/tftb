@@ -12,7 +12,7 @@ Examples from section 4.1.1 of the tutorial.
 
 import numpy as np
 from tftb.generators import fmlin
-from tftb.processing.api import wigner_ville
+from tftb.processing import wigner_ville
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 

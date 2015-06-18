@@ -10,7 +10,7 @@
 Example showing a Bertrand distribution of a hyperbolic group delay signal.
 """
 
-from tftb.processing.api import d_flandrin
+from tftb.processing import d_flandrin
 from tftb.generators import gdpower
 import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
