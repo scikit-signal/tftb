@@ -11,7 +11,7 @@ Example from section 2.7 of the tutorial.
 Short time Fourier transform of a multi-component nonstationary signal.
 """
 
-from tftb.generators.api import fmlin
+from tftb.generators import fmlin
 from tftb.processing.linear import stft
 import matplotlib.pyplot as plt
 from scipy.signal import hamming

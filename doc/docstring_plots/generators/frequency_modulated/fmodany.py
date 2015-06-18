@@ -9,7 +9,7 @@
 
 """
 
-from tftb.generators.api import fmlin, fmodany, fmsin
+from tftb.generators import fmlin, fmodany, fmsin
 import numpy as np
 import matplotlib.pyplot as plt
 

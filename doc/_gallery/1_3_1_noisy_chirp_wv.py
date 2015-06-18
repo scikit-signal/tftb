@@ -10,7 +10,7 @@
 
 """
 
-from tftb.generators.api import fmlin, sigmerge, noisecg
+from tftb.generators import fmlin, sigmerge, noisecg
 from tftb.processing.cohen import wigner_ville
 import matplotlib.pyplot as plt
 import numpy as np

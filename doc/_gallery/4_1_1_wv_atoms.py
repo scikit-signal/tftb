@@ -11,7 +11,7 @@
 """
 
 import numpy as np
-from tftb.generators.api import atoms
+from tftb.generators import atoms
 from tftb.processing.api import wigner_ville
 import matplotlib.pyplot as plt
 

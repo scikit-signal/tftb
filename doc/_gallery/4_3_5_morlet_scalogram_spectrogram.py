@@ -18,7 +18,7 @@ counterparts.
 
 import numpy as np
 import matplotlib.pyplot as plt
-from tftb.generators.api import fmsin, fmlin, fmconst
+from tftb.generators import fmsin, fmlin, fmconst
 from tftb.processing.cohen import spectrogram
 from tftb.processing.reassigned import spectrogram as re_spectrogram
 from tftb.processing.reassigned import morlet_scalogram as re_morlet_scalogram

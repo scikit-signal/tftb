@@ -12,7 +12,7 @@ Generating a mono-component nonstationary signal with linear frequency
 modulation and Gaussian amplitude modulation.
 """
 
-from tftb.generators.api import fmlin, amgauss
+from tftb.generators import fmlin, amgauss
 from numpy import real
 import matplotlib.pyplot as plt
 

@@ -10,7 +10,7 @@
 Example from section 4.2.3 of the tutorial.
 """
 
-from tftb.generators.api import anapulse
+from tftb.generators import anapulse
 from tftb.processing.api import wigner_ville
 import matplotlib.pyplot as plt
 import numpy as np

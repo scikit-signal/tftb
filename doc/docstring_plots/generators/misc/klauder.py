@@ -12,7 +12,7 @@
 
 
 import matplotlib.pyplot as plt
-from tftb.generators.api import klauder
+from tftb.generators import klauder
 
 x = klauder(128)
 plt.plot(x)

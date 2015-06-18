@@ -10,7 +10,7 @@
 Example from section 1.3.1 of the tutorial.
 """
 
-from tftb.generators.api import fmlin, sigmerge, noisecg
+from tftb.generators import fmlin, sigmerge, noisecg
 import matplotlib.pyplot as plt
 import numpy as np
 

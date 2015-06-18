@@ -12,7 +12,7 @@ Example from section 3.1.4 of the tutorial.
 
 import numpy as np
 from tftb.processing.linear import stft
-from tftb.generators.api import fmlin, amgauss
+from tftb.generators import fmlin, amgauss
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 

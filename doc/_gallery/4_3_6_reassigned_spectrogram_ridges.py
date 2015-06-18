@@ -12,7 +12,7 @@ Example of Friedman's instantaneous frequency density calculation.
 
 import numpy as np
 import matplotlib.pyplot as plt
-from tftb.generators.api import fmlin, fmsin, fmconst
+from tftb.generators import fmlin, fmsin, fmconst
 from tftb.processing.reassigned import spectrogram
 from tftb.processing.postprocessing import ridges
 

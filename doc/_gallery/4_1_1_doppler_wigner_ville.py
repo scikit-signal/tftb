@@ -11,7 +11,7 @@ Example from section 4.1.1 of the tutorial.
 """
 
 import numpy as np
-from tftb.generators.api import doppler
+from tftb.generators import doppler
 from tftb.processing.api import wigner_ville
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable

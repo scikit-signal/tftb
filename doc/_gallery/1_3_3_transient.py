@@ -16,7 +16,7 @@ Example in section 1.3.3 of the tutorial.
 
 import numpy as np
 import matplotlib.pyplot as plt
-from tftb.generators.api import amexpos, fmconst, sigmerge, noisecg
+from tftb.generators import amexpos, fmconst, sigmerge, noisecg
 
 # Generate a noisy transient signal.
 transsig = amexpos(64, kind='unilateral') * fmconst(64)[0]

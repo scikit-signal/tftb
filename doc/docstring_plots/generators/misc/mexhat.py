@@ -11,7 +11,7 @@
 """
 
 
-from tftb.generators.api import mexhat
+from tftb.generators import mexhat
 import matplotlib.pyplot as plt
 
 plt.plot(mexhat())

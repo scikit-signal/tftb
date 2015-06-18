@@ -11,7 +11,7 @@ Example showing use of Hough transform on a Wigner-Ville distribution.
 """
 
 import numpy as np
-from tftb.generators.api import noisecg, sigmerge, fmlin
+from tftb.generators import noisecg, sigmerge, fmlin
 from tftb.processing.cohen import wigner_ville
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable

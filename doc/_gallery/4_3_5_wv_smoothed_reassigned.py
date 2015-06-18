@@ -13,7 +13,7 @@ counterparts.
 
 import numpy as np
 import matplotlib.pyplot as plt
-from tftb.generators.api import fmsin, fmlin, fmconst
+from tftb.generators import fmsin, fmlin, fmconst
 from tftb.processing.api import (ideal_tfr, wigner_ville,
         smoothed_pseudo_wigner_ville, reassigned_smoothed_pseudo_wigner_ville)
 

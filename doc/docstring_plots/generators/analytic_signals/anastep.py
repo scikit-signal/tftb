@@ -11,7 +11,7 @@
 """
 
 
-from tftb.generators.api import anastep
+from tftb.generators import anastep
 import matplotlib.pyplot as plt
 import numpy as np
 

@@ -17,7 +17,7 @@ nonstationary signal.
 #  ifr=instfreq(x); subplot(211); plot(ifr);
 #  fn=0:0.01:0.5; gd=sgrpdlay(x,fn);
 #  subplot(212); plot(gd,fn);
-from tftb.generators.api import fmlin
+from tftb.generators import fmlin
 from tftb.processing.api import inst_freq, group_delay
 import matplotlib.pyplot as plt
 import numpy as np

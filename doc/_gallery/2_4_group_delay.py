@@ -10,7 +10,7 @@
 Example in section 2.4 of the tutorial.
 """
 
-from tftb.generators.api import fmlin
+from tftb.generators import fmlin
 from tftb.processing.api import group_delay
 import numpy as np
 import matplotlib.pyplot as plt

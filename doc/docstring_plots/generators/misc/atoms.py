@@ -20,6 +20,6 @@ coordinates = np.array([[32.0, 0.3, 32.0, 1.0],
 sig = atoms(128, coordinates)
 plt.plot(np.real(sig))
 plt.grid()
-plt.xlim(128)
+plt.xlim(xmax=128)
 plt.title('Gaussian Atoms')
 plt.show()

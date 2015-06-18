@@ -10,7 +10,7 @@
 Hough transform of Wigner Ville distribution of two simultaneous chirps.
 """
 
-from tftb.generators.api import fmlin, sigmerge
+from tftb.generators import fmlin, sigmerge
 from tftb.processing.cohen import wigner_ville
 from tftb.processing.postprocessing import hough_transform
 import numpy as np
