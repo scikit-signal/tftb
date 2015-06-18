@@ -14,7 +14,7 @@ import unittest
 import numpy as np
 from scipy.signal import kaiser
 from tftb.processing import cohen
-from tftb.generators.api import fmsin, fmlin
+from tftb.generators import fmsin, fmlin
 from tftb.tests.base import TestBase
 
 

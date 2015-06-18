@@ -373,7 +373,7 @@ def margenau_hill(signal, timestamps=None, n_fbins=None):
 
 
 if __name__ == '__main__':
-    from tftb.generators.api import fmlin
+    from tftb.generators import fmlin
     import matplotlib.pyplot as plt
     from scipy.signal import kaiser
     sig = fmlin(128, 0.1, 0.4)[0]

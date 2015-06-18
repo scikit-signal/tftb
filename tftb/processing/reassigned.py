@@ -538,7 +538,7 @@ def spectrogram(signal, time_samples=None, n_fbins=None, window=None):
 
 
 if __name__ == '__main__':
-    from tftb.generators.api import fmlin
+    from tftb.generators import fmlin
     import matplotlib.pyplot as plt
     ts = np.arange(128, step=2)
     sig = fmlin(128, 0.1, 0.4)[0]

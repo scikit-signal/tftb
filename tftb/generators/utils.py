@@ -105,5 +105,5 @@ def scale(X, a, fmin, fmax, N):
     return S
 
 if __name__ == '__main__':
-    from tftb.generators.api import altes
+    from tftb.generators import altes
     S = altes(256, 0.1, 0.45, 10000)

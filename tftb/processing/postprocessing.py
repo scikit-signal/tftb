@@ -217,7 +217,7 @@ def ridges(tfr, re_mat, timestamps=None, method='rsp'):
     return time_points, freq_points
 
 if __name__ == '__main__':
-    from tftb.generators.api import fmlin
+    from tftb.generators import fmlin
     from tftb.processing.cohen import wigner_ville
     from mpl_toolkits.mplot3d import Axes3D
     import matplotlib.pyplot as plt
