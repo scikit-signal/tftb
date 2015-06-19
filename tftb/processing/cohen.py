@@ -12,6 +12,20 @@ Bilinear Time-Frequency Processing in the Cohen’s Class.
 
 import numpy as np
 from tftb.utils import init_default_args
+from tftb.processing.linear import ShortTimeFourierTransform
+
+
+class Spectrogram(ShortTimeFourierTransform):
+
+    name = "spectrogram"
+
+    def run(self):
+        super(Spectrogram, self).run()
+        self.tfr = np.abs(self.tfr) ** 2
+
+    def plot(self, kind='cmap', **kwargs):
+        super(Spectrogram, self).plot(kind=kind, sqmod=False, threshold=0,
+                                      **kwargs)
 
 
 def pseudo_margenau_hill(signal, timestamps=None, n_fbins=None, fwindow=None):
@@ -137,54 +151,6 @@ def page(signal, timestamps=None, n_fbins=None):
         freq = np.hstack((np.arange((n_fbins - 1) / 2), np.arange(-(n_fbins - 1) / 2, 0))) / n_fbins
 
     return tfr, timestamps, freq
-
-
-def spectrogram(signal, time_instants=None, n_fbins=None, window=None):
-    """Compute the spectrogram of a signal.
-
-    :param signal: Signal to be analyzed.
-    :param time_instants: timestamps of the signal.
-    :param n_fbins: number of frequency bins
-    :param window: analysis window
-    :type signal: array-like
-    :type time_instants: array-like
-    :type n_fbins: int
-    :type window: array-like
-    :return: time frequency representation
-    :rtype: array-like
-    """
-    time_instants, n_fbins = init_default_args(signal,
-            timestamps=time_instants, n_fbins=n_fbins)
-
-    if window is None:
-        hlength = np.floor(signal.shape[0] / 4.0)
-        hlength += 1 - np.remainder(hlength, 2)
-        from scipy.signal import hamming
-        window = hamming(hlength)
-    else:
-        hlength = window.shape[0]
-        if hlength % 2 == 0:
-            raise ValueError("Smoothing window should have an odd length.")
-
-    lh = (window.shape[0] - 1) / 2
-    tfr = np.zeros((n_fbins, time_instants.shape[0]), dtype=complex)
-    for icol in xrange(time_instants.shape[0]):
-        ti = time_instants[icol]
-        start = min([np.round(n_fbins / 2.0) - 1, lh, ti - 1])
-        end = min([np.round(n_fbins / 2.0) - 1, lh, signal.shape[0] - ti - 1])
-        tau = np.arange(-start, end)
-        indices = np.remainder(n_fbins + tau, n_fbins).astype(int)
-        tfr[indices, icol] = signal[ti + tau] * np.conj(window[lh + tau]) / np.linalg.norm(window[lh + tau])
-
-    if n_fbins % 2 == 0:
-        left = np.arange(n_fbins / 2, dtype=float) / n_fbins
-        right = np.arange(-n_fbins / 2, 0, dtype=float) / n_fbins
-    else:
-        left = np.arange((n_fbins - 1) / 2, dtype=float) / n_fbins
-        right = np.arange(-(n_fbins - 1) / 2, 0, dtype=float) / n_fbins
-    frequencies = np.hstack((left, right))
-
-    return np.abs(np.fft.fft(tfr, axis=0)) ** 2, time_instants, frequencies
 
 
 def smoothed_pseudo_wigner_ville(signal, timestamps=None, freq_bins=None,
@@ -374,15 +340,7 @@ def margenau_hill(signal, timestamps=None, n_fbins=None):
 
 if __name__ == '__main__':
     from tftb.generators import fmlin
-    import matplotlib.pyplot as plt
-    from scipy.signal import kaiser
     sig = fmlin(128, 0.1, 0.4)[0]
-    fwindow = kaiser(63, beta=3 * np.pi)
-    tfr, ts, _ = pseudo_margenau_hill(sig, fwindow=fwindow)
-    f = np.linspace(0, 0.5, 128)
-    tfr = np.abs(tfr) ** 2
-    threshold = np.amax(tfr) * 0.05
-    tfr[tfr <= threshold] = 0.0
-    plt.imshow(tfr[:64, :], aspect='auto', origin='bottomleft',
-               extent=[ts.min(), ts.max(), f.min(), f.max()])
-    plt.show()
+    spec = Spectrogram(sig, n_fbins=64)
+    spec.run()
+    spec.plot()
