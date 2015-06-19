@@ -52,6 +52,27 @@ class PageRepresentation(BaseTFRepresentation):
         super(PageRepresentation, self).plot(kind=kind, **kwargs)
 
 
+class PseudoPageRepresentation(PageRepresentation):
+
+    def _make_window(self):
+        hlength = np.floor(self.n_fbins / 4.0)
+        if hlength % 2 == 0:
+            hlength += 1
+        from scipy.signal import hamming
+        fwindow = hamming(hlength)
+        lh = (fwindow.shape[0] - 1) / 2
+        return fwindow / fwindow[lh]
+
+    def run(self):
+        lh = (self.fwindow.shape[0] - 1) / 2
+        for icol in xrange(self.ts.shape[0]):
+            tau = np.arange(min([self.n_fbins - 1, lh, icol - 1]) + 1)
+            indices = np.remainder(self.n_fbins + tau, self.n_fbins) + 1
+            self.tfr[indices, icol] = self.fwindow[lh + tau] * self.signal[icol] * np.conj(
+                    self.signal[icol - tau])
+        self.tfr = np.real(np.fft.fft(self.tfr, axis=0))
+
+
 def pseudo_margenau_hill(signal, timestamps=None, n_fbins=None, fwindow=None):
     """pseudo_margenau_hill
 
@@ -90,49 +111,6 @@ def pseudo_margenau_hill(signal, timestamps=None, n_fbins=None, fwindow=None):
         indices = np.remainder(n_fbins + tau, n_fbins)
         tfr[indices, icol] = fwindow[lh + tau] * signal[icol] * np.conj(signal[icol - tau - 1])
 
-    tfr = np.real(np.fft.fft(tfr, axis=0))
-
-    if n_fbins % 2 == 0:
-        freq = np.hstack((np.arange(n_fbins / 2), np.arange(-n_fbins / 2, 0))) / n_fbins
-    else:
-        freq = np.hstack((np.arange((n_fbins - 1) / 2), np.arange(-(n_fbins - 1) / 2, 0))) / n_fbins
-
-    return tfr, timestamps, freq
-
-
-def pseudo_page(signal, timestamps=None, n_fbins=None, fwindow=None):
-    """pseudo_page
-
-    :param signal:
-    :param timestamps:
-    :param n_fbins:
-    :type signal:
-    :type timestamps:
-    :type n_fbins:
-:return:
-:rtype:
-    """
-    timestamps, n_fbins = init_default_args(signal, timestamps=timestamps,
-                                            n_fbins=n_fbins)
-    tcol = timestamps.shape[0]
-
-    if fwindow is None:
-        hlength = np.floor(n_fbins / 4.0)
-        if hlength % 2 == 0:
-            hlength += 1
-        from scipy.signal import hamming
-        fwindow = hamming(hlength)
-    elif fwindow.shape[0] % 2 == 0:
-        raise ValueError('The smoothing fwindow must have an odd length.')
-    lh = (fwindow.shape[0] - 1) / 2
-    fwindow = fwindow / fwindow[lh]
-
-    tfr = np.zeros((n_fbins, tcol), dtype=complex)
-    for icol in xrange(tcol):
-        tau = np.arange(min([n_fbins - 1, lh, icol - 1]) + 1)
-        indices = np.remainder(n_fbins + tau, n_fbins) + 1
-        tfr[indices, icol] = fwindow[lh + tau] * signal[icol] * np.conj(
-                signal[icol - tau])
     tfr = np.real(np.fft.fft(tfr, axis=0))
 
     if n_fbins % 2 == 0:
@@ -331,6 +309,6 @@ def margenau_hill(signal, timestamps=None, n_fbins=None):
 if __name__ == '__main__':
     from tftb.generators import fmlin
     sig = fmlin(128, 0.1, 0.4)[0]
-    spec = PageRepresentation(sig)
+    spec = PseudoPageRepresentation(sig, n_fbins=64)
     spec.run()
     spec.plot()
