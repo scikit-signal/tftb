@@ -29,11 +29,7 @@ class BaseTFRepresentation(object):
         self.n_fbins = n_fbins
         fwindow = kwargs.get('fwindow')
         if fwindow is None:
-            h = np.floor(n_fbins / 4.0)
-            h += 1 - np.remainder(h, 2)
-            from scipy import hamming
-            fwindow = hamming(int(h))
-        fwindow = fwindow / np.linalg.norm(fwindow)
+            fwindow = self._make_window()
         self.fwindow = fwindow
         if self.n_fbins % 2 == 0:
             freqs = np.hstack((np.arange(self.n_fbins / 2),
@@ -43,6 +39,14 @@ class BaseTFRepresentation(object):
                                np.arange(-(self.n_fbins - 1) / 2, 0)))
         self.freqs = freqs.astype(float) / self.n_fbins
         self.tfr = np.zeros((self.n_fbins, self.ts.shape[0]), dtype=complex)
+
+    def _make_window(self):
+        h = np.floor(self.n_fbins / 4.0)
+        h += 1 - np.remainder(h, 2)
+        from scipy import hamming
+        fwindow = hamming(int(h))
+        fwindow = fwindow / np.linalg.norm(fwindow)
+        return fwindow
 
     def plot(self, ax=None, kind='cmap', show=True, default_annotation=True,
              **kwargs):
