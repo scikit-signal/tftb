@@ -37,7 +37,8 @@ class BaseTFRepresentation(object):
         self.fwindow = fwindow
         self.tfr = np.zeros((self.n_fbins, self.ts.shape[0]), dtype=complex)
 
-    def plot(self, ax=None, kind='cmap', **kwargs):
+    def plot(self, ax=None, kind='cmap', show=True, default_annotation=True,
+             **kwargs):
         if ax is None:
             fig = plt.figure()
             ax = fig.add_subplot(111)
@@ -48,3 +49,9 @@ class BaseTFRepresentation(object):
         else:
             # FIXME: Implement contour plotting
             pass
+        if default_annotation:
+            ax.set_xlabel("Time")
+            ax.set_ylabel("Normalized Frequency")
+            ax.set_title(self.name.upper())
+        if show:
+            plt.show()
