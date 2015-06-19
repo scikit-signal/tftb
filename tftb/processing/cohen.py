@@ -13,6 +13,7 @@ Bilinear Time-Frequency Processing in the Cohen’s Class.
 import numpy as np
 from tftb.utils import init_default_args
 from tftb.processing.linear import ShortTimeFourierTransform
+from tftb.processing.base import BaseTFRepresentation
 
 
 class Spectrogram(ShortTimeFourierTransform):
@@ -26,6 +27,29 @@ class Spectrogram(ShortTimeFourierTransform):
     def plot(self, kind='cmap', **kwargs):
         super(Spectrogram, self).plot(kind=kind, sqmod=False, threshold=0,
                                       **kwargs)
+
+
+class PageRepresentation(BaseTFRepresentation):
+
+    name = "page representation"
+
+    def run(self):
+        for icol in xrange(self.ts.shape[0]):
+            ti = self.ts[icol]
+            tau = np.arange(-min([self.n_fbins - ti,
+                                  self.signal.shape[0] - ti]), ti)
+            indices = np.remainder(self.n_fbins + tau, self.n_fbins)
+            self.tfr[indices, icol] = np.dot(self.signal[ti],
+                                             np.conj(self.signal[ti - tau - 1]))
+        self.tfr = np.real(np.fft.fft(self.tfr, axis=0))
+        return self.tfr, self.ts, self.freqs
+
+    def plot(self, kind='cmap', threshold=0.05, sqmod=True, **kwargs):
+        self.tfr = self.tfr[:(self.tfr.shape[0] / 2), :]
+        self.tfr = np.abs(self.tfr) ** 2
+        _threshold = np.amax(self.tfr) * threshold
+        self.tfr[self.tfr <= _threshold] = 0.0
+        super(PageRepresentation, self).plot(kind=kind, **kwargs)
 
 
 def pseudo_margenau_hill(signal, timestamps=None, n_fbins=None, fwindow=None):
@@ -109,40 +133,6 @@ def pseudo_page(signal, timestamps=None, n_fbins=None, fwindow=None):
         indices = np.remainder(n_fbins + tau, n_fbins) + 1
         tfr[indices, icol] = fwindow[lh + tau] * signal[icol] * np.conj(
                 signal[icol - tau])
-    tfr = np.real(np.fft.fft(tfr, axis=0))
-
-    if n_fbins % 2 == 0:
-        freq = np.hstack((np.arange(n_fbins / 2), np.arange(-n_fbins / 2, 0))) / n_fbins
-    else:
-        freq = np.hstack((np.arange((n_fbins - 1) / 2), np.arange(-(n_fbins - 1) / 2, 0))) / n_fbins
-
-    return tfr, timestamps, freq
-
-
-def page(signal, timestamps=None, n_fbins=None):
-    """page
-
-    :param signal:
-    :param timestamps:
-    :param n_fbins:
-    :type signal:
-    :type timestamps:
-    :type n_fbins:
-:return:
-:rtype:
-    """
-    timestamps, n_fbins = init_default_args(signal, timestamps=timestamps,
-                                            n_fbins=n_fbins)
-    xrow = signal.shape[0]
-    tcol = timestamps.shape[0]
-    tfr = np.zeros((n_fbins, tcol), dtype=complex)
-
-    for icol in xrange(tcol):
-        ti = timestamps[icol]
-        tau = np.arange(-min([n_fbins - ti, xrow - ti]), ti)
-        indices = np.remainder(n_fbins + tau, n_fbins)
-        tfr[indices, icol] = np.dot(signal[ti],
-                                    np.conj(signal[ti - tau - 1]))
     tfr = np.real(np.fft.fft(tfr, axis=0))
 
     if n_fbins % 2 == 0:
@@ -341,6 +331,6 @@ def margenau_hill(signal, timestamps=None, n_fbins=None):
 if __name__ == '__main__':
     from tftb.generators import fmlin
     sig = fmlin(128, 0.1, 0.4)[0]
-    spec = Spectrogram(sig, n_fbins=64)
+    spec = PageRepresentation(sig)
     spec.run()
     spec.plot()
