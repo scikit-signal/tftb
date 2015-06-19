@@ -35,6 +35,13 @@ class BaseTFRepresentation(object):
             fwindow = hamming(int(h))
         fwindow = fwindow / np.linalg.norm(fwindow)
         self.fwindow = fwindow
+        if self.n_fbins % 2 == 0:
+            freqs = np.hstack((np.arange(self.n_fbins / 2),
+                               np.arange(-self.n_fbins / 2, 0)))
+        else:
+            freqs = np.hstack((np.arange((self.n_fbins - 1) / 2),
+                               np.arange(-(self.n_fbins - 1) / 2, 0)))
+        self.freqs = freqs.astype(float) / self.n_fbins
         self.tfr = np.zeros((self.n_fbins, self.ts.shape[0]), dtype=complex)
 
     def plot(self, ax=None, kind='cmap', show=True, default_annotation=True,

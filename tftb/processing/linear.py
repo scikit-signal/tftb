@@ -31,13 +31,6 @@ class ShortTimeFourierTransform(BaseTFRepresentation):
             self.tfr[indices.astype(int), icol] = self.signal[ti + tau - 1] * \
                 np.conj(self.fwindow[lh + tau])
         self.tfr = np.fft.fft(self.tfr, axis=0)
-        if self.n_fbins % 2 == 0:
-            freqs = np.hstack((np.arange(self.n_fbins / 2),
-                               np.arange(-self.n_fbins / 2, 0)))
-        else:
-            freqs = np.hstack((np.arange((self.n_fbins - 1) / 2),
-                               np.arange(-(self.n_fbins - 1) / 2, 0)))
-        self.freqs = freqs.astype(float) / self.n_fbins
         return self.tfr, self.ts, self.freqs
 
     def plot(self, ax=None, kind='cmap', sqmod=True, threshold=0.05, **kwargs):
