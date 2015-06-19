@@ -12,6 +12,65 @@ Bilinear Time-Frequency Processing in the Cohen’s Class.
 
 import numpy as np
 from tftb.utils import init_default_args
+from tftb.processing.linear import ShortTimeFourierTransform
+from tftb.processing.base import BaseTFRepresentation
+
+
+class Spectrogram(ShortTimeFourierTransform):
+
+    name = "spectrogram"
+
+    def run(self):
+        super(Spectrogram, self).run()
+        self.tfr = np.abs(self.tfr) ** 2
+
+    def plot(self, kind='cmap', **kwargs):
+        super(Spectrogram, self).plot(kind=kind, sqmod=False, threshold=0,
+                                      **kwargs)
+
+
+class PageRepresentation(BaseTFRepresentation):
+
+    name = "page representation"
+
+    def run(self):
+        for icol in xrange(self.ts.shape[0]):
+            ti = self.ts[icol]
+            tau = np.arange(-min([self.n_fbins - ti,
+                                  self.signal.shape[0] - ti]), ti)
+            indices = np.remainder(self.n_fbins + tau, self.n_fbins)
+            self.tfr[indices, icol] = np.dot(self.signal[ti],
+                                             np.conj(self.signal[ti - tau - 1]))
+        self.tfr = np.real(np.fft.fft(self.tfr, axis=0))
+        return self.tfr, self.ts, self.freqs
+
+    def plot(self, kind='cmap', threshold=0.05, sqmod=True, **kwargs):
+        self.tfr = self.tfr[:(self.tfr.shape[0] / 2), :]
+        self.tfr = np.abs(self.tfr) ** 2
+        _threshold = np.amax(self.tfr) * threshold
+        self.tfr[self.tfr <= _threshold] = 0.0
+        super(PageRepresentation, self).plot(kind=kind, **kwargs)
+
+
+class PseudoPageRepresentation(PageRepresentation):
+
+    def _make_window(self):
+        hlength = np.floor(self.n_fbins / 4.0)
+        if hlength % 2 == 0:
+            hlength += 1
+        from scipy.signal import hamming
+        fwindow = hamming(hlength)
+        lh = (fwindow.shape[0] - 1) / 2
+        return fwindow / fwindow[lh]
+
+    def run(self):
+        lh = (self.fwindow.shape[0] - 1) / 2
+        for icol in xrange(self.ts.shape[0]):
+            tau = np.arange(min([self.n_fbins - 1, lh, icol - 1]) + 1)
+            indices = np.remainder(self.n_fbins + tau, self.n_fbins) + 1
+            self.tfr[indices, icol] = self.fwindow[lh + tau] * self.signal[icol] * np.conj(
+                    self.signal[icol - tau])
+        self.tfr = np.real(np.fft.fft(self.tfr, axis=0))
 
 
 def pseudo_margenau_hill(signal, timestamps=None, n_fbins=None, fwindow=None):
@@ -60,131 +119,6 @@ def pseudo_margenau_hill(signal, timestamps=None, n_fbins=None, fwindow=None):
         freq = np.hstack((np.arange((n_fbins - 1) / 2), np.arange(-(n_fbins - 1) / 2, 0))) / n_fbins
 
     return tfr, timestamps, freq
-
-
-def pseudo_page(signal, timestamps=None, n_fbins=None, fwindow=None):
-    """pseudo_page
-
-    :param signal:
-    :param timestamps:
-    :param n_fbins:
-    :type signal:
-    :type timestamps:
-    :type n_fbins:
-:return:
-:rtype:
-    """
-    timestamps, n_fbins = init_default_args(signal, timestamps=timestamps,
-                                            n_fbins=n_fbins)
-    tcol = timestamps.shape[0]
-
-    if fwindow is None:
-        hlength = np.floor(n_fbins / 4.0)
-        if hlength % 2 == 0:
-            hlength += 1
-        from scipy.signal import hamming
-        fwindow = hamming(hlength)
-    elif fwindow.shape[0] % 2 == 0:
-        raise ValueError('The smoothing fwindow must have an odd length.')
-    lh = (fwindow.shape[0] - 1) / 2
-    fwindow = fwindow / fwindow[lh]
-
-    tfr = np.zeros((n_fbins, tcol), dtype=complex)
-    for icol in xrange(tcol):
-        tau = np.arange(min([n_fbins - 1, lh, icol - 1]) + 1)
-        indices = np.remainder(n_fbins + tau, n_fbins) + 1
-        tfr[indices, icol] = fwindow[lh + tau] * signal[icol] * np.conj(
-                signal[icol - tau])
-    tfr = np.real(np.fft.fft(tfr, axis=0))
-
-    if n_fbins % 2 == 0:
-        freq = np.hstack((np.arange(n_fbins / 2), np.arange(-n_fbins / 2, 0))) / n_fbins
-    else:
-        freq = np.hstack((np.arange((n_fbins - 1) / 2), np.arange(-(n_fbins - 1) / 2, 0))) / n_fbins
-
-    return tfr, timestamps, freq
-
-
-def page(signal, timestamps=None, n_fbins=None):
-    """page
-
-    :param signal:
-    :param timestamps:
-    :param n_fbins:
-    :type signal:
-    :type timestamps:
-    :type n_fbins:
-:return:
-:rtype:
-    """
-    timestamps, n_fbins = init_default_args(signal, timestamps=timestamps,
-                                            n_fbins=n_fbins)
-    xrow = signal.shape[0]
-    tcol = timestamps.shape[0]
-    tfr = np.zeros((n_fbins, tcol), dtype=complex)
-
-    for icol in xrange(tcol):
-        ti = timestamps[icol]
-        tau = np.arange(-min([n_fbins - ti, xrow - ti]), ti)
-        indices = np.remainder(n_fbins + tau, n_fbins)
-        tfr[indices, icol] = np.dot(signal[ti],
-                                    np.conj(signal[ti - tau - 1]))
-    tfr = np.real(np.fft.fft(tfr, axis=0))
-
-    if n_fbins % 2 == 0:
-        freq = np.hstack((np.arange(n_fbins / 2), np.arange(-n_fbins / 2, 0))) / n_fbins
-    else:
-        freq = np.hstack((np.arange((n_fbins - 1) / 2), np.arange(-(n_fbins - 1) / 2, 0))) / n_fbins
-
-    return tfr, timestamps, freq
-
-
-def spectrogram(signal, time_instants=None, n_fbins=None, window=None):
-    """Compute the spectrogram of a signal.
-
-    :param signal: Signal to be analyzed.
-    :param time_instants: timestamps of the signal.
-    :param n_fbins: number of frequency bins
-    :param window: analysis window
-    :type signal: array-like
-    :type time_instants: array-like
-    :type n_fbins: int
-    :type window: array-like
-    :return: time frequency representation
-    :rtype: array-like
-    """
-    time_instants, n_fbins = init_default_args(signal,
-            timestamps=time_instants, n_fbins=n_fbins)
-
-    if window is None:
-        hlength = np.floor(signal.shape[0] / 4.0)
-        hlength += 1 - np.remainder(hlength, 2)
-        from scipy.signal import hamming
-        window = hamming(hlength)
-    else:
-        hlength = window.shape[0]
-        if hlength % 2 == 0:
-            raise ValueError("Smoothing window should have an odd length.")
-
-    lh = (window.shape[0] - 1) / 2
-    tfr = np.zeros((n_fbins, time_instants.shape[0]), dtype=complex)
-    for icol in xrange(time_instants.shape[0]):
-        ti = time_instants[icol]
-        start = min([np.round(n_fbins / 2.0) - 1, lh, ti - 1])
-        end = min([np.round(n_fbins / 2.0) - 1, lh, signal.shape[0] - ti - 1])
-        tau = np.arange(-start, end)
-        indices = np.remainder(n_fbins + tau, n_fbins).astype(int)
-        tfr[indices, icol] = signal[ti + tau] * np.conj(window[lh + tau]) / np.linalg.norm(window[lh + tau])
-
-    if n_fbins % 2 == 0:
-        left = np.arange(n_fbins / 2, dtype=float) / n_fbins
-        right = np.arange(-n_fbins / 2, 0, dtype=float) / n_fbins
-    else:
-        left = np.arange((n_fbins - 1) / 2, dtype=float) / n_fbins
-        right = np.arange(-(n_fbins - 1) / 2, 0, dtype=float) / n_fbins
-    frequencies = np.hstack((left, right))
-
-    return np.abs(np.fft.fft(tfr, axis=0)) ** 2, time_instants, frequencies
 
 
 def smoothed_pseudo_wigner_ville(signal, timestamps=None, freq_bins=None,
@@ -374,15 +308,7 @@ def margenau_hill(signal, timestamps=None, n_fbins=None):
 
 if __name__ == '__main__':
     from tftb.generators import fmlin
-    import matplotlib.pyplot as plt
-    from scipy.signal import kaiser
     sig = fmlin(128, 0.1, 0.4)[0]
-    fwindow = kaiser(63, beta=3 * np.pi)
-    tfr, ts, _ = pseudo_margenau_hill(sig, fwindow=fwindow)
-    f = np.linspace(0, 0.5, 128)
-    tfr = np.abs(tfr) ** 2
-    threshold = np.amax(tfr) * 0.05
-    tfr[tfr <= threshold] = 0.0
-    plt.imshow(tfr[:64, :], aspect='auto', origin='bottomleft',
-               extent=[ts.min(), ts.max(), f.min(), f.max()])
-    plt.show()
+    spec = PseudoPageRepresentation(sig, n_fbins=64)
+    spec.run()
+    spec.plot()
