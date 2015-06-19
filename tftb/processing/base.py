@@ -48,7 +48,3 @@ class BaseTFRepresentation(object):
         else:
             # FIXME: Implement contour plotting
             pass
-        ax.set_xlabel("Time")
-        ax.set_ylabel("Normalized Frequency")
-        ax.set_title(self.name.upper())
-        plt.show()

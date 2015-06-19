@@ -40,14 +40,14 @@ class ShortTimeFourierTransform(BaseTFRepresentation):
         self.freqs = freqs.astype(float) / self.n_fbins
         return self.tfr, self.ts, self.freqs
 
-    def plot(self, kind='cmap', sqmod=True, threshold=0.05, **kwargs):
+    def plot(self, ax=None, kind='cmap', sqmod=True, threshold=0.05, **kwargs):
         self.tfr = self.tfr[:int(self.n_fbins / 2.0), :]
         self.freqs = self.freqs[:int(self.n_fbins / 2.0)]
         if sqmod:
             self.tfr = np.abs(self.tfr) ** 2
         _threshold = np.amax(self.tfr) * threshold
         self.tfr[self.tfr <= _threshold] = 0.0
-        super(ShortTimeFourierTransform, self).plot(kind=kind, **kwargs)
+        super(ShortTimeFourierTransform, self).plot(ax=ax, kind=kind, **kwargs)
 
 
 def gabor(signal, n_coeff=None, q_oversample=None, window=None):
