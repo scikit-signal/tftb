@@ -37,15 +37,18 @@ class BaseTFRepresentation(object):
         self.fwindow = fwindow
         self.tfr = np.zeros((self.n_fbins, self.ts.shape[0]), dtype=complex)
 
-    def plot(self, kind='cmap', **kwargs):
+    def plot(self, ax=None, kind='cmap', **kwargs):
+        if ax is None:
+            fig = plt.figure()
+            ax = fig.add_subplot(111)
         if kind == "cmap":
-            plt.imshow(self.tfr, extent=[self.ts.min(), self.ts.max(),
-                                         self.freqs.min(), self.freqs.max()],
-                       aspect='auto', origin='bottomleft', **kwargs)
+            ax.imshow(self.tfr, extent=[self.ts.min(), self.ts.max(),
+                                        self.freqs.min(), self.freqs.max()],
+                      aspect='auto', origin='bottomleft', **kwargs)
         else:
             # FIXME: Implement contour plotting
             pass
-        plt.xlabel("Time")
-        plt.ylabel("Normalized Frequency")
-        plt.title(self.name.upper())
+        ax.set_xlabel("Time")
+        ax.set_ylabel("Normalized Frequency")
+        ax.set_title(self.name.upper())
         plt.show()
