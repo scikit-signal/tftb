@@ -19,7 +19,7 @@ their reassinged counterparts.
 import numpy as np
 import matplotlib.pyplot as plt
 from tftb.generators import fmsin, fmlin, fmconst
-from tftb.processing.cohen import pseudo_page, pseudo_margenau_hill
+from tftb.processing.cohen import PseudoPageRepresentation, pseudo_margenau_hill
 from tftb.processing.reassigned import pseudo_page as re_pseudo_page
 from tftb.processing.reassigned import pseudo_margenau_hill as re_pseudo_margenau_hill
 
@@ -32,7 +32,7 @@ iflaw = np.zeros((2, 128))
 iflaw[0, :] = np.hstack((if1, np.nan * np.ones((8,)), if2))
 iflaw[1, :] = np.hstack((np.nan * np.ones((68,)), if3))
 
-tfr, t, f = pseudo_page(sig)
+tfr, t, f = PseudoPageRepresentation(sig).run()
 tfr = np.abs(tfr) ** 2
 threshold = np.amax(tfr) * 0.05
 tfr[tfr <= threshold] = 0.0

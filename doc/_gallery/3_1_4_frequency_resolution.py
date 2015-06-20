@@ -11,14 +11,15 @@ Example from section 3.1.4 of the tutorial.
 """
 
 import numpy as np
-from tftb.processing.linear import stft
+from tftb.processing.linear import ShortTimeFourierTransform
 from tftb.generators import fmlin, amgauss
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 x = np.real(amgauss(128) * fmlin(128)[0])
 window = np.ones((128,))
-tfr, _, _ = stft(x, n_fbins=128, window=window)
+stft = ShortTimeFourierTransform(x, n_fbins=128, fwindow=window)
+tfr, _, _ = stft.run()
 threshold = np.abs(tfr) * 0.05
 tfr[np.abs(tfr) <= threshold] = 0.0 * 1j * 0.0
 

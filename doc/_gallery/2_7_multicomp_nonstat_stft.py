@@ -12,7 +12,7 @@ Short time Fourier transform of a multi-component nonstationary signal.
 """
 
 from tftb.generators import fmlin
-from tftb.processing.linear import stft
+from tftb.processing.linear import ShortTimeFourierTransform
 import matplotlib.pyplot as plt
 from scipy.signal import hamming
 import numpy as np
@@ -25,7 +25,8 @@ x = x1 + x2
 
 n_fbins = 128
 window = hamming(33)
-tfr, _, _ = stft(x, None, n_fbins, window)
+tfr, _, _ = ShortTimeFourierTransform(x, timestamps=None, n_fbins=n_fbins,
+                                      fwindow=window).run()
 tfr = tfr[:64, :]
 threshold = np.amax(np.abs(tfr)) * 0.05
 tfr[np.abs(tfr) <= threshold] = 0.0 + 1j * 0.0

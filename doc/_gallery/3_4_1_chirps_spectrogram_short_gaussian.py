@@ -11,14 +11,14 @@ Examples from section 3.4.1 of the tutorial.
 """
 
 from tftb.generators import fmlin
-from tftb.processing.cohen import spectrogram
+from tftb.processing.cohen import Spectrogram
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 sig = fmlin(128, 0, 0.4)[0] + fmlin(128, 0.1, 0.5)[0]
 window = np.exp(np.log(0.005) * np.linspace(-1, 1, 23) ** 2)
-tfr, t, f = spectrogram(sig, window=window, n_fbins=128)
+tfr, t, f = Spectrogram(sig, fwindow=window, n_fbins=128).run()
 threshold = np.amax(np.abs(tfr)) * 0.05
 tfr[np.abs(tfr) <= threshold] = 0.0
 
