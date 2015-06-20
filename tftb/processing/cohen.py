@@ -23,6 +23,7 @@ class Spectrogram(ShortTimeFourierTransform):
     def run(self):
         super(Spectrogram, self).run()
         self.tfr = np.abs(self.tfr) ** 2
+        return self.tfr, self.ts, self.freqs
 
     def plot(self, kind='cmap', **kwargs):
         super(Spectrogram, self).plot(kind=kind, sqmod=False, threshold=0,
@@ -71,6 +72,7 @@ class PseudoPageRepresentation(PageRepresentation):
             self.tfr[indices, icol] = self.fwindow[lh + tau] * self.signal[icol] * np.conj(
                     self.signal[icol - tau])
         self.tfr = np.real(np.fft.fft(self.tfr, axis=0))
+        return self.tfr, self.ts, self.freqs
 
 
 def pseudo_margenau_hill(signal, timestamps=None, n_fbins=None, fwindow=None):
