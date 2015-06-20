@@ -19,7 +19,7 @@ counterparts.
 import numpy as np
 import matplotlib.pyplot as plt
 from tftb.generators import fmsin, fmlin, fmconst
-from tftb.processing.cohen import spectrogram
+from tftb.processing.cohen import Spectrogram
 from tftb.processing.reassigned import spectrogram as re_spectrogram
 from tftb.processing.reassigned import morlet_scalogram as re_morlet_scalogram
 from tftb.processing import ideal_tfr
@@ -42,7 +42,7 @@ plt.gca().set_xticklabels([])
 plt.title("Ideal instantaneous frequencies")
 plt.ylabel('Normalized Frequencies')
 
-tfr, _, _ = spectrogram(sig)
+tfr, _, _ = Spectrogram(sig).run()
 threshold = np.amax(np.abs(tfr)) * 0.05
 tfr[np.abs(tfr) <= threshold] = 0.0
 plt.subplot(222)

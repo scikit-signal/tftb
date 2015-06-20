@@ -7,11 +7,11 @@
 # Distributed under terms of the MIT license.
 
 """
-Example of the reassigned spectrogram.
+Example of the reassigned Spectrogram.
 """
 
 from tftb.generators import fmsin, fmhyp
-from tftb.processing import ideal_tfr, reassigned_spectrogram, spectrogram
+from tftb.processing import ideal_tfr, reassigned_spectrogram, Spectrogram
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -21,7 +21,7 @@ sig2, if2 = fmhyp(n_points, [1, .5], [32, 0.05])
 sig = sig1 + sig2
 ideal, t, f = ideal_tfr(np.vstack((if1, if2)))
 _, re_spec, _ = reassigned_spectrogram(sig)
-spec, t3, f3 = spectrogram(sig)
+spec, t3, f3 = Spectrogram(sig).run()
 
 # Ideal tfr
 plt.subplot(221)

@@ -15,13 +15,13 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from tftb.generators import atoms
 from scipy.signal import hamming
-from tftb.processing.linear import stft
+from tftb.processing.linear import ShortTimeFourierTransform
 
 coords = np.array([[45, .25, 32, 1], [85, .25, 32, 1]])
 sig = atoms(128, coords)
 x = np.real(sig)
 window = hamming(65)
-tfr, _, _ = stft(sig, n_fbins=128, window=window)
+tfr, _, _ = ShortTimeFourierTransform(sig, n_fbins=128, fwindow=window).run()
 threshold = np.abs(tfr) * 0.05
 tfr[np.abs(tfr) <= threshold] = 0.0 * 1j * 0.0
 
