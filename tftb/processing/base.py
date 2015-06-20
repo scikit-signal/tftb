@@ -83,13 +83,18 @@ class BaseTFRepresentation(object):
         :return: None
         :rtype: None
         """
+        extent = kwargs.pop('extent')
+        if extent is None:
+            extent = [self.ts.min(), self.ts.max(), self.freqs.min(),
+                      self.freqs.max()]
+
         if ax is None:
             fig = plt.figure()
             ax = fig.add_subplot(111)
         if kind == "cmap":
-            ax.imshow(self.tfr, extent=[self.ts.min(), self.ts.max(),
-                                        self.freqs.min(), self.freqs.max()],
-                      aspect='auto', origin='bottomleft', **kwargs)
+            ax.imshow(self.tfr,
+                      aspect='auto', origin='bottomleft', extent=extent,
+                      **kwargs)
         else:
             # FIXME: Implement contour plotting
             pass
