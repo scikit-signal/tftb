@@ -16,6 +16,14 @@ import matplotlib.pyplot as plt
 
 class BaseTFRepresentation(object):
     def __init__(self, signal, **kwargs):
+        """Create a base time-frequency representation object.
+
+        :param signal: Signal to be analyzed.
+        :param **kwargs: Other arguments required for performing the analysis.
+        :type signal: array-like
+        :return: BaseTFRepresentation object
+        :rtype:
+        """
         if (signal.ndim == 2) and (1 in signal.shape):
             signal = signal.ravel()
         self.signal = signal
@@ -41,6 +49,14 @@ class BaseTFRepresentation(object):
         self.tfr = np.zeros((self.n_fbins, self.ts.shape[0]), dtype=complex)
 
     def _make_window(self):
+        """Make a Hamming window function.
+
+        The window function has a length equal to quarter of the length of the
+        input signal.
+        :return: Hamming window function.
+        :rtype: array-like
+        """
+
         h = np.floor(self.n_fbins / 4.0)
         h += 1 - np.remainder(h, 2)
         from scipy import hamming
@@ -50,6 +66,23 @@ class BaseTFRepresentation(object):
 
     def plot(self, ax=None, kind='cmap', show=True, default_annotation=True,
              **kwargs):
+        """Visualize the time frequency representation.
+
+        :param ax: Axes object to draw the plot on.
+        :param kind: One of "cmap" (default), "contour".
+        :param show: Whether to call ``plt.show()``.
+        :param default_annotation: Whether to make default annotations for the
+            plot. Default annotations consist of setting the X and Y axis labels to
+            "Time" and "Normalized Frequency" respectively, and setting the title
+            to the name of the particular time-frequency distribution.
+        :param **kwargs: Parameters to be passed to the plotting function.
+        :type ax: matplotlib.axes.Axes object
+        :type kind: str
+        :type show: bool
+        :type default_annotation: bool
+        :return: None
+        :rtype: None
+        """
         if ax is None:
             fig = plt.figure()
             ax = fig.add_subplot(111)

@@ -16,10 +16,16 @@ from tftb.utils import nearest_odd, divider, modulo, izak
 
 
 class ShortTimeFourierTransform(BaseTFRepresentation):
+    """Short time Fourier transform."""
 
     name = "stft"
 
     def run(self):
+        r"""Compute the STFT according to:
+
+        .. math:: X[m, w] = \sum_{n=-\infty}^{\infty}x[n]w[n - m]e^{-j\omega n}
+
+        Where :math:`w` is a Hamming window."""
         lh = (self.fwindow.shape[0] - 1) / 2
         for icol in xrange(self.tfr.shape[1]):
             ti = self.ts[icol]
@@ -34,6 +40,32 @@ class ShortTimeFourierTransform(BaseTFRepresentation):
         return self.tfr, self.ts, self.freqs
 
     def plot(self, ax=None, kind='cmap', sqmod=True, threshold=0.05, **kwargs):
+        """Display the spectrogram of an STFT.
+
+        :param ax: axes object to draw the plot on. If None(default), one will
+            be created.
+        :param kind: Choice of visualization type, either "cmap"(default) or "contour".
+        :param sqmod: Whether to take squared modulus of TFR before plotting.
+            (Default: True)
+        :param threshold: Percentage of the maximum value of the TFR, below
+            which all values are set to zero before plotting.
+        :param **kwargs: parameters passed to the plotting function.
+        :type ax: matplotlib.axes.Axes object
+        :type kind: str
+        :type sqmod: bool
+        :type threshold: float
+        :return: None
+        :rtype: None
+        :Example:
+
+        >>> from tftb.generators import fmconst
+        >>> sig = np.r_[fmconst(128, 0.2)[0], fmconst(128, 0.4)[0]]
+        >>> tfr = ShortTimeFourierTransform(sig)
+        >>> tfr.run()
+        >>> tfr.plot()
+
+        .. plot:: docstring_plots/processing/stft.py
+        """
         self.tfr = self.tfr[:int(self.n_fbins / 2.0), :]
         self.freqs = self.freqs[:int(self.n_fbins / 2.0)]
         if sqmod:
