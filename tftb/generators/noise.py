@@ -45,6 +45,7 @@ def noisecg(n_points, a1=None, a2=None):
     :type a2: float
     :return: Analytic complex Gaussian noise of length n_points.
     :rtype: numpy.ndarray
+    :Examples:
     >>> noise = noisecg(512)
     >>> print noise.mean()
     0.0
