@@ -20,6 +20,33 @@ class ShortTimeFourierTransform(BaseTFRepresentation):
 
     name = "stft"
 
+    def __init__(self, signal, timestamps=None, n_fbins=None, fwindow=None):
+        """Create a ShortTimeFourierTransform object.
+
+        :param signal: Signal to be analyzed.
+        :param timestamps: Time instants of the signal (default:
+            ``np.arange(len(signal))``)
+        :param n_fbins: Number of frequency bins (default: ``len(signal)``)
+        :param fwindow: Frequency smoothing window (default: Hamming window of
+            length ``len(signal) / 4``)
+        :type signal: array-like
+        :type timestamps: array-like
+        :type n_fbins: int
+        :type fwindow: array-like
+        :return: ShortTimeFourierTransform object
+        :Example:
+
+        >>> from tftb.generators import fmconst
+        >>> sig = np.r_[fmconst(128, 0.2)[0], fmconst(128, 0.4)[0]]
+        >>> tfr = ShortTimeFourierTransform(sig)
+        >>> tfr.run()
+        >>> tfr.plot()
+
+        .. plot:: docstring_plots/processing/stft.py
+        """
+        super(ShortTimeFourierTransform, self).__init__(signal=signal,
+                n_fbins=n_fbins, timestamps=timestamps, fwindow=fwindow)
+
     def run(self):
         r"""Compute the STFT according to:
 
@@ -56,15 +83,6 @@ class ShortTimeFourierTransform(BaseTFRepresentation):
         :type threshold: float
         :return: None
         :rtype: None
-        :Example:
-
-        >>> from tftb.generators import fmconst
-        >>> sig = np.r_[fmconst(128, 0.2)[0], fmconst(128, 0.4)[0]]
-        >>> tfr = ShortTimeFourierTransform(sig)
-        >>> tfr.run()
-        >>> tfr.plot()
-
-        .. plot:: docstring_plots/processing/stft.py
         """
         self.tfr = self.tfr[:int(self.n_fbins / 2.0), :]
         self.freqs = self.freqs[:int(self.n_fbins / 2.0)]
