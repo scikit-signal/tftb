@@ -83,7 +83,7 @@ class BaseTFRepresentation(object):
         :return: None
         :rtype: None
         """
-        extent = kwargs.pop('extent')
+        extent = kwargs.pop('extent', None)
         if extent is None:
             extent = [self.ts.min(), self.ts.max(), self.freqs.min(),
                       self.freqs.max()]
