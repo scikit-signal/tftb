@@ -55,6 +55,8 @@ class PageRepresentation(BaseTFRepresentation):
 
 class PseudoPageRepresentation(PageRepresentation):
 
+    name = "pseudo page"
+
     def _make_window(self):
         hlength = np.floor(self.n_fbins / 4.0)
         if hlength % 2 == 0:
@@ -73,6 +75,31 @@ class PseudoPageRepresentation(PageRepresentation):
                     self.signal[icol - tau])
         self.tfr = np.real(np.fft.fft(self.tfr, axis=0))
         return self.tfr, self.ts, self.freqs
+
+
+class MargenauHillDistribution(BaseTFRepresentation):
+
+    name = "margenau-hill"
+
+    def run(self):
+        for icol in xrange(self.ts.shape[0]):
+            ti = self.ts[icol]
+            tau = np.arange(-min((self.n_fbins - ti,
+                                  self.signal.shape[0] - ti)) + 1, ti)
+            indices = np.remainder(self.n_fbins + tau, self.n_fbins)
+            self.tfr[indices, icol] = self.signal[ti] * \
+                np.conj(self.signal[ti - tau])
+
+        self.tfr = np.real(np.fft.fft(self.tfr, axis=0))
+        return self.tfr, self.ts, self.freqs
+
+    def plot(self, kind='cmap', threshold=0.05, sqmod=True, **kwargs):
+        self.tfr = self.tfr[:(self.tfr.shape[0] / 2), :]
+        self.tfr = np.abs(self.tfr) ** 2
+        _threshold = np.amax(self.tfr) * threshold
+        self.tfr[self.tfr <= _threshold] = 0.0
+        extent = [0, self.ts.max(), 0, 0.5]
+        super(MargenauHillDistribution, self).plot(kind=kind, extent=extent, **kwargs)
 
 
 def pseudo_margenau_hill(signal, timestamps=None, n_fbins=None, fwindow=None):
@@ -275,42 +302,9 @@ def wigner_ville(signal, time_samples=None, freq_bins=None):
     return tfr
 
 
-def margenau_hill(signal, timestamps=None, n_fbins=None):
-    """Margenau-Hill time frequency distribution.
-
-    :param signal: Signal to be analyzed.
-    :param timestamps: Time instants
-    :param n_fbins: number of frequency bins
-    :type signal: array-like
-    :type timestamps: array-like
-    :type n_fbins: int
-    :return: Margenau Hill representation, timestamps, frequency vector
-    :rtype: tuple
-    """
-    timestamps, n_fbins = init_default_args(signal, timestamps=timestamps,
-                                            n_fbins=n_fbins)
-    xrow = signal.shape[0]
-    tcol = timestamps.shape[0]
-
-    tfr = np.zeros((n_fbins, tcol), dtype=complex)
-    for icol in xrange(tcol):
-        ti = timestamps[icol]
-        tau = np.arange(-min((n_fbins - ti, xrow - ti)) + 1, ti)
-        indices = np.remainder(n_fbins + tau, n_fbins)
-        tfr[indices, icol] = signal[ti] * np.conj(signal[ti - tau])
-
-    tfr = np.real(np.fft.fft(tfr, axis=0))
-    if n_fbins % 2 == 0:
-        freq = np.hstack((np.arange(n_fbins / 2), np.arange(-n_fbins / 2, 0))) / n_fbins
-    else:
-        freq = np.hstack((np.arange((n_fbins - 1) / 2), np.arange(-(n_fbins - 1) / 2, 0))) / n_fbins
-
-    return tfr, timestamps, freq
-
-
 if __name__ == '__main__':
     from tftb.generators import fmlin
     sig = fmlin(128, 0.1, 0.4)[0]
-    spec = PseudoPageRepresentation(sig, n_fbins=64)
+    spec = MargenauHillDistribution(sig)
     spec.run()
     spec.plot()
