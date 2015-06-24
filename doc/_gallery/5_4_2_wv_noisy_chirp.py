@@ -12,13 +12,13 @@ Example showing use of Hough transform on a Wigner-Ville distribution.
 
 import numpy as np
 from tftb.generators import noisecg, sigmerge, fmlin
-from tftb.processing.cohen import wigner_ville
+from tftb.processing.cohen import WignerVilleDistribution
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 N = 64
 sig = sigmerge(fmlin(N, 0, 0.3)[0], noisecg(N), 1)
-tfr = wigner_ville(sig)
+tfr, _, _ = WignerVilleDistribution(sig).run()
 tfr = np.abs(tfr) ** 2
 threshold = np.amax(tfr) * 0.05
 tfr[tfr <= threshold] = 0.0

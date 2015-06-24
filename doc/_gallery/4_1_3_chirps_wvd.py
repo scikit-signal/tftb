@@ -11,7 +11,7 @@ Examples from section 4.1.3 of the tutorial.
 """
 
 from tftb.generators import fmlin, amgauss
-from tftb.processing import wigner_ville
+from tftb.processing import WignerVilleDistribution
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -21,7 +21,7 @@ sig1 = fmlin(n_points, 0.2, 0.5)[0] * amgauss(n_points)
 sig2 = fmlin(n_points, 0.3, 0)[0] * amgauss(n_points)
 sig = np.hstack((sig1, sig2))
 
-tfr = wigner_ville(sig)
+tfr = WignerVilleDistribution(sig).run()[0]
 x = np.arange(tfr.shape[0])
 y = np.linspace(0, 0.5, tfr.shape[0])
 

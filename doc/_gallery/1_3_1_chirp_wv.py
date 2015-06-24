@@ -11,7 +11,7 @@ Example in section 1.3.1
 """
 
 from tftb.generators import fmlin
-from tftb.processing.cohen import wigner_ville
+from tftb.processing.cohen import WignerVilleDistribution
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -21,7 +21,7 @@ signal, _ = fmlin(n_points, fmin, fmax)
 
 # Wigner-Ville distribution of the chirp.
 
-tfr = wigner_ville(signal)
+tfr = WignerVilleDistribution(signal).run()[0]
 threshold = np.amax(tfr) * 0.05
 tfr[tfr <= threshold] = 0.0
 plt.contour(tfr, extent=[0, n_points, fmin, fmax])

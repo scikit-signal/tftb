@@ -14,7 +14,7 @@ counterparts.
 import numpy as np
 import matplotlib.pyplot as plt
 from tftb.generators import fmsin, fmlin, fmconst
-from tftb.processing import (ideal_tfr, wigner_ville,
+from tftb.processing import (ideal_tfr, WignerVilleDistribution,
         smoothed_pseudo_wigner_ville, reassigned_smoothed_pseudo_wigner_ville)
 
 sig1, if1 = fmsin(60, 0.16, 0.35, 50, 1, 0.35, 1)
@@ -36,7 +36,7 @@ plt.grid(True)
 plt.title("Ideal instantaneous frequencies")
 plt.ylabel('Normalized Frequencies')
 
-tfr = wigner_ville(sig)
+tfr = WignerVilleDistribution(sig).run()[0]
 threshold = np.amax(np.abs(tfr) ** 2) * 0.05
 tfr[np.abs(tfr) ** 2 <= threshold] = 0.0
 plt.subplot(222)

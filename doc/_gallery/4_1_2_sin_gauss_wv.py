@@ -11,13 +11,13 @@ Example from section 4.1.2 of the tutorials.
 """
 
 from tftb.generators import fmconst, amgauss
-from tftb.processing import wigner_ville
+from tftb.processing import WignerVilleDistribution
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 sig = fmconst(128, 0.15)[0] + amgauss(128) * fmconst(128, 0.4)[0]
-tfr = wigner_ville(sig)
+tfr = WignerVilleDistribution(sig).run()[0]
 threshold = np.abs(tfr) * 0.05
 tfr[np.abs(tfr) <= threshold] = 0.0
 

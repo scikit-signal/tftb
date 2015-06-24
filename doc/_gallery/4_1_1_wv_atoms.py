@@ -12,7 +12,7 @@
 
 import numpy as np
 from tftb.generators import atoms
-from tftb.processing import wigner_ville
+from tftb.processing import WignerVilleDistribution
 import matplotlib.pyplot as plt
 
 x = np.array([[32, .15, 20, 1],
@@ -20,7 +20,7 @@ x = np.array([[32, .15, 20, 1],
              [32, .35, 20, 1],
              [96, .35, 20, 1]])
 g = atoms(128, x)
-tfr = wigner_ville(g)
+tfr = WignerVilleDistribution(g).run()[0]
 threshold = (np.abs(tfr) ** 2) * 0.05
 tfr[np.abs(tfr) ** 2 <= threshold] = 0.0
 

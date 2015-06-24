@@ -11,14 +11,14 @@ Wigner Ville distribution of two simultaneous chirps.
 """
 
 from tftb.generators import fmlin, sigmerge
-from tftb.processing.cohen import wigner_ville
+from tftb.processing.cohen import WignerVilleDistribution
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import numpy as np
 import matplotlib.pyplot as plt
 
 N = 64
 sig = sigmerge(fmlin(N, 0, 0.4)[0], fmlin(N, 0.3, 0.5)[0], 1)
-tfr = wigner_ville(sig)
+tfr = WignerVilleDistribution(sig).run()[0]
 tfr = np.abs(tfr) ** 2
 threshold = np.amax(tfr) * 0.05
 tfr[tfr <= threshold] = 0.0

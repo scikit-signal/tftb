@@ -12,14 +12,14 @@ Example showing use of Hough transform on a Wigner-Ville distribution.
 
 import numpy as np
 from tftb.generators import noisecg, sigmerge, fmlin
-from tftb.processing.cohen import wigner_ville
+from tftb.processing.cohen import WignerVilleDistribution
 from tftb.processing.postprocessing import hough_transform
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 
 N = 64
 sig = sigmerge(fmlin(N, 0, 0.3)[0], noisecg(N), 1)
-tfr = wigner_ville(sig)
+tfr, _, _ = WignerVilleDistribution(sig).run()
 
 ht, rho, theta = hough_transform(tfr, N, N)
 theta, rho = np.meshgrid(theta, rho)

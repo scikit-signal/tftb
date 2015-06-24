@@ -12,12 +12,12 @@ Examples from section 4.1.1 of the tutorial.
 
 import numpy as np
 from tftb.generators import fmlin
-from tftb.processing import wigner_ville
+from tftb.processing import WignerVilleDistribution
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 
 sig = fmlin(256)[0]
-tfr = wigner_ville(sig)
+tfr = WignerVilleDistribution(sig).run()[0]
 threshold = (np.abs(tfr) ** 2) * 0.05
 tfr[np.abs(tfr) ** 2 <= threshold] = 0.0
 

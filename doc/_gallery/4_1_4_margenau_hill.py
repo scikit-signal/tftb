@@ -14,11 +14,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from tftb.generators import atoms
-from tftb.processing import margenau_hill
+from tftb.processing import MargenauHillDistribution
 
 
 sig = atoms(128, np.array([[32, 0.15, 20, 1], [96, 0.32, 20, 1]]))
-tfr, _, _ = margenau_hill(sig)
+tfr, _, _ = MargenauHillDistribution(sig).run()
 t = np.arange(tfr.shape[1])
 f = np.linspace(0, 0.5, tfr.shape[0] / 2)
 
