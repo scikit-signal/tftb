@@ -12,13 +12,13 @@ Example from section 4.1.1 of the tutorial.
 
 import numpy as np
 from tftb.generators import doppler
-from tftb.processing import wigner_ville
+from tftb.processing import WignerVilleDistribution
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 fm, am, iflaw = doppler(256, 50.0, 13.0, 10.0, 200.0)
 sig = am * fm
-tfr = wigner_ville(sig)
+tfr = WignerVilleDistribution(sig).run()[0]
 threshold = (np.abs(tfr) ** 2) * 0.05
 tfr[np.abs(tfr) ** 2 <= threshold] = 0.0
 

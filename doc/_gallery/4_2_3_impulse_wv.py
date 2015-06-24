@@ -11,12 +11,12 @@ Example from section 4.2.3 of the tutorial.
 """
 
 from tftb.generators import anapulse
-from tftb.processing import wigner_ville
+from tftb.processing import WignerVilleDistribution
 import matplotlib.pyplot as plt
 import numpy as np
 
 sig = anapulse(128)
-tfr = wigner_ville(sig)
+tfr = WignerVilleDistribution(sig).run()[0]
 t = np.arange(tfr.shape[1])
 f = np.linspace(0, 0.5, tfr.shape[0])
 

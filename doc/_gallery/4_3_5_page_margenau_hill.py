@@ -19,7 +19,7 @@ their reassinged counterparts.
 import numpy as np
 import matplotlib.pyplot as plt
 from tftb.generators import fmsin, fmlin, fmconst
-from tftb.processing.cohen import PseudoPageRepresentation, pseudo_margenau_hill
+from tftb.processing.cohen import PseudoPageRepresentation, PseudoMargenauHillDistribution
 from tftb.processing.reassigned import pseudo_page as re_pseudo_page
 from tftb.processing.reassigned import pseudo_margenau_hill as re_pseudo_margenau_hill
 
@@ -56,7 +56,7 @@ plt.title("Reassigned Pseudo Page distribution")
 plt.gca().set_xticklabels([])
 plt.gca().set_yticklabels([])
 
-tfr, _, _ = pseudo_margenau_hill(sig)
+tfr, _, _ = PseudoMargenauHillDistribution(sig).run()
 tfr = np.abs(tfr) ** 2
 threshold = np.amax(tfr) * 0.05
 tfr[tfr <= threshold] = 0.0

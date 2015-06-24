@@ -149,8 +149,9 @@ class WignerVilleDistribution(BaseTFRepresentation):
         self.tfr = np.real(self.tfr)
         return self.tfr, self.ts, self.freqs
 
-    def plot(self, kind='cmap', threshold=0.05, sqmod=True, **kwargs):
-        self.tfr = np.abs(self.tfr) ** 2
+    def plot(self, kind='cmap', threshold=0.05, sqmod=False, **kwargs):
+        if sqmod:
+            self.tfr = np.abs(self.tfr) ** 2
         _threshold = np.amax(self.tfr) * threshold
         self.tfr[self.tfr <= _threshold] = 0.0
         extent = [0, self.ts.max(), 0, 0.5]
