@@ -129,6 +129,34 @@ class PseudoMargenauHillDistribution(MargenauHillDistribution):
         return self.tfr, self.ts, self.freqs
 
 
+class WignerVilleDistribution(BaseTFRepresentation):
+
+    name = "wigner-ville"
+
+    def run(self):
+        for icol in xrange(self.ts.shape[0]):
+            ti = self.ts[icol]
+            taumax = np.min((ti, self.signal.shape[0] - ti - 1,
+                             np.round(self.n_fbins / 2.0) - 1))
+            tau = np.arange(-taumax, taumax + 1).astype(int)
+            indices = np.remainder(self.n_fbins + tau, self.n_fbins).astype(int)
+            self.tfr[indices, icol] = self.signal[ti + tau] * np.conj(self.signal[ti - tau])
+            tau = np.round(self.n_fbins / 2.0)
+            if (ti <= self.signal.shape[0] - tau) and (ti >= tau + 1):
+                self.tfr[tau, icol] = 0.5 * (self.signal[ti + tau, 0] * np.conj(self.signal[ti - tau, 0])) + \
+                                       (self.signal[ti - tau, 0] * np.conj(self.signal[ti + tau, 0]))
+        self.tfr = np.fft.fft(self.tfr, axis=0)
+        self.tfr = np.real(self.tfr)
+        return self.tfr, self.ts, self.freqs
+
+    def plot(self, kind='cmap', threshold=0.05, sqmod=True, **kwargs):
+        self.tfr = np.abs(self.tfr) ** 2
+        _threshold = np.amax(self.tfr) * threshold
+        self.tfr[self.tfr <= _threshold] = 0.0
+        extent = [0, self.ts.max(), 0, 0.5]
+        super(WignerVilleDistribution, self).plot(kind=kind, extent=extent, **kwargs)
+
+
 def smoothed_pseudo_wigner_ville(signal, timestamps=None, freq_bins=None,
                                 twindow=None, fwindow=None):
     """Smoothed Pseudo Wigner-Ville time-frequency distribution.
@@ -247,45 +275,9 @@ def pseudo_wigner_ville(signal, time_samples=None, freq_bins=None, window=None):
     return np.real(tfr)
 
 
-def wigner_ville(signal, time_samples=None, freq_bins=None):
-    """Compute the Wigner Ville time frequency distribution.
-
-    :param signal: Signal to analyze.
-    :param time_samples: time instants
-    :param freq_bins: Number of frequency bins.
-    :type signal: array-like.
-    :type time_samples: array-like
-    :type freq_bins: int
-    :return: Wigner Ville time frequency distribution.
-    :rtype: array-like
-    """
-    time_samples, freq_bins = init_default_args(signal, timestamps=time_samples,
-                                                n_fbins=freq_bins)
-
-    tfr = np.zeros((freq_bins, time_samples.shape[0]), dtype=complex)
-
-    for icol in xrange(time_samples.shape[0]):
-        ti = time_samples[icol]
-        taumax = np.min((ti, signal.shape[0] - ti - 1,
-                         np.round(freq_bins / 2.0) - 1))
-        tau = np.arange(-taumax, taumax + 1).astype(int)
-        indices = np.remainder(freq_bins + tau, freq_bins).astype(int)
-        tfr[indices, icol] = signal[ti + tau] * np.conj(signal[ti - tau])
-        tau = np.round(freq_bins / 2.0)
-        if (ti <= signal.shape[0] - tau) and (ti >= tau + 1):
-            tfr[tau, icol] = 0.5 * (signal[ti + tau, 0] * np.conj(signal[ti - tau, 0])) + \
-                                   (signal[ti - tau, 0] * np.conj(signal[ti + tau, 0]))
-
-    tfr = np.fft.fft(tfr, axis=0)
-    tfr = np.real(tfr)
-    return tfr
-
-
 if __name__ == '__main__':
     from tftb.generators import fmlin
     sig = fmlin(128, 0.1, 0.4)[0]
-    from scipy.signal import kaiser
-    fwindow = kaiser(63, beta=3 * np.pi)
-    spec = PseudoMargenauHillDistribution(sig, fwindow=fwindow)
+    spec = WignerVilleDistribution(sig)
     spec.run()
     spec.plot()
