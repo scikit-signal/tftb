@@ -102,52 +102,31 @@ class MargenauHillDistribution(BaseTFRepresentation):
         super(MargenauHillDistribution, self).plot(kind=kind, extent=extent, **kwargs)
 
 
-def pseudo_margenau_hill(signal, timestamps=None, n_fbins=None, fwindow=None):
-    """pseudo_margenau_hill
+class PseudoMargenauHillDistribution(MargenauHillDistribution):
 
-    :param signal:
-    :param timestamps:
-    :param n_fbins:
-    :param fwindow:
-    :type signal:
-    :type timestamps:
-    :type n_fbins:
-    :type fwindow:
-:return:
-:rtype:
-    """
-    xrow = signal.shape[0]
-    timestamps, n_fbins = init_default_args(signal, timestamps=timestamps,
-                                            n_fbins=n_fbins)
-    tcol = timestamps.shape[0]
+    name = "pseudo margenau hill"
 
-    if fwindow is None:
-        hlength = np.floor(n_fbins / 4.0)
+    def _make_window(self):
+        hlength = np.floor(self.n_fbins / 4.0)
         if hlength % 2 == 0:
             hlength += 1
         from scipy.signal import hamming
         fwindow = hamming(hlength)
-    elif fwindow.shape[0] % 2 == 0:
-        raise ValueError('The smoothing fwindow must have an odd length.')
-    lh = (fwindow.shape[0] - 1) / 2
-    fwindow = fwindow / fwindow[lh]
+        lh = (fwindow.shape[0] - 1) / 2
+        return fwindow / fwindow[lh]
 
-    tfr = np.zeros((n_fbins, tcol), dtype=complex)
-    for icol in xrange(tcol):
-        start = min([np.round(n_fbins / 2.0) - 1, lh, xrow - icol])
-        end = min([np.round(n_fbins / 2.0) - 1, lh, icol - 1])
-        tau = np.arange(-start, end + 1)
-        indices = np.remainder(n_fbins + tau, n_fbins)
-        tfr[indices, icol] = fwindow[lh + tau] * signal[icol] * np.conj(signal[icol - tau - 1])
-
-    tfr = np.real(np.fft.fft(tfr, axis=0))
-
-    if n_fbins % 2 == 0:
-        freq = np.hstack((np.arange(n_fbins / 2), np.arange(-n_fbins / 2, 0))) / n_fbins
-    else:
-        freq = np.hstack((np.arange((n_fbins - 1) / 2), np.arange(-(n_fbins - 1) / 2, 0))) / n_fbins
-
-    return tfr, timestamps, freq
+    def run(self):
+        lh = (self.fwindow.shape[0] - 1) / 2
+        xrow = self.signal.shape[0]
+        for icol in xrange(self.ts.shape[0]):
+            start = min([np.round(self.n_fbins / 2.0) - 1, lh, xrow - icol])
+            end = min([np.round(self.n_fbins / 2.0) - 1, lh, icol - 1])
+            tau = np.arange(-start, end + 1)
+            indices = np.remainder(self.n_fbins + tau, self.n_fbins)
+            self.tfr[indices, icol] = self.fwindow[lh + tau] * self.signal[icol] * \
+                np.conj(self.signal[icol - tau - 1])
+        self.tfr = np.fft.fft(self.tfr, axis=0)
+        return self.tfr, self.ts, self.freqs
 
 
 def smoothed_pseudo_wigner_ville(signal, timestamps=None, freq_bins=None,
@@ -305,6 +284,8 @@ def wigner_ville(signal, time_samples=None, freq_bins=None):
 if __name__ == '__main__':
     from tftb.generators import fmlin
     sig = fmlin(128, 0.1, 0.4)[0]
-    spec = MargenauHillDistribution(sig)
+    from scipy.signal import kaiser
+    fwindow = kaiser(63, beta=3 * np.pi)
+    spec = PseudoMargenauHillDistribution(sig, fwindow=fwindow)
     spec.run()
     spec.plot()
