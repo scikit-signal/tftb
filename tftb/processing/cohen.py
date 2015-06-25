@@ -95,7 +95,8 @@ class MargenauHillDistribution(BaseTFRepresentation):
 
     def plot(self, kind='cmap', threshold=0.05, sqmod=True, **kwargs):
         self.tfr = self.tfr[:(self.tfr.shape[0] / 2), :]
-        self.tfr = np.abs(self.tfr) ** 2
+        if sqmod:
+            self.tfr = np.abs(self.tfr) ** 2
         _threshold = np.amax(self.tfr) * threshold
         self.tfr[self.tfr <= _threshold] = 0.0
         extent = [0, self.ts.max(), 0, 0.5]
