@@ -95,7 +95,9 @@ class BaseTFRepresentation(object):
                 axTF.imshow(self.tfr, origin="bottomleft", extent=extent,
                             aspect='auto', **kwargs)
             else:
-                t, f = np.meshgrid(self.ts, np.linspace(0, 0.5, self.signal.shape[0]))
+                t = kwargs.get('contour_x', self.ts)
+                f = kwargs.get('contour_y', np.linspace(0, 0.5, self.signal.shape[0]))
+                t, f = np.meshgrid(t, f)
                 axTF.contour(t, f, self.tfr, **kwargs)
             from mpl_toolkits.axes_grid1 import make_axes_locatable
             divider = make_axes_locatable(axTF)
