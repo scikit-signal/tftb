@@ -65,7 +65,7 @@ class BaseTFRepresentation(object):
         return fwindow
 
     def plot(self, ax=None, kind='cmap', show=True, default_annotation=True,
-             **kwargs):
+             show_tf=False, **kwargs):
         """Visualize the time frequency representation.
 
         :param ax: Axes object to draw the plot on.
@@ -75,6 +75,8 @@ class BaseTFRepresentation(object):
             plot. Default annotations consist of setting the X and Y axis labels to
             "Time" and "Normalized Frequency" respectively, and setting the title
             to the name of the particular time-frequency distribution.
+        :param show_tf: Whether to show the signal and it's spectrum alongwith
+            the plot. In this is True, the ``ax`` argument is ignored.
         :param **kwargs: Parameters to be passed to the plotting function.
         :type ax: matplotlib.axes.Axes object
         :type kind: str
@@ -87,20 +89,53 @@ class BaseTFRepresentation(object):
         if extent is None:
             extent = [self.ts.min(), self.ts.max(), self.freqs.min(),
                       self.freqs.max()]
-
-        if ax is None:
-            fig = plt.figure()
-            ax = fig.add_subplot(111)
-        if kind == "cmap":
-            ax.imshow(self.tfr,
-                      aspect='auto', origin='bottomleft', extent=extent,
-                      **kwargs)
+        if show_tf:
+            fig, axTF = plt.subplots(figsize=(10, 8))
+            if kind == "cmap":
+                axTF.imshow(self.tfr, origin="bottomleft", extent=extent,
+                            aspect='auto', **kwargs)
+            else:
+                t, f = np.meshgrid(self.ts, np.linspace(0, 0.5, self.signal.shape[0]))
+                axTF.contour(t, f, self.tfr, **kwargs)
+            from mpl_toolkits.axes_grid1 import make_axes_locatable
+            divider = make_axes_locatable(axTF)
+            axTime = divider.append_axes("top", 1.2, pad=0.5)
+            axTime.plot(np.real(self.signal))
+            axFreq = divider.append_axes("left", 1.2, pad=0.5)
+            spectrum = abs(np.fft.fftshift(np.fft.fft(self.signal))) ** 2
+            k = int(np.floor(self.signal.shape[0] / 2.0))
+            axFreq.plot(spectrum[::-1][:k], np.arange(k))
+            if default_annotation:
+                axTF.grid(True)
+                axTF.set_xlabel("Time")
+                axTF.set_ylabel("Normalized Frequency")
+                axTF.set_title(self.name.upper())
+                axTF.yaxis.set_label_position("right")
+                axTime.set_xticklabels([])
+                axTime.set_xlim(0, self.signal.shape[0])
+                axTime.set_ylabel('Real part')
+                axTime.set_title('Signal in time')
+                axTime.grid(True)
+                axFreq.set_ylim(0, k - 1)
+                axFreq.set_ylabel('Spectrum')
+                axFreq.set_yticklabels([])
+                axFreq.set_xticklabels([])
+                axFreq.grid(True)
+                axFreq.invert_xaxis()
         else:
-            t, f = np.meshgrid(self.ts, np.linspace(0, 0.5, self.signal.shape[0]))
-            ax.contour(t, f, self.tfr, **kwargs)
-        if default_annotation:
-            ax.set_xlabel("Time")
-            ax.set_ylabel("Normalized Frequency")
-            ax.set_title(self.name.upper())
+            if ax is None:
+                fig = plt.figure()
+                ax = fig.add_subplot(111)
+            if kind == "cmap":
+                ax.imshow(self.tfr,
+                          aspect='auto', origin='bottomleft', extent=extent,
+                          **kwargs)
+            else:
+                t, f = np.meshgrid(self.ts, np.linspace(0, 0.5, self.signal.shape[0]))
+                ax.contour(t, f, self.tfr, **kwargs)
+            if default_annotation:
+                ax.set_xlabel("Time")
+                ax.set_ylabel("Normalized Frequency")
+                ax.set_title(self.name.upper())
         if show:
             plt.show()
