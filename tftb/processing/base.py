@@ -123,13 +123,24 @@ class BaseTFRepresentation(object):
                 axFreq.grid(True)
                 axFreq.invert_xaxis()
         else:
-            if ax is None:
+            if (ax is None) and (kind != "surf"):
                 fig = plt.figure()
                 ax = fig.add_subplot(111)
             if kind == "cmap":
                 ax.imshow(self.tfr,
                           aspect='auto', origin='bottomleft', extent=extent,
                           **kwargs)
+            elif kind == "surf":
+                from mpl_toolkits.mplot3d import Axes3D
+                fig = plt.figure()
+                ax = fig.gca(projection="3d")
+                x = np.arange(self.signal.shape[0])
+                y = np.linspace(0, 0.5, self.signal.shape[0])
+                X, Y = np.meshgrid(x, y)
+                ax.plot_surface(X, Y, np.abs(self.tfr), cmap=plt.cm.jet)
+                if default_annotation:
+                    ax.set_zlabel("Amplitude")
+
             else:
                 t, f = np.meshgrid(self.ts, np.linspace(0, 0.5, self.signal.shape[0]))
                 ax.contour(t, f, self.tfr, **kwargs)
