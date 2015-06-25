@@ -102,9 +102,12 @@ class BaseTFRepresentation(object):
             axTime = divider.append_axes("top", 1.2, pad=0.5)
             axTime.plot(np.real(self.signal))
             axFreq = divider.append_axes("left", 1.2, pad=0.5)
-            spectrum = abs(np.fft.fftshift(np.fft.fft(self.signal))) ** 2
             k = int(np.floor(self.signal.shape[0] / 2.0))
-            axFreq.plot(spectrum[::-1][:k], np.arange(k))
+            freq_x = kwargs.get('freq_x',
+                    abs(np.fft.fftshift(np.fft.fft(self.signal))) ** 2)[::-1][:k]
+            freq_y = kwargs.get('freq_y',
+                    np.arange(k))
+            axFreq.plot(freq_x, freq_y)
             if default_annotation:
                 axTF.grid(True)
                 axTF.set_xlabel("Time")
@@ -116,7 +119,7 @@ class BaseTFRepresentation(object):
                 axTime.set_ylabel('Real part')
                 axTime.set_title('Signal in time')
                 axTime.grid(True)
-                axFreq.set_ylim(0, k - 1)
+                axFreq.set_ylim(0, freq_y.shape[0] - 1)
                 axFreq.set_ylabel('Spectrum')
                 axFreq.set_yticklabels([])
                 axFreq.set_xticklabels([])
