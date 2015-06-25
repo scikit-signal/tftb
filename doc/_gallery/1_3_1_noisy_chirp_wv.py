@@ -12,8 +12,6 @@
 
 from tftb.generators import fmlin, sigmerge, noisecg
 from tftb.processing.cohen import WignerVilleDistribution
-import matplotlib.pyplot as plt
-import numpy as np
 
 # Generate a chirp signal
 

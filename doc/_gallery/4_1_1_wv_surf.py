@@ -10,24 +10,10 @@
 Examples from section 4.1.1 of the tutorial.
 """
 
-import numpy as np
 from tftb.generators import fmlin
 from tftb.processing import WignerVilleDistribution
-from mpl_toolkits.mplot3d import Axes3D
-import matplotlib.pyplot as plt
 
 sig = fmlin(256)[0]
-tfr = WignerVilleDistribution(sig).run()[0]
-threshold = (np.abs(tfr) ** 2) * 0.05
-tfr[np.abs(tfr) ** 2 <= threshold] = 0.0
-
-x = np.arange(256)
-y = np.linspace(0, 0.5, 256)
-X, Y = np.meshgrid(x, y)
-fig = plt.figure()
-ax = fig.gca(projection='3d')
-ax.plot_surface(X, Y, np.abs(tfr), cmap=plt.cm.jet)
-ax.set_xlabel('Time')
-ax.set_ylabel('Frequency')
-ax.set_zlabel('Amplitude')
-plt.show()
+tfr = WignerVilleDistribution(sig)
+tfr.run()
+tfr.plot(kind='surf', sqmod=True)
