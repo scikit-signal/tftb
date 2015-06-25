@@ -154,8 +154,7 @@ class WignerVilleDistribution(BaseTFRepresentation):
             self.tfr = np.abs(self.tfr) ** 2
         _threshold = np.amax(self.tfr) * threshold
         self.tfr[self.tfr <= _threshold] = 0.0
-        extent = [0, self.ts.max(), 0, 0.5]
-        super(WignerVilleDistribution, self).plot(kind=kind, extent=extent, **kwargs)
+        super(WignerVilleDistribution, self).plot(kind=kind, **kwargs)
 
 
 class PseudoWignerVilleDistribution(WignerVilleDistribution):

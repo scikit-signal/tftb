@@ -96,9 +96,8 @@ class BaseTFRepresentation(object):
                       aspect='auto', origin='bottomleft', extent=extent,
                       **kwargs)
         else:
-            # FIXME: Implement contour plotting
-            t, f = np.meshgrid(self.ts, self.freqs)
-            ax.contour(t, f, self.tfr, extent=extent, **kwargs)
+            t, f = np.meshgrid(self.ts, np.linspace(0, 0.5, self.signal.shape[0]))
+            ax.contour(t, f, self.tfr, **kwargs)
         if default_annotation:
             ax.set_xlabel("Time")
             ax.set_ylabel("Normalized Frequency")
