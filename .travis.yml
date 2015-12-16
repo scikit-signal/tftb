@@ -1,0 +1,13 @@
+sudo: required
+language: python
+virtualenv:
+  system_site_packages: false
+env:
+  - DISTRIB="conda" COVERAGE="true" PYTHON_VERSION="2.7"
+
+# command to install dependencies
+install: source continuous_integration/install.sh
+# command to run tests
+script: nosetests --with-coverage --cover-package=pytftb
+after_success:
+  coveralls
