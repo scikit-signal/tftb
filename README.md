@@ -1,4 +1,5 @@
 [![Documentation Status](https://readthedocs.org/projects/pytftb/badge/?version=latest)](https://readthedocs.org/projects/pytftb/?badge=latest)
+[![Build Status](https://travis-ci.org/scikit-signal/pytftb.svg)](https://travis-ci.org/scikit-signal/pytftb)
 
 pytftb
 ======
