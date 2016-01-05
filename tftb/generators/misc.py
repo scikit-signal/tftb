@@ -185,59 +185,72 @@ def mexhat(nu=0.05):
     return h
 
 
-def gdpower(n_points, degree=0, rate=1):
+def gdpower(n_points, degree=0.0, rate=1.0):
     """Generate a signal with a power law group delay.
 
     :param n_points: Number of points in time.
     :param degree: degree of the power law.
     :param rate: rate-coefficient of the power law GD.
     :type n_points: int
-    :type degree: int
+    :type degree: int		# yoder: i'm pretty sure this is supposed to be a float. at least in test_misc.py, the test for this funct. passes degree=0.5
     :type rate: float
     :return: Tuple of time row containing modulated samples, group delay, \
             frequency bins.
     :rtype: tuple
     """
+    # quickly, handle types:
+    n_points = int(n_points)
+    degree   = float(degree)
+    rate     = float(rate)
+    #print("diagnostic: running gdpower")
     t0 = 0
-    lnu = int(np.round(n_points / 2))
+    #lnu = int(np.round(n_points / 2))
+    lnu = int(np.ceil(n_points / 2))		# ??
     nu = np.linspace(0, 0.5, lnu + 1)
     nu = nu[1:]
-    am = nu ** ((float(degree) - 2.) / 6.)
+    #am = nu ** ((degree - 2) / 6)
+    am = nu ** ((degree - 2.0) / 6.0)
 
     if rate == 0.:
         raise TypeError("rate must be non-zero")
 
     tfx = np.zeros((n_points,), dtype=complex)
 
-    if (degree < 1) and (degree != 0):
-        d = n_points ** (degree * rate)
+    if (degree < 1.) and (degree != 0):
+        #d = n_points ** (degree * rate)
+        d = float(n_points) ** (degree * rate)
         t0 = n_points / 10.0
         #tfx[:lnu] = np.exp(-1j * 2 * pi * (t0 * nu + d * nu ** degree / degree)) * am
-        tfx[:lnu] = np.exp(-1.0j * 2. * pi * ((t0 * nu + d * nu ** float(degree)) / float(degree))) * am
+        tfx[:lnu] = np.exp(-1.0j * 2. * pi * ((t0 * nu + d * nu ** degree) / float(degree))) * am
         x = np.fft.ifft(tfx)
     elif degree == 0:
         d = rate
         t0 = n_points / 10.0
         tfx[:lnu] = np.exp(-1j * 2 * np.pi * (t0 * nu + d * np.log(nu))) * am
         x = np.fft.ifft(tfx)
-    elif degree == 1:
+    elif degree == 1.:
         from .analytic_signals import anapulse
         t0 = n_points
         x = anapulse(n_points, t0)
-    elif degree > 1:
-        d = n_points * 2 ** (degree - 1) * rate
-        tfx[:lnu] = np.exp(-1j * 2 * pi * (t0 * nu + d * nu ** degree / degree)) * am
+    elif degree > 1.:
+        #d = n_points * 2 ** (degree - 1) * rate
+        d = n_points * 2. ** (degree - 1.) * rate
+        #tfx[:lnu] = np.exp(-1j * 2 * pi * (t0 * nu + d * nu ** degree / degree)) * am
+        tfx[:lnu] = np.exp(-1.0j * 2.0 * pi * (t0 * nu + d * nu ** degree / degree)) * am
         x = np.fft.ifft(tfx)
     else:
         t0 = n_points / 10
-        d = n_points * 2 ** (degree - 1) * rate
+        #d = n_points * 2 ** (degree - 1) * rate
+        d = n_points * 2.0 ** (degree - 1.0) * rate
         tfx[:lnu] = np.exp(-1j * 2 * pi * (t0 * nu + d * np.log(nu))) * am
         x = np.fft.ifft(tfx)
 
-    if degree != 1:
-        gpd = t0 + np.abs(np.sign(rate) - 1) / 2 * (n_points + 1) + d * nu ** (degree - 1)
+    if degree != 1.0:
+        #gpd = t0 + np.abs(np.sign(rate) - 1) / 2 * (n_points + 1) + d * nu ** (degree - 1)
+        gpd = t0 + np.abs(np.sign(rate) - 1.0) / 2.0 * (n_points + 1.0) + d * nu ** (degree - 1.0)
     else:
-        gpd = t0 * np.ones((n_points / 2,))
+        #gpd = t0 * np.ones((n_points / 2,))
+        gpd = t0 * np.ones((n_points / 2.0,))
 
     x = x - x.mean()
     x = x / np.linalg.norm(x)

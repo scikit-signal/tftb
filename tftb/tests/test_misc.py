@@ -15,6 +15,8 @@ from tftb.processing.utils import derive_window
 import numpy as np
 from scipy.signal import argrelmax, argrelmin, hanning
 
+import pylab as plt
+
 # yoder:
 # let's add at least some backwards python2.x compatibility for now.
 import sys
@@ -64,10 +66,14 @@ class TestMisc(TestBase):
         #else:
         self.assertCountEqual(minima[0], (2, 4))
 
-    def test_gdpower(self):
+    def test_gdpower(self, diagnostic=False):
         # yoder:
         # this test is failing - i think, but it's not completely wrong. either the test is not well designed (aka, parameters/inputs
         # are not consistent with the tolerances), or there's a bug somewhere.
+        # so one possible problem is that degree, it seems, should be a float, and it is often treated as an int in gdpower(),
+        # but i've corrected that (i think), and still get the same quite-a-bit-off figure. perhaps the ideal signal simply is not correct.
+        # (note though that only the first return (the most important one) does not agree; the other two returns are fine.
+        #
         ideal_sig = np.array([0.11315600 + 0.j, 0.34703303 + 0.08691891j,
                               -0.02357698 + 0.49077882j, -0.34703303 + 0.03976496j,
                               -0.06600205 + 0.j, -0.34703303 - 0.03976496j,
@@ -75,11 +81,37 @@ class TestMisc(TestBase):
         ideal_f = np.array([0.125, 0.25, 0.375, 0.5])
         ideal_gpd = np.array([8.8, 6.45685425, 5.41880215, 4.8])
         ideals = (ideal_sig, ideal_gpd, ideal_f)
-        actuals = misc.gdpower(8, 0.5)
+        #
+        # let's be a bit smarter about this:
+        #actuals = misc.gdpower(8, 0.5)
+        actuals = misc.gdpower(len(ideal_sig), 0.5)
+        #
         for i, ideal in enumerate(ideals):
             actual = actuals[i]
-            np.testing.assert_allclose(ideal, actual, atol=1e-7, rtol=1e-7)
+            #
+            #np.testing.assert_allclose(ideal, actual, atol=1e-7, rtol=1e-7)
+            if diagnostic:
+                # plot (since this one is failing):
+                if i==0:
+                    plt.figure(i)
+                    plt.clf()
+                    plt.plot(ideal, color='b', ls='--', label='ideal')
+                    plt.plot(actual, color='r', ls='-', label='actual')
+                    plt.legend(loc=0, numpoints=1)
+                    plt.show()
+                #
+                try:
+                    np.testing.assert_allclose(ideal, actual, atol=1e-7, rtol=1e-7)
+                except:
+                	print("*** failed test in test_misc.py, test_gdpower() [%d]" % i)
+            else:
+            	np.testing.assert_allclose(ideal, actual, atol=1e-7, rtol=1e-7)
+            #
+               
+            
 
 
 if __name__ == '__main__':
     unittest.main()
+else:
+	plt.ion()
