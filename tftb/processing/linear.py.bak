@@ -54,7 +54,7 @@ class ShortTimeFourierTransform(BaseTFRepresentation):
 
         Where :math:`w` is a Hamming window."""
         lh = (self.fwindow.shape[0] - 1) / 2
-        for icol in range(self.tfr.shape[1]):
+        for icol in xrange(self.tfr.shape[1]):
             ti = self.ts[icol]
             start = -np.min([np.round(self.n_fbins / 2.0) - 1, lh, ti - 1])
             end = np.min([np.round(self.n_fbins / 2.0) - 1, lh,
@@ -133,7 +133,7 @@ def gabor(signal, n_coeff=None, q_oversample=None, window=None):
     dzth = np.fft.fft(msig.T, axis=0) / np.sqrt(m)
     mzh = np.zeros((m, mb))
     x = np.arange(1, m + 1, dtype=float)
-    for l in range(q_oversample):
+    for l in xrange(q_oversample):
         mod = modulo(x - l * m / q_oversample, m).astype(int)
         mzh += np.abs(dzth[mod - 1, :]) ** 2
 
@@ -146,7 +146,7 @@ def gabor(signal, n_coeff=None, q_oversample=None, window=None):
     # Computation of Gabor coefficient of dual frame window.
     dgrn1 = np.zeros((signal.shape[0], n_coeff), dtype=complex)
     k = np.arange(1, signal.shape[0] + 1)
-    for n in range(n_coeff):
+    for n in xrange(n_coeff):
         index = modulo(k - n * m / q_oversample, signal.shape[0]).astype(int) - 1
         dgrn1[:, n] = np.fft.fft(signal * np.fft.fftshift(gam[index]), axis=0)
     dgr = dgrn1[np.arange(signal.shape[0], step=nb).astype(int), :]

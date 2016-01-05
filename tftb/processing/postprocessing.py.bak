@@ -54,8 +54,8 @@ def hough_transform(image, m=None, n=None):
         yc = yf = ymax / 2
     y0 = 1 - yc
 
-    for x in range(x0, xf + 1):
-        for y in range(y0, yf + 1):
+    for x in xrange(x0, xf + 1):
+        for y in xrange(y0, yf + 1):
             if np.abs(image[x + xc - 1, y + yc - 1]) > imax / 20.0:
                 for theta in np.linspace(0, 2 * np.pi - deltat, n):
                     rho = x * np.cos(theta) - y * np.sin(theta)
@@ -118,9 +118,9 @@ def ideal_tfr(iflaws, timestamps=None, n_fbins=None):
     tcol = timestamps.shape[0]
 
     tfr = np.zeros((n_fbins, tcol))
-    for icol in range(tcol):
+    for icol in xrange(tcol):
         ti = timestamps[icol]
-        for fi in range(ifrow):
+        for fi in xrange(ifrow):
             if np.isnan(iflaws[fi, ti]):
                 tfr[ti, fi] = np.nan
             else:
@@ -151,7 +151,7 @@ def friedman_density(tfr, re_mat, timestamps=None):
     bin_edges = np.r_[-np.Inf, 0.5 * (bins[:-1] + bins[1:]), np.Inf]
     threshold = np.sum(np.sum(tfr)) * 0.5 / tfr.size
 
-    for j in range(tfrcol):
+    for j in xrange(tfrcol):
         indices = tfr[:, j] > threshold
         if np.any(indices):
             occurences, _ = np.histogram(np.real(re_mat[indices, j]), bin_edges)
@@ -185,7 +185,7 @@ def ridges(tfr, re_mat, timestamps=None, method='rsp'):
     threshold = np.sum(np.sum(tfr)) * 0.5 / tfr.size
 
     if method in ('rpwv', 'rpmh'):
-        for icol in range(tfrcol):
+        for icol in xrange(tfrcol):
             ti = timestamps[icol]
             indices = np.logical_and(tfr[:, icol] > threshold,
                                      re_mat[:, icol] - freqs == 0)
@@ -193,7 +193,7 @@ def ridges(tfr, re_mat, timestamps=None, method='rsp'):
                 time_points = np.ones((indices.sum(),)) * ti
                 freq_points = np.arange(indices.shape[0])[indices] / (2.0 * n_fbins)
     elif method == "rspwv":
-        for icol in range(tfrcol):
+        for icol in xrange(tfrcol):
             ti = timestamps[icol]
             condt1 = np.real(re_mat[:, icol]) - freqs == 0
             condt2 = np.imag(re_mat[:, icol]) - icol == 0
@@ -203,7 +203,7 @@ def ridges(tfr, re_mat, timestamps=None, method='rsp'):
                 time_points = np.ones((indices.sum(),)) * ti
                 freq_points = np.arange(indices.shape[0])[indices] / (2.0 * n_fbins)
     elif method in ("rsp", "type1"):
-        for icol in range(tfrcol):
+        for icol in xrange(tfrcol):
             ti = timestamps[icol]
             condt1 = np.real(re_mat[:, icol]) - freqs == 0
             condt2 = np.imag(re_mat[:, icol]) - icol == 0

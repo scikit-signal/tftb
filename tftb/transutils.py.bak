@@ -85,4 +85,4 @@ def translate_funcline(funcline):
 
 
 if __name__ == '__main__':
-    print(compare_mlabarray(np.eye(3), '/tmp/foo.m', '/tmp/foo.mat', 'x'))
+    print compare_mlabarray(np.eye(3), '/tmp/foo.m', '/tmp/foo.mat', 'x')

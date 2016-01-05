@@ -64,4 +64,4 @@ def derive_window(window):
 
 if __name__ == '__main__':
     x = np.arange(1, 16).reshape(5, 3)
-    print(integrate_2d(x))
+    print integrate_2d(x)

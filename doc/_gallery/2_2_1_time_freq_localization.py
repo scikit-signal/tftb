@@ -34,8 +34,8 @@ plt.show()
 
 
 tm, T = loctime(signal)
-print "Time Center: {}".format(tm)
-print "Time Duration: {}".format(T)
+print("Time Center: {}".format(tm))
+print("Time Duration: {}".format(T))
 num, B = locfreq(signal)
-print "Frequency Center: {}".format(num)
-print "Frequency Spreading: {}".format(B)
+print("Frequency Center: {}".format(num))
+print("Frequency Spreading: {}".format(B))

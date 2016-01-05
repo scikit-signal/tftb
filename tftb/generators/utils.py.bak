@@ -96,7 +96,7 @@ def scale(X, a, fmin, fmax, N):
         itfmatx = np.exp(2 * 1j * np.pi * np.dot(t.reshape((256, 1)),
                                                  geo_f.reshape((1, 128))))
         dilate_sig = np.zeros((2 * Mcurrent,), dtype=complex)
-        for kk in range(2 * int(Mcurrent)):
+        for kk in xrange(2 * int(Mcurrent)):
             dilate_sig[kk] = integrate(itfmatx[kk, :] * DS[:N], geo_f)
         S[(Mmax - Mcurrent):(Mmax + Mcurrent)] = dilate_sig
         ptr += 1

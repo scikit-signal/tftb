@@ -19,13 +19,13 @@ from tftb.processing.cohen import WignerVilleDistribution
 
 sig = atoms(128, np.array([[64, 0.25, 20, 1]]))
 tfr, _, _ = WignerVilleDistribution(sig).run()
-print(renyi_information(tfr))  # -0.2075
+print renyi_information(tfr)  # -0.2075
 
 sig = atoms(128, np.array([[32, 0.25, 20, 1], [96, 0.25, 20, 1]]))
 tfr, _, _ = WignerVilleDistribution(sig).run()
-print(renyi_information(tfr))  # 0.77
+print renyi_information(tfr)  # 0.77
 
 sig = atoms(128, np.array([[32, 0.15, 20, 1], [96, 0.15, 20, 1],
                            [32, 0.35, 20, 1], [96, 0.35, 20, 1]]))
 tfr, _, _ = WignerVilleDistribution(sig).run()
-print(renyi_information(tfr))  # 1.8029
+print renyi_information(tfr)  # 1.8029

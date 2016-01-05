@@ -22,5 +22,5 @@ tfr = WignerVilleDistribution(g).run()[0]
 threshold = (np.abs(tfr) ** 2) * 0.05
 tfr[np.abs(tfr) ** 2 <= threshold] = 0.0
 
-plt.contour(np.abs(tfr) ** 2, levels=range(5))
+plt.contour(np.abs(tfr) ** 2, levels=list(range(5)))
 plt.show()

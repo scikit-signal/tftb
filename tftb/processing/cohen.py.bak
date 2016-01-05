@@ -35,7 +35,7 @@ class PageRepresentation(BaseTFRepresentation):
     name = "page representation"
 
     def run(self):
-        for icol in range(self.ts.shape[0]):
+        for icol in xrange(self.ts.shape[0]):
             ti = self.ts[icol]
             tau = np.arange(-min([self.n_fbins - ti,
                                   self.signal.shape[0] - ti]), ti)
@@ -68,7 +68,7 @@ class PseudoPageRepresentation(PageRepresentation):
 
     def run(self):
         lh = (self.fwindow.shape[0] - 1) / 2
-        for icol in range(self.ts.shape[0]):
+        for icol in xrange(self.ts.shape[0]):
             tau = np.arange(min([self.n_fbins - 1, lh, icol - 1]) + 1)
             indices = np.remainder(self.n_fbins + tau, self.n_fbins) + 1
             self.tfr[indices, icol] = self.fwindow[lh + tau] * self.signal[icol] * np.conj(
@@ -82,7 +82,7 @@ class MargenauHillDistribution(BaseTFRepresentation):
     name = "margenau-hill"
 
     def run(self):
-        for icol in range(self.ts.shape[0]):
+        for icol in xrange(self.ts.shape[0]):
             ti = self.ts[icol]
             tau = np.arange(-min((self.n_fbins - ti,
                                   self.signal.shape[0] - ti)) + 1, ti)
@@ -119,7 +119,7 @@ class PseudoMargenauHillDistribution(MargenauHillDistribution):
     def run(self):
         lh = (self.fwindow.shape[0] - 1) / 2
         xrow = self.signal.shape[0]
-        for icol in range(self.ts.shape[0]):
+        for icol in xrange(self.ts.shape[0]):
             start = min([np.round(self.n_fbins / 2.0) - 1, lh, xrow - icol])
             end = min([np.round(self.n_fbins / 2.0) - 1, lh, icol - 1])
             tau = np.arange(-start, end + 1)
@@ -135,7 +135,7 @@ class WignerVilleDistribution(BaseTFRepresentation):
     name = "wigner-ville"
 
     def run(self):
-        for icol in range(self.ts.shape[0]):
+        for icol in xrange(self.ts.shape[0]):
             ti = self.ts[icol]
             taumax = np.min((ti, self.signal.shape[0] - ti - 1,
                              np.round(self.n_fbins / 2.0) - 1))
@@ -164,7 +164,7 @@ class PseudoWignerVilleDistribution(WignerVilleDistribution):
 
     def run(self):
         lh = (self.fwindow.shape[0] - 1) / 2
-        for icol in range(self.ts.shape[0]):
+        for icol in xrange(self.ts.shape[0]):
             ti = self.ts[icol]
             taumaxvals = (ti, self.signal.shape[0] - ti - 1,
                           np.round(self.n_fbins / 2.0), lh)
@@ -221,7 +221,7 @@ def smoothed_pseudo_wigner_ville(signal, timestamps=None, freq_bins=None,
     tfr = np.zeros((freq_bins, timestamps.shape[0]), dtype=complex)
     lg = (twindow.shape[0] - 1) / 2
     lh = (fwindow.shape[0] - 1) / 2
-    for icol in range(timestamps.shape[0]):
+    for icol in xrange(timestamps.shape[0]):
         ti = timestamps[icol]
         taumax = min([ti + lg - 1, signal.shape[0] - ti + lg,
                       np.round(freq_bins / 2.0) - 1, lh])
@@ -230,7 +230,7 @@ def smoothed_pseudo_wigner_ville(signal, timestamps=None, freq_bins=None,
         g2 = twindow[lg + points]
         g2 = g2 / np.sum(g2)
         tfr[0, icol] = np.sum(g2 * signal[ti - points - 1] * np.conj(signal[ti - points - 1]))
-        for tau in range(int(taumax)):
+        for tau in xrange(int(taumax)):
             points = np.arange(-min([lg, signal.shape[0] - ti - tau]),
                                min([lg, ti - 1 - tau]) + 1)
             g2 = twindow[lg + points]

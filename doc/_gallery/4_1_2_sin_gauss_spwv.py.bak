@@ -29,7 +29,7 @@ threshold = np.abs(tfr) * 0.05
 tfr[np.abs(tfr) <= threshold] = 0.0
 
 fig, axImage = plt.subplots()
-axImage.contour(np.abs(tfr), extent=[0, 128, 0, 0.5], levels=list(range(5)))
+axImage.contour(np.abs(tfr), extent=[0, 128, 0, 0.5], levels=range(5))
 axImage.grid(True)
 axImage.set_title("Wigner Ville distribution")
 axImage.set_ylabel('Frequency')

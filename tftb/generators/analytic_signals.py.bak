@@ -1,7 +1,7 @@
 import numpy as np
 from numpy import pi
 from scipy.signal import hilbert
-from .frequency_modulated import fmconst
+from frequency_modulated import fmconst
 
 
 def anaask(n_points, n_comp=None, f0=0.25):
