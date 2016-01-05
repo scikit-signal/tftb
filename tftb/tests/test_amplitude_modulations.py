@@ -2,6 +2,9 @@ import unittest
 import numpy as np
 from numpy import pi
 from scipy.signal import argrelmax
+# diagnostics:
+import base		# this would be the 'local' import, so it will depend on the local directory structure. nominally, if we properly configure setup.py
+					# and install, we should be able to use the line below. are tests meant to be part of the package, or run separately?
 from tftb.tests.base import TestBase
 import tftb.generators.amplitude_modulated as am
 

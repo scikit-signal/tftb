@@ -73,7 +73,14 @@ def izak(x):
 
 
 def nextpow2(n):
-    """Compute the exponent of the next higher power of 2.
+    """
+    #Compute the exponent of the next higher power of 2.
+    # yoder:
+    # clarifying: returns the next *integer* exponent (as a float) and is lower-inclusive.
+    # ie,:
+    # > nextpow2(2)   = 1.0
+    # > nextpow2(2.0) = 1.0
+    # > nextpow2(2.1) = 2.0
 
     :param n: Number whose next higest power of 2 needs to be computed.
     :type n: int, np.ndarray

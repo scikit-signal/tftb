@@ -15,6 +15,12 @@ from tftb.processing.utils import derive_window
 import numpy as np
 from scipy.signal import argrelmax, argrelmin, hanning
 
+# yoder:
+# let's add at least some backwards python2.x compatibility for now.
+import sys
+#py_ver = sys.version_info.major
+# and assume only backwards revisions (for now):
+ispy2 = (sys.version_info.major<3)		# maybe we should work this into TestBase?
 
 class TestMisc(TestBase):
 
@@ -50,10 +56,18 @@ class TestMisc(TestBase):
         self.assertEqual(maxima[0].shape[0], 1)
         self.assertEqual(maxima[0][0], 3)
         minima = argrelmin(actual)
-        self.assertEqual(minima[0].shape[0], 2)
-        self.assertItemsEqual(minima[0], (2, 4))
+        #
+        # handling 2/3 compatibility in the class definition (see base.py)
+        #self.assertEqual(minima[0].shape[0], 2)
+        #if ispy2:
+        #    self.assertItemsEqual(minima[0], (2, 4))
+        #else:
+        self.assertCountEqual(minima[0], (2, 4))
 
     def test_gdpower(self):
+        # yoder:
+        # this test is failing - i think, but it's not completely wrong. either the test is not well designed (aka, parameters/inputs
+        # are not consistent with the tolerances), or there's a bug somewhere.
         ideal_sig = np.array([0.11315600 + 0.j, 0.34703303 + 0.08691891j,
                               -0.02357698 + 0.49077882j, -0.34703303 + 0.03976496j,
                               -0.06600205 + 0.j, -0.34703303 - 0.03976496j,

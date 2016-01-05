@@ -13,6 +13,13 @@ import unittest
 import numpy as np
 from tftb.tests.base import TestBase
 from tftb.generators import analytic_signals as ana
+#
+# let's add at least some backwards python2.x compatibility for now.
+# (moving this to the unit test class definition (see tests/base.py)
+#import sys
+#py_ver = sys.version_info.major
+# and assume only backwards revisions (for now):
+#ispy2 = (sys.version_info.major<3)
 
 
 class TestAnalyticSignals(TestBase):
@@ -26,7 +33,10 @@ class TestAnalyticSignals(TestBase):
     def test_anabpsk(self):
         """Test analytic BPSK signal."""
         signal, amlaw = ana.anabpsk(300, 30, 0.1)
-        self.assertItemsEqual(np.unique(amlaw), [-1, 1])
+        #
+        #self.assertItemsEqual(np.unique(amlaw), [-1, 1])		# python2.x syntax (py2/3 cases should be handled in TestBase class definition).
+        self.assertCountEqual(np.unique(amlaw), [-1, 1])
+        #
         self.assert_is_analytic(signal)
 
     def test_anafsk(self):
