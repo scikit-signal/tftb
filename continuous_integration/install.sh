@@ -20,7 +20,7 @@ if [[ "$DISTRIB" == "conda" ]]; then
 	wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh \
 		-O miniconda.sh
     chmod +x miniconda.sh && ./miniconda.sh -b
-    export PATH=$HOME/miniconda/bin:$PATH
+    export PATH=~/miniconda2/bin:$PATH
 	conda config --set always_yes yes --set changeps1 no
 	conda update conda
 	conda info -a
@@ -33,5 +33,5 @@ if [[ "$COVERAGE" == "true" ]]; then
 	pip install coverage coveralls
 fi
 
-# Build pgmpy
+# Build pytftb
 python setup.py develop
