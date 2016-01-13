@@ -61,7 +61,8 @@ class BaseTFRepresentation(object):
         h += 1 - np.remainder(h, 2)
         from scipy import hamming
         fwindow = hamming(int(h))
-        fwindow = fwindow / np.linalg.norm(fwindow)
+        # No need to normalize the window
+        # fwindow = fwindow / np.linalg.norm(fwindow)
         return fwindow
 
     def plot(self, ax=None, kind='cmap', show=True, default_annotation=True,

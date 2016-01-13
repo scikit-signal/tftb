@@ -258,5 +258,6 @@ if __name__ == '__main__':
     from tftb.generators import fmlin
     sig = fmlin(128, 0.1, 0.4)[0]
     spec = PseudoWignerVilleDistribution(sig)
-    spec.run()
-    spec.plot()
+    tfr, _, _ = spec.run()
+    from scipy.io import savemat
+    savemat("/tmp/foo.mat", dict(tfr2=tfr))

@@ -66,18 +66,12 @@ class TestMisc(TestBase):
         #else:
         self.assertCountEqual(minima[0], (2, 4))
 
-    def test_gdpower(self, diagnostic=False):
-        # yoder:
-        # this test is failing - i think, but it's not completely wrong. either the test is not well designed (aka, parameters/inputs
-        # are not consistent with the tolerances), or there's a bug somewhere.
-        # so one possible problem is that degree, it seems, should be a float, and it is often treated as an int in gdpower(),
-        # but i've corrected that (i think), and still get the same quite-a-bit-off figure. perhaps the ideal signal simply is not correct.
-        # (note though that only the first return (the most important one) does not agree; the other two returns are fine.
+    def test_gdpower(self):
+        ideal_sig = np.array([0.08540661 + 0.05077147j, 0.16735776 + 0.11542816j,
+                              -0.08825763 + 0.17010894j, 0.04412953 - 0.01981114j,
+                              -0.04981628 + 0.34985966j, -0.56798889 - 0.07983783j,
+                              0.05266730 - 0.57074006j, 0.35650159 - 0.01577918j])
         #
-        ideal_sig = np.array([0.11315600 + 0.j, 0.34703303 + 0.08691891j,
-                              -0.02357698 + 0.49077882j, -0.34703303 + 0.03976496j,
-                              -0.06600205 + 0.j, -0.34703303 - 0.03976496j,
-                              -0.02357698 - 0.49077882j, 0.34703303 - 0.08691891j])
         ideal_f = np.array([0.125, 0.25, 0.375, 0.5])
         ideal_gpd = np.array([8.8, 6.45685425, 5.41880215, 4.8])
         ideals = (ideal_sig, ideal_gpd, ideal_f)
