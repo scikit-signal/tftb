@@ -16,7 +16,6 @@ from scipy.signal import kaiser
 from tftb.processing import cohen
 from tftb.generators import fmsin, fmlin
 from tftb.tests.base import TestBase
-from nose import SkipTest
 
 
 class TestCohen(TestBase):
@@ -75,7 +74,6 @@ class TestCohen(TestBase):
 
     def test_pseudo_wv_energy(self):
         """Test the energy property of the pseudo WV representation."""
-        raise SkipTest("Known failure.")
         signal, _ = fmsin(128)
         signal = signal / 128.0
         tfr, _, _ = cohen.PseudoWignerVilleDistribution(signal).run()
