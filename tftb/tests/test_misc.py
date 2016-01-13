@@ -14,7 +14,6 @@ from tftb.generators import misc
 from tftb.processing.utils import derive_window
 import numpy as np
 from scipy.signal import argrelmax, argrelmin, hanning
-from nose import SkipTest
 
 
 class TestMisc(TestBase):
@@ -55,11 +54,10 @@ class TestMisc(TestBase):
         self.assertItemsEqual(minima[0], (2, 4))
 
     def test_gdpower(self):
-        raise SkipTest("Known failure.")
-        ideal_sig = np.array([0.11315600 + 0.j, 0.34703303 + 0.08691891j,
-                              -0.02357698 + 0.49077882j, -0.34703303 + 0.03976496j,
-                              -0.06600205 + 0.j, -0.34703303 - 0.03976496j,
-                              -0.02357698 - 0.49077882j, 0.34703303 - 0.08691891j])
+        ideal_sig = np.array([0.08540661 + 0.05077147j, 0.16735776 + 0.11542816j,
+                              -0.08825763 + 0.17010894j, 0.04412953 - 0.01981114j,
+                              -0.04981628 + 0.34985966j, -0.56798889 - 0.07983783j,
+                              0.05266730 - 0.57074006j, 0.35650159 - 0.01577918j])
         ideal_f = np.array([0.125, 0.25, 0.375, 0.5])
         ideal_gpd = np.array([8.8, 6.45685425, 5.41880215, 4.8])
         ideals = (ideal_sig, ideal_gpd, ideal_f)
