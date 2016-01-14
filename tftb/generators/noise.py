@@ -24,7 +24,6 @@ def noisecu(n_points):
     if n_points <= 2:
         noise = (np.random.rand(n_points, 1) - 0.5 + 1j * (np.random.rand(n_points, 1) - 0.5)) * np.sqrt(6)
     else:
-        print("debug, n_points: ", n_points)
         # getting a non-integer warning, promising an error in time to come, here...
         noise = np.random.rand(2 ** int(nextpow2(n_points)),) - 0.5
         #noise = np.random.rand(2 ** nextpow2(n_points),) - 0.5

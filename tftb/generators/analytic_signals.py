@@ -1,8 +1,12 @@
 import numpy as np
 from numpy import pi
 from scipy.signal import hilbert
-from .frequency_modulated import fmconst
-
+#
+# package structure may need to be re-evaluated via the init.py file(s), so it is available as:
+# tftb.generators.fmconst
+# fmconst is imported in __init__.py; what's the right way to import this for this module in the package?
+#from .frequency_modulated import fmconst
+from tftb.generators import fmconst
 
 def anaask(n_points, n_comp=None, f0=0.25):
     """Generate an amplitude shift (ASK) keying signal.

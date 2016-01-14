@@ -15,14 +15,14 @@ from tftb.processing.utils import derive_window
 import numpy as np
 from scipy.signal import argrelmax, argrelmin, hanning
 
-import pylab as plt
+#import pylab as plt
 
 # yoder:
 # let's add at least some backwards python2.x compatibility for now.
 import sys
 #py_ver = sys.version_info.major
 # and assume only backwards revisions (for now):
-ispy2 = (sys.version_info.major<3)		# maybe we should work this into TestBase?
+#ispy2 = (sys.version_info.major<3)		# moved version compatibility into base class: TestBase()?
 
 class TestMisc(TestBase):
 
@@ -83,24 +83,7 @@ class TestMisc(TestBase):
         for i, ideal in enumerate(ideals):
             actual = actuals[i]
             #
-            #np.testing.assert_allclose(ideal, actual, atol=1e-7, rtol=1e-7)
-            if diagnostic:
-                # plot (since this one is failing):
-                if i==0:
-                    plt.figure(i)
-                    plt.clf()
-                    plt.plot(ideal, color='b', ls='--', label='ideal')
-                    plt.plot(actual, color='r', ls='-', label='actual')
-                    plt.legend(loc=0, numpoints=1)
-                    plt.show()
-                #
-                try:
-                    np.testing.assert_allclose(ideal, actual, atol=1e-7, rtol=1e-7)
-                except:
-                	print("*** failed test in test_misc.py, test_gdpower() [%d]" % i)
-            else:
-            	np.testing.assert_allclose(ideal, actual, atol=1e-7, rtol=1e-7)
-            #
+            np.testing.assert_allclose(ideal, actual, atol=1e-7, rtol=1e-7)
                
             
 
@@ -108,4 +91,5 @@ class TestMisc(TestBase):
 if __name__ == '__main__':
     unittest.main()
 else:
-	plt.ion()
+	#plt.ion()
+	pass
