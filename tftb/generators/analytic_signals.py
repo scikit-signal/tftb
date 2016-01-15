@@ -1,12 +1,8 @@
 import numpy as np
 from numpy import pi
 from scipy.signal import hilbert
-#
-# package structure may need to be re-evaluated via the init.py file(s), so it is available as:
-# tftb.generators.fmconst
-# fmconst is imported in __init__.py; what's the right way to import this for this module in the package?
-#from .frequency_modulated import fmconst
 from tftb.generators import fmconst
+
 
 def anaask(n_points, n_comp=None, f0=0.25):
     """Generate an amplitude shift (ASK) keying signal.
@@ -30,8 +26,7 @@ def anaask(n_points, n_comp=None, f0=0.25):
         n_comp = np.round(n_points / 2)
     if (f0 < 0) or (f0 > 0.5):
         raise TypeError("f0 must be between 0 and 0.5")
-    #m = np.ceil(n_points / n_comp)
-    m = int(np.ceil(n_points / n_comp))			# getting an int deprication warning...
+    m = int(np.ceil(n_points / n_comp))
     jumps = np.random.rand(m)
     am = np.kron(jumps, np.ones((n_comp,)))[:n_points]
     fm, iflaw = fmconst(n_points, f0, 1)
@@ -61,7 +56,6 @@ def anabpsk(n_points, n_comp=None, f0=0.25):
         n_comp = np.round(n_points / 5)
     if (f0 < 0) or (f0 > 0.5):
         raise TypeError("f0 must be between 0 and 0.5")
-    #m = np.ceil(n_points / n_comp)
     m = int(np.ceil(n_points / n_comp))
     jumps = 2.0 * np.round(np.random.rand(m)) - 1
     am = np.kron(jumps, np.ones((n_comp,)))[:n_points]
@@ -143,7 +137,6 @@ def anaqpsk(n_points, n_comp=None, f0=0.25):
         n_comp = np.round(n_points / 5)
     if (f0 < 0) or (f0 > 0.5):
         raise TypeError("f0 must be between 0 and 0.5")
-    #m = np.ceil(n_points / n_comp)
     m = int(np.ceil(n_points / n_comp))
     jumps = np.floor(4 * np.random.rand(m))
     jumps[jumps == 4] = 3
