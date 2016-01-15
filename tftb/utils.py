@@ -46,7 +46,7 @@ def init_default_args(signal, **kwargs):
     :return: tuple of default values
     :rtype: tuple
     """
-    for varname, value in kwargs.iteritems():
+    for varname, value in kwargs.items():
         if "time" in varname:
             if value is None:
                 kwargs[varname] = np.arange(signal.shape[0])
@@ -57,7 +57,7 @@ def init_default_args(signal, **kwargs):
                 msg = "For faster computations, n_fbins should be a power of 2."
                 warnings.warn(msg, UserWarning)
 
-    return kwargs.values()
+    return list(kwargs.values())
 
 
 def izak(x):
@@ -67,13 +67,19 @@ def izak(x):
     else:
         n, m = x.shape[0], 1
     sig = np.zeros((n * m, ), dtype=complex)
-    for im in xrange(m):
+    for im in range(m):
         sig[im + np.arange(n) * m] = np.sqrt(n) * np.fft.ifft(x[:, im], axis=0)
     return sig
 
 
 def nextpow2(n):
-    """Compute the exponent of the next higher power of 2.
+    """
+    #Compute the exponent of the next higher power of 2.
+    # returns the next *integer* exponent (as a float) and is lower-inclusive.
+    # ie,:
+    # > nextpow2(2)   = 1.0
+    # > nextpow2(2.0) = 1.0
+    # > nextpow2(2.1) = 2.0
 
     :param n: Number whose next higest power of 2 needs to be computed.
     :type n: int, np.ndarray
@@ -127,4 +133,4 @@ def modulo(x, N):
 
 
 if __name__ == '__main__':
-    print init_default_args(np.arange(10), timestamps=range(10), n_fbins=3)
+    print(init_default_args(np.arange(10), timestamps=list(range(10)), n_fbins=3))

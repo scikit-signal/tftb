@@ -56,9 +56,17 @@ def atoms(n_points, coordinates):
     """
     # FIXME: This function produces incorrect output when coordinates are
     # one-dimensional.
+    # yoder: would the fix be something like: if not isinstance(coordinates[0], list): coordinates = [coordinates]
+    # ???
+    # at first glance, it looks ok. let's just add some data typ handlers. they may be imperfect, but the basic idea is to catch
+    # some common errors, like passing a list, not an array.
+    # an un-contained 1-d coordinates array:
+    if not hasattr(coordinates[0], '__len__'): coordinates = [coordinates]
+    if not hasattr(coordinates, 'shape'):      coordinates = numpy.array(coordinates)
+    #
     signal = np.zeros((n_points,), dtype=complex)
     n_atoms = coordinates.shape[0]
-    for k in xrange(n_atoms):
+    for k in range(n_atoms):
         t0 = np.round(np.max((np.min((coordinates[k, 0], n_points)), 1)))
         f0 = np.max((np.min((coordinates[k, 1], 0.5)), 0.0))
         T = coordinates[k, 2]
@@ -139,12 +147,15 @@ def klauder(n_points, attenuation=10.0, f0=0.2):
 
     assert n_points > 0
     assert ((f0 < 0.5) and (f0 > 0))
+    #
+    # debug:
+    #print('debug: klauder:: n_points=', n_points)
 
-    f = np.linspace(0, 0.5, n_points / 2 + 1)
-    mod = np.exp(-2 * np.pi * attenuation * f) * f ** (2 * np.pi * attenuation * f0 - 0.5)
+    f = np.linspace(0., 0.5, int(n_points / 2 + 1))
+    mod = np.exp(-2. * np.pi * attenuation * f) * f ** (2. * np.pi * attenuation * f0 - 0.5)
     wave = mod
     wave[0] = 0
-    a, b = wave[:n_points / 2], wave[1:n_points / 2 + 1][::-1]
+    a, b = wave[:int(n_points / 2)], wave[1:int(n_points / 2 + 1)][::-1]
     wave = np.hstack((a, b))
     wavet = np.fft.ifft(wave)
     wavet = np.fft.fftshift(wavet)
@@ -174,58 +185,72 @@ def mexhat(nu=0.05):
     return h
 
 
-def gdpower(n_points, degree=0, rate=1):
+def gdpower(n_points, degree=0.0, rate=1.0):
     """Generate a signal with a power law group delay.
 
     :param n_points: Number of points in time.
     :param degree: degree of the power law.
     :param rate: rate-coefficient of the power law GD.
     :type n_points: int
-    :type degree: int
+    :type degree: int		# yoder: i'm pretty sure this is supposed to be a float. at least in test_misc.py, the test for this funct. passes degree=0.5
     :type rate: float
     :return: Tuple of time row containing modulated samples, group delay, \
             frequency bins.
     :rtype: tuple
     """
+    # quickly, handle types:
+    n_points = int(n_points)
+    degree   = float(degree)
+    rate     = float(rate)
+    #print("diagnostic: running gdpower")
     t0 = 0
-    lnu = np.round(n_points / 2)
+    #lnu = int(np.round(n_points / 2))
+    lnu = int(np.ceil(n_points / 2))		# ??
     nu = np.linspace(0, 0.5, lnu + 1)
     nu = nu[1:]
-    am = nu ** ((degree - 2) / 6)
+    #am = nu ** ((degree - 2) / 6)
+    am = nu ** ((degree - 2.0) / 6.0)
 
-    if rate == 0:
+    if rate == 0.:
         raise TypeError("rate must be non-zero")
 
     tfx = np.zeros((n_points,), dtype=complex)
 
-    if (degree < 1) and (degree != 0):
-        d = n_points ** (degree * rate)
+    if (degree < 1.) and (degree != 0):
+        #d = n_points ** (degree * rate)
+        d = float(n_points) ** (degree * rate)
         t0 = n_points / 10.0
-        tfx[:lnu] = np.exp(-1j * 2 * pi * (t0 * nu + d * nu ** degree / degree)) * am
+        #tfx[:lnu] = np.exp(-1j * 2 * pi * (t0 * nu + d * nu ** degree / degree)) * am
+        tfx[:lnu] = np.exp(-1.0j * 2. * pi * ((t0 * nu + d * nu ** degree) / degree)) * am
         x = np.fft.ifft(tfx)
     elif degree == 0:
         d = rate
         t0 = n_points / 10.0
         tfx[:lnu] = np.exp(-1j * 2 * np.pi * (t0 * nu + d * np.log(nu))) * am
         x = np.fft.ifft(tfx)
-    elif degree == 1:
-        from analytic_signals import anapulse
+    elif degree == 1.:
+        from .analytic_signals import anapulse
         t0 = n_points
         x = anapulse(n_points, t0)
-    elif degree > 1:
-        d = n_points * 2 ** (degree - 1) * rate
-        tfx[:lnu] = np.exp(-1j * 2 * pi * (t0 * nu + d * nu ** degree / degree)) * am
+    elif degree > 1.:
+        #d = n_points * 2 ** (degree - 1) * rate
+        d = n_points * 2. ** (degree - 1.) * rate
+        #tfx[:lnu] = np.exp(-1j * 2 * pi * (t0 * nu + d * nu ** degree / degree)) * am
+        tfx[:lnu] = np.exp(-1.0j * 2.0 * pi * ((t0 * nu + d * nu ** degree) / degree)) * am
         x = np.fft.ifft(tfx)
     else:
         t0 = n_points / 10
-        d = n_points * 2 ** (degree - 1) * rate
+        #d = n_points * 2 ** (degree - 1) * rate
+        d = n_points * 2.0 ** (degree - 1.0) * rate
         tfx[:lnu] = np.exp(-1j * 2 * pi * (t0 * nu + d * np.log(nu))) * am
         x = np.fft.ifft(tfx)
 
-    if degree != 1:
-        gpd = t0 + np.abs(np.sign(rate) - 1) / 2 * (n_points + 1) + d * nu ** (degree - 1)
+    if degree != 1.0:
+        #gpd = t0 + np.abs(np.sign(rate) - 1) / 2 * (n_points + 1) + d * nu ** (degree - 1)
+        gpd = t0 + np.abs(np.sign(rate) - 1.0) / 2.0 * (n_points + 1.0) + d * nu ** (degree - 1.0)
     else:
-        gpd = t0 * np.ones((n_points / 2,))
+        #gpd = t0 * np.ones((n_points / 2,))
+        gpd = t0 * np.ones((n_points / 2.0,))
 
     x = x - x.mean()
     x = x / np.linalg.norm(x)

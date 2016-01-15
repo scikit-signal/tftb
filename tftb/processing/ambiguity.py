@@ -39,7 +39,7 @@ def narrow_band(signal, lag=None, n_fbins=None):
     n_fbins = init_default_args(signal, n_fbins=n_fbins)[0]
 
     naf = np.zeros((n_fbins, taucol), dtype=complex)
-    for icol in xrange(taucol):
+    for icol in range(taucol):
         taui = lag[icol]
         t = np.arange(abs(taui), n - abs(taui))
         naf[t, icol] = signal[t + taui] * np.conj(signal[t - taui])

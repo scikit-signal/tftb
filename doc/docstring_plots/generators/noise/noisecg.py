@@ -15,8 +15,8 @@ import numpy as np
 from tftb.generators import noisecg
 
 noise = noisecg(512)
-print noise.mean()
-print noise.std() ** 2
+print(noise.mean())
+print(noise.std() ** 2)
 plt.subplot(211), plt.plot(np.real(noise))
 plt.xlim(0, 512)
 plt.grid()

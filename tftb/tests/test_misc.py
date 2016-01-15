@@ -15,6 +15,14 @@ from tftb.processing.utils import derive_window
 import numpy as np
 from scipy.signal import argrelmax, argrelmin, hanning
 
+#import pylab as plt
+
+# yoder:
+# let's add at least some backwards python2.x compatibility for now.
+import sys
+#py_ver = sys.version_info.major
+# and assume only backwards revisions (for now):
+#ispy2 = (sys.version_info.major<3)		# moved version compatibility into base class: TestBase()?
 
 class TestMisc(TestBase):
 
@@ -50,22 +58,38 @@ class TestMisc(TestBase):
         self.assertEqual(maxima[0].shape[0], 1)
         self.assertEqual(maxima[0][0], 3)
         minima = argrelmin(actual)
-        self.assertEqual(minima[0].shape[0], 2)
-        self.assertItemsEqual(minima[0], (2, 4))
+        #
+        # handling 2/3 compatibility in the class definition (see base.py)
+        #self.assertEqual(minima[0].shape[0], 2)
+        #if ispy2:
+        #    self.assertItemsEqual(minima[0], (2, 4))
+        #else:
+        self.assertCountEqual(minima[0], (2, 4))
 
     def test_gdpower(self):
         ideal_sig = np.array([0.08540661 + 0.05077147j, 0.16735776 + 0.11542816j,
                               -0.08825763 + 0.17010894j, 0.04412953 - 0.01981114j,
                               -0.04981628 + 0.34985966j, -0.56798889 - 0.07983783j,
                               0.05266730 - 0.57074006j, 0.35650159 - 0.01577918j])
+        #
         ideal_f = np.array([0.125, 0.25, 0.375, 0.5])
         ideal_gpd = np.array([8.8, 6.45685425, 5.41880215, 4.8])
         ideals = (ideal_sig, ideal_gpd, ideal_f)
-        actuals = misc.gdpower(8, 0.5)
+        #
+        # let's be a bit smarter about this:
+        #actuals = misc.gdpower(8, 0.5)
+        actuals = misc.gdpower(len(ideal_sig), 0.5)
+        #
         for i, ideal in enumerate(ideals):
             actual = actuals[i]
+            #
             np.testing.assert_allclose(ideal, actual, atol=1e-7, rtol=1e-7)
+               
+            
 
 
 if __name__ == '__main__':
     unittest.main()
+else:
+	#plt.ion()
+	pass

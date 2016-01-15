@@ -121,7 +121,7 @@ def smoothed_pseudo_wigner(signal, timestamps=None, K='bertrand', nh0=None,
             fmin=fmin, fmax=fmax, n_voices=n_voices)
     _, _, _, wt2 = scalogram(s2, time_instants=timestamps, waveparams=nh0,
             fmin=fmin, fmax=fmax, n_voices=n_voices)
-    for ptr in xrange(n_voices):
+    for ptr in range(n_voices):
         matxte1[ptr, :] = wt1[ptr, :] * np.sqrt(a[n_voices - ptr - 1])
         matxte2[ptr, :] = wt2[ptr, :] * np.sqrt(a[n_voices - ptr - 1])
 
@@ -132,7 +132,7 @@ def smoothed_pseudo_wigner(signal, timestamps=None, K='bertrand', nh0=None,
     p = np.arange(2 * n_voices)
     beta = (p / float(n_voices) - 1.0) / (2 * np.log(q))
     l1 = l2 = np.zeros((2 * mu, 2 * n_voices), dtype=complex)
-    for m in xrange(l1.shape[0]):
+    for m in range(l1.shape[0]):
         l1[m, :] = np.exp(-2 * np.pi * 1j * beta * np.log(lambdak(u[m], K)))
         l2[m, :] = np.exp(-2 * np.pi * 1j * beta * np.log(lambdak(-u[m], K)))
 
@@ -150,7 +150,7 @@ def smoothed_pseudo_wigner(signal, timestamps=None, K='bertrand', nh0=None,
     S1 = S2 = np.zeros((2 * n_voices,), dtype=complex)
     mx1 = mx2 = np.zeros((2 * n_voices, 2 * mu))
 
-    for ti in xrange(tcol):
+    for ti in range(tcol):
         S1[:n_voices] = matxte1[:, ti]
         mellin1 = np.fft.fftshift(np.fft.ifft(S1))
         mx1 = l1 * mellin1.reshape(1, mellin1.shape[0]).repeat(2 * mu, 0)
@@ -284,7 +284,7 @@ def unterberger(signal, timestamps=None, form='A', fmin=None, fmax=None,
     # Computation of Lambda dilations/compressions
     waf = np.zeros((2 * m1, n_voices), dtype=complex)
     _x = -(2 * 1j * np.pi * beta + 0.5)
-    for n in xrange(1, 2 * m1 + 1):
+    for n in range(1, 2 * m1 + 1):
         _y = np.log(np.sqrt(1 + (u[n - 1] / 2.0) ** 2) - u[n - 1] / 2.0)
         mx1 = np.exp(_x * _y) * mellin1
         _y = np.log(np.sqrt(1 + (u[n - 1] / 2.0) ** 2) + u[n - 1] / 2.0)
@@ -305,7 +305,7 @@ def unterberger(signal, timestamps=None, form='A', fmin=None, fmax=None,
     ts2 = (mt - 1.0) / 2
     gamma = np.linspace(-geo_f[n_voices - 1] * ts2,
                         geo_f[n_voices - 1] * ts2, 2 * m1)
-    for i in xrange(n_voices):
+    for i in range(n_voices):
         ind = find(np.logical_and(gamma >= -geo_f[i] * ts2,
                                   gamma <= geo_f[i] * ts2))
         x = gamma[ind]
@@ -418,7 +418,7 @@ def d_flandrin(signal, timestamps=None, fmin=None, fmax=None, n_voices=None):
 
     # Computation of Lambda dilations/compressions
     waf = np.zeros((2 * m1, n_voices), dtype=complex)
-    for n in xrange(1, 2 * m1 + 1):
+    for n in range(1, 2 * m1 + 1):
         mx1 = np.exp(-(2 * 1j * np.pi * beta + 0.5) * 2 * np.log(1 - u[n - 1] / 4)) * mellin1
         mx2 = np.exp(-(2 * 1j * np.pi * beta + 0.5) * 2 * np.log(1 + u[n - 1] / 4)) * mellin2
         fx1 = np.fft.fft(np.fft.fftshift(mx1))[:n_voices]
@@ -435,7 +435,7 @@ def d_flandrin(signal, timestamps=None, fmin=None, fmax=None, n_voices=None):
     ts2 = (mt - 1.0) / 2
     gamma = np.linspace(-geo_f[n_voices - 1] * ts2,
                         geo_f[n_voices - 1] * ts2, 2 * m1)
-    for i in xrange(n_voices):
+    for i in range(n_voices):
         ind = find(np.logical_and(gamma >= -geo_f[i] * ts2,
                                   gamma <= geo_f[i] * ts2))
         x = gamma[ind]
@@ -570,7 +570,7 @@ def bertrand(signal, timestamps=None, fmin=None, fmax=None, n_voices=None):
     ts2 = (mt - 1.0) / 2
     gamma = np.linspace(-geo_f[n_voices - 1] * ts2,
                         geo_f[n_voices - 1] * ts2, 2 * m1)
-    for i in xrange(n_voices):
+    for i in range(n_voices):
         ind = find(np.logical_and(gamma >= -geo_f[i] * ts2,
                                   gamma <= geo_f[i] * ts2))
         x = gamma[ind]
@@ -644,7 +644,7 @@ def scalogram(signal, fmin=None, fmax=None, n_voices=None, time_instants=None,
     tfr = np.zeros((n_voices, time_instants.shape[0]), dtype=complex)
 
     if waveparams > 0:
-        for ptr in xrange(n_voices):
+        for ptr in range(n_voices):
             nha = waveparams * a[ptr]
             tha = np.arange(-np.round(nha), np.round(nha) + 1)
             x = np.exp(-(2 * np.log(10) / (nha ** 2)) * tha ** 2)
@@ -657,7 +657,7 @@ def scalogram(signal, fmin=None, fmax=None, n_voices=None, time_instants=None,
             detail = detail[ix]
             tfr[ptr, :] = detail[time_instants] * np.conj(detail[time_instants])
     elif waveparams == 0:
-        for ptr in xrange(n_voices):
+        for ptr in range(n_voices):
             ha = mexhat(f[ptr])
             nha = (ha.shape[0] - 1) / 2
             detail = np.convolve(z, ha) / np.sqrt(a[ptr])
@@ -679,7 +679,7 @@ def scalogram(signal, fmin=None, fmax=None, n_voices=None, time_instants=None,
         nscale = np.max([128, np.round((B * nwave * (1 + 2.0 / R) * np.log((1 +
             R / 2.0) / (1 - R / 2.0))) / 2)])
         wts = scale(waveparams, a, fmin, fmax, nscale)
-        for ptr in xrange(n_voices):
+        for ptr in range(n_voices):
             ha = wts[ptr, :]
             nha = ha.shape[0] / 2
             detail = np.convolve(z, ha) / np.sqrt(a[ptr])
