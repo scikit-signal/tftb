@@ -221,7 +221,7 @@ def gdpower(n_points, degree=0.0, rate=1.0):
         d = float(n_points) ** (degree * rate)
         t0 = n_points / 10.0
         #tfx[:lnu] = np.exp(-1j * 2 * pi * (t0 * nu + d * nu ** degree / degree)) * am
-        tfx[:lnu] = np.exp(-1.0j * 2. * pi * ((t0 * nu + d * nu ** degree) / float(degree))) * am
+        tfx[:lnu] = np.exp(-1.0j * 2. * pi * ((t0 * nu + d * nu ** degree) / degree)) * am
         x = np.fft.ifft(tfx)
     elif degree == 0:
         d = rate
@@ -236,7 +236,7 @@ def gdpower(n_points, degree=0.0, rate=1.0):
         #d = n_points * 2 ** (degree - 1) * rate
         d = n_points * 2. ** (degree - 1.) * rate
         #tfx[:lnu] = np.exp(-1j * 2 * pi * (t0 * nu + d * nu ** degree / degree)) * am
-        tfx[:lnu] = np.exp(-1.0j * 2.0 * pi * (t0 * nu + d * nu ** degree / degree)) * am
+        tfx[:lnu] = np.exp(-1.0j * 2.0 * pi * ((t0 * nu + d * nu ** degree) / degree)) * am
         x = np.fft.ifft(tfx)
     else:
         t0 = n_points / 10
