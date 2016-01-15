@@ -54,16 +54,8 @@ def atoms(n_points, coordinates):
 
     .. plot:: docstring_plots/generators/misc/atoms.py
     """
-    # FIXME: This function produces incorrect output when coordinates are
-    # one-dimensional.
-    # yoder: would the fix be something like: if not isinstance(coordinates[0], list): coordinates = [coordinates]
-    # ???
-    # at first glance, it looks ok. let's just add some data typ handlers. they may be imperfect, but the basic idea is to catch
-    # some common errors, like passing a list, not an array.
-    # an un-contained 1-d coordinates array:
-    if not hasattr(coordinates[0], '__len__'): coordinates = [coordinates]
-    if not hasattr(coordinates, 'shape'):      coordinates = numpy.array(coordinates)
-    #
+    if coordinates.ndim == 1:
+        coordinates = coordinates.reshape((coordinates.shape[0], 1))
     signal = np.zeros((n_points,), dtype=complex)
     n_atoms = coordinates.shape[0]
     for k in range(n_atoms):
@@ -147,9 +139,6 @@ def klauder(n_points, attenuation=10.0, f0=0.2):
 
     assert n_points > 0
     assert ((f0 < 0.5) and (f0 > 0))
-    #
-    # debug:
-    #print('debug: klauder:: n_points=', n_points)
 
     f = np.linspace(0., 0.5, int(n_points / 2 + 1))
     mod = np.exp(-2. * np.pi * attenuation * f) * f ** (2. * np.pi * attenuation * f0 - 0.5)
@@ -198,17 +187,13 @@ def gdpower(n_points, degree=0.0, rate=1.0):
             frequency bins.
     :rtype: tuple
     """
-    # quickly, handle types:
     n_points = int(n_points)
-    degree   = float(degree)
-    rate     = float(rate)
-    #print("diagnostic: running gdpower")
+    degree = float(degree)
+    rate = float(rate)
     t0 = 0
-    #lnu = int(np.round(n_points / 2))
-    lnu = int(np.ceil(n_points / 2))		# ??
+    lnu = int(np.ceil(n_points / 2))
     nu = np.linspace(0, 0.5, lnu + 1)
     nu = nu[1:]
-    #am = nu ** ((degree - 2) / 6)
     am = nu ** ((degree - 2.0) / 6.0)
 
     if rate == 0.:
@@ -217,11 +202,9 @@ def gdpower(n_points, degree=0.0, rate=1.0):
     tfx = np.zeros((n_points,), dtype=complex)
 
     if (degree < 1.) and (degree != 0):
-        #d = n_points ** (degree * rate)
         d = float(n_points) ** (degree * rate)
         t0 = n_points / 10.0
-        #tfx[:lnu] = np.exp(-1j * 2 * pi * (t0 * nu + d * nu ** degree / degree)) * am
-        tfx[:lnu] = np.exp(-1.0j * 2. * pi * ((t0 * nu + d * nu ** degree) / degree)) * am
+        tfx[:lnu] = np.exp(-1.0j * 2. * pi * (t0 * nu + d * nu ** degree / degree)) * am
         x = np.fft.ifft(tfx)
     elif degree == 0:
         d = rate
@@ -229,27 +212,22 @@ def gdpower(n_points, degree=0.0, rate=1.0):
         tfx[:lnu] = np.exp(-1j * 2 * np.pi * (t0 * nu + d * np.log(nu))) * am
         x = np.fft.ifft(tfx)
     elif degree == 1.:
-        from .analytic_signals import anapulse
+        from analytic_signals import anapulse
         t0 = n_points
         x = anapulse(n_points, t0)
     elif degree > 1.:
-        #d = n_points * 2 ** (degree - 1) * rate
         d = n_points * 2. ** (degree - 1.) * rate
-        #tfx[:lnu] = np.exp(-1j * 2 * pi * (t0 * nu + d * nu ** degree / degree)) * am
-        tfx[:lnu] = np.exp(-1.0j * 2.0 * pi * ((t0 * nu + d * nu ** degree) / degree)) * am
+        tfx[:lnu] = np.exp(-1.0j * 2.0 * pi * (t0 * nu + d * nu ** degree / degree)) * am
         x = np.fft.ifft(tfx)
     else:
         t0 = n_points / 10
-        #d = n_points * 2 ** (degree - 1) * rate
         d = n_points * 2.0 ** (degree - 1.0) * rate
         tfx[:lnu] = np.exp(-1j * 2 * pi * (t0 * nu + d * np.log(nu))) * am
         x = np.fft.ifft(tfx)
 
     if degree != 1.0:
-        #gpd = t0 + np.abs(np.sign(rate) - 1) / 2 * (n_points + 1) + d * nu ** (degree - 1)
         gpd = t0 + np.abs(np.sign(rate) - 1.0) / 2.0 * (n_points + 1.0) + d * nu ** (degree - 1.0)
     else:
-        #gpd = t0 * np.ones((n_points / 2,))
         gpd = t0 * np.ones((n_points / 2.0,))
 
     x = x - x.mean()

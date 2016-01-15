@@ -8,34 +8,24 @@
 
 """Base class for tests."""
 
+import sys
 import unittest
 import numpy as np
 from scipy import angle
 from tftb.utils import is_linear
 
-# yoder:
-# let's add at least some backwards python2.x compatibility for now.
-import sys
-#py_ver = sys.version_info.major
-# and assume only backwards revisions (for now):
-ispy2 = (sys.version_info.major<3)		# maybe we should work this into TestBase?
+ispy2 = sys.version_info.major < 3
+
 
 class TestBase(unittest.TestCase):
 
-    # yoder: add __init__()
-    def __init__(self, *args, **kwargs):
-    	# handle various bits, including some python2-3 compatibility, then execute base __init__ as super()
-    	if not ispy2:
-    		# re-map some function calls:
-    		self.assertItemsEqual = self.assertCountEqual		#(inherited from unittest.TestCase)
-    		# ... and others...
-    		#
-    	# and let's go backwards as well, just to be sure (now, we can correct all the downstream code and remove this hack at a later time...).
-    	if ispy2:
-    		self.assertCountEqual = self.assertItemsEqual
-    	#
-    	super(TestBase,self).__init__(*args, **kwargs)
-    
+    @classmethod
+    def setUpClass(cls):
+        if ispy2:
+            cls.assertCountEqual = cls.assertItemsEqual
+        else:
+            cls.assertItemsEqual = cls.assertCountEqual
+
     def assert_is_linear(self, signal, decimals=5):
         """Assert that the signal is linear."""
         self.assertTrue(is_linear(signal, decimals=decimals))

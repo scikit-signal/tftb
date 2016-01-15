@@ -1,4 +1,3 @@
-import tftb.tests
-import tftb.processing
-import tftb.generators
+from tftb import generators, processing, utils
 
+__all__ = ["generators", "processing", "utils"]
