@@ -1,0 +1,31 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# vim:fenc=utf-8
+#
+# Copyright © 2015 jaidev <jaidev@newton>
+#
+# Distributed under terms of the MIT license.
+
+"""
+==========================================================================
+Pseudo-Wigner-Ville Distribution of a Gaussian Atom and a Complex Sinusoid
+==========================================================================
+
+This example demonstrates the pseudo Wigner Ville distribution of a signal
+composed from a Gaussian atom and a complex sinusoid with constant frequency
+modulation. Note that the frequency resolution is relatively worse than that of
+the Wigner-Ville representation, and the interferences have not been resolved
+properly.
+
+"""
+
+from tftb.generators import fmconst, amgauss
+from tftb.processing import PseudoWignerVilleDistribution
+import numpy as np
+
+sig = fmconst(128, 0.15)[0] + amgauss(128) * fmconst(128, 0.4)[0]
+tfr = PseudoWignerVilleDistribution(sig)
+tfr.run()
+tfr.plot(show_tf=True, kind="contour",
+        freq_x=(abs(np.fft.fftshift(np.fft.fft(sig))) ** 2)[::-1][:64],
+        freq_y=np.arange(sig.shape[0] / 2))

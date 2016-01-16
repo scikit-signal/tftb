@@ -11,7 +11,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
    
-   gallery
+   auto_gallery
    api
 
 
