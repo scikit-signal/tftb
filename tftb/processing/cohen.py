@@ -26,7 +26,8 @@ class Spectrogram(ShortTimeFourierTransform):
         return self.tfr, self.ts, self.freqs
 
     def plot(self, kind='cmap', **kwargs):
-        super(Spectrogram, self).plot(kind=kind, sqmod=False, threshold=0,
+        thresh = kwargs.pop("threshold", 0.0)
+        super(Spectrogram, self).plot(kind=kind, sqmod=False, threshold=thresh,
                                       **kwargs)
 
 
