@@ -7,7 +7,14 @@
 # Distributed under terms of the MIT license.
 
 """
-Example in section 1.3.3 of the tutorial.
+=======================================
+Spectrogram of a Noisy Transient Signal
+=======================================
+
+This example demonstrates the simple use of a Spectrogram to localize a signal
+in time and frequency. The transient signal appears at the normalized frequency
+0.25 and between time points 125 and 160.
+
 """
 
 
@@ -25,7 +32,6 @@ signal = np.hstack((np.zeros((100,)), transsig, np.zeros((92,))))
 signal = sigmerge(signal, noisecg(256), -5)
 
 fwindow = hamming(65)
-
 spec = Spectrogram(signal, n_fbins=128, fwindow=fwindow)
 spec.run()
-spec.plot(kind='contour')
+spec.plot(kind="contour", threshold=0.1)
