@@ -11,6 +11,7 @@
 Instantatneous Frequency and Group Delay Estimation of a Multi-Component Nonstationary Signal
 =============================================================================================
 
+Figure 2.10 from the tutorial.
 """
 
 #  N=128; x1=fmlin(N,0,0.2); x2=fmlin(N,0.3,0.5);

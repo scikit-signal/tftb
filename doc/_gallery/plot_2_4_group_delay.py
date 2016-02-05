@@ -14,6 +14,7 @@ Group Delay Estimation of a Chirp
 Constuct a chirp and estimates its `group delay
 <https://en.wikipedia.org/wiki/Group_delay_and_phase_delay>`_.
 
+Figure 2.4 from the tutorial.
 """
 
 from tftb.generators import fmlin

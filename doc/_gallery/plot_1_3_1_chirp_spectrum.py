@@ -14,6 +14,7 @@ Energy Spectral Density of a Chirp
 Construct a chirp and plot its `energy spectral density
 <https://en.wikipedia.org/wiki/Spectral_density#Energy_spectral_density>`_.
 
+Figure 1.2 from the tutorial.
 """
 
 from tftb.generators import fmlin

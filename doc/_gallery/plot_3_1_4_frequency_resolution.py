@@ -15,6 +15,7 @@ This example shows the effect of an analysis window which is long in time on
 the time-frequency resolution. Specifically, longer windows have good frequency
 resolutions but poor time resolutions.
 
+Figure 3.6 from the tutorial.
 """
 
 import numpy as np

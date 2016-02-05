@@ -14,6 +14,7 @@ Ideal time resolution
 This example demonstrates that only the shortest possible window can provide
 ideal resolution in time.
 
+Figure 3.5 from the tutorial.
 """
 
 import numpy as np

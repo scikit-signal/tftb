@@ -14,6 +14,7 @@ Monocomponent Nonstationary Signal with Constant Frequency Modulation and One-Si
 Generate a monocomponent nonstationary signal with constant frequency
 modulation and one-sided exponential amplitude modulation.
 
+Figure 2.7 from the tutorial.
 """
 
 from tftb.generators import fmconst, amexpos

@@ -15,6 +15,8 @@ This example plots the scalogram of a Dirac impulse functions. This shows the
 behaviour of the scalograms as the scale (or inversely, the frequency) changes.
 it is well localized for small scales (large frequencies), and less localized
 as the scale increases (as the frequency decreases).
+
+Figure 3.19 from the tutorial.
 """
 
 from tftb.generators import anapulse

@@ -7,10 +7,11 @@
 # Distributed under terms of the MIT license.
 
 """
-===================================================
+====================================================
 Distant Chirps with a Short Gaussian Analysis Window
-===================================================
+====================================================
 
+Figure 3.17 from the tutorial.
 """
 
 from tftb.generators import fmlin

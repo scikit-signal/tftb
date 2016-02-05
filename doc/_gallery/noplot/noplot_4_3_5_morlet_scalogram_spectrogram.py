@@ -9,6 +9,8 @@
 """
 Comparison of the Spectrogram and the morlet scalogram with their reassinged
 counterparts.
+
+Figure 4.36 from the tutorial
 """
 
 # FIXME: Include the Morlet scalogram in example 4.3.5

@@ -11,6 +11,7 @@
 Gabor Representation of a Chirp
 ===============================
 
+Figure 3.11 from the tutorial.
 """
 
 from tftb.generators import fmlin

@@ -8,6 +8,8 @@
 
 """
 Example from section 4.1.2 of the tutorials.
+
+Figure 4.10 from the tutorial.
 """
 
 from tftb.generators import fmconst, amgauss

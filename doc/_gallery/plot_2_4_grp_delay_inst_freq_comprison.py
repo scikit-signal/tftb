@@ -17,6 +17,7 @@ of frequency components. As this example shows, they coincide with each other
 for a given signal when the time bandwidth product of the signal is
 sufficiently high.
 
+Figure 2.5 from the tutorial.
 """
 
 import numpy as np

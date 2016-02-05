@@ -17,6 +17,7 @@ modulation. Note that the frequency resolution is relatively worse than that of
 the Wigner-Ville representation, and the interferences have not been resolved
 properly.
 
+Figure 4.9 from the tutorial.
 """
 
 from tftb.generators import fmconst, amgauss

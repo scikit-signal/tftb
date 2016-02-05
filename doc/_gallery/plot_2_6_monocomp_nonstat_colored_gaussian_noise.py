@@ -14,6 +14,7 @@ Noisy Monocomponent Chirp
 This example demonstrates the construction of a monocomponent signal with
 linear frequency modulation and colored Gaussian noise.
 
+Figure 2.9 from the tutorial.
 """
 
 from tftb.generators import fmlin, amgauss, noisecg, sigmerge

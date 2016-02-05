@@ -7,7 +7,7 @@
 # Distributed under terms of the MIT license.
 
 """
-
+Figure 4.5 from the tutorial.
 """
 
 import numpy as np

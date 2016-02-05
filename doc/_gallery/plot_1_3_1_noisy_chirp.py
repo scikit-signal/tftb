@@ -14,6 +14,7 @@ Generating a Noisy Chirp
 This example shows how to generate a chirp signal, with some analytical
 gaussian noise, and the usage of the :ref:`sigmerge` function to combine them.
 
+Figure 1.4 from the tutorial.
 """
 
 from tftb.generators import fmlin, sigmerge, noisecg

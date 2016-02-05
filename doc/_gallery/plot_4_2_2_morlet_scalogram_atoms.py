@@ -15,6 +15,8 @@ This example demonstrates the effect of frequency-dependent smoothing that is
 accomplished in a Morlet scalogram. Note that the localization at lower
 frequencies is much better.
 
+Figure 4.18 from the tutorial.
+
 """
 
 from tftb.processing import scalogram

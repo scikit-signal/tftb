@@ -17,6 +17,7 @@ modulation. Although the representation does isolate the atom and the sinusoid
 as independent phenomena in the signal, it also produces some interference
 between them.
 
+Figure 4.8 from the tutorial.
 """
 
 from tftb.generators import fmconst, amgauss

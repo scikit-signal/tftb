@@ -17,6 +17,7 @@ frequency modulations with different slopes. Note that the AF interference
 terms are located away from the origin. We can see the two distint signal
 terms, but there is some interference around the middle.
 
+Figure 4.12 from the tutorial.
 """
 
 from tftb.generators import fmlin, amgauss

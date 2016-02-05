@@ -18,6 +18,7 @@ Wigner-Ville distribution, spearates the signal terms, but produces
 interferences such that they appear diagonally opposite their corresponding
 signals.
 
+Figure 4.14 from the tutorial.
 """
 
 import numpy as np

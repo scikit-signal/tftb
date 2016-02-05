@@ -8,6 +8,8 @@
 
 """
 Morlet Scalograms of Lipschitz singularities.
+
+Figure 5.7 from the tutorial
 """
 
 from tftb.processing import scalogram

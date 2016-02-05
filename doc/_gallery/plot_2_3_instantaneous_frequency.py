@@ -14,10 +14,13 @@ Estimate the Instantaneous Freuqncy of a Chirp
 Construct a chirp and estimate its `instantaneous
 frequency <https://en.wikipedia.org/wiki/Instantaneous_phase#Instantaneous_frequency>`_.
 
+Figure 2.3 from the tutorial.
 """
 
 from tftb.generators import fmlin
 from tftb.processing import plotifl, inst_freq
+# TODO: There doesn't have to be something called `plotifl`. Put this into a
+# separate visualization module.
 import numpy as np
 
 

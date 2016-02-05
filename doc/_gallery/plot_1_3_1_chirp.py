@@ -14,6 +14,8 @@ Linear Frequency Modulation
 This example shows how PyTFTB is used to generate a signal with linear
 frequency modulation. Such a signal is also called a `chirp
 <https://en.wikipedia.org/wiki/Chirp>`_.
+
+Figure 1.1 from the tutorial.
 """
 
 from tftb.generators import fmlin

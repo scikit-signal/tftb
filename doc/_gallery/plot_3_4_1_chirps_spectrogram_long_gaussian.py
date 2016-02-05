@@ -15,6 +15,8 @@ This example visualizes the spectrogram of two "parallel" chirps, using a
 Gaussian window function that has a long length, relative to the length of a
 signal. The two chirps can be made out, but interference can also be seen along
 the time axis, since time resolution is compromised.
+
+Figure 3.16 from the tutorial.
 """
 
 from tftb.generators import fmlin

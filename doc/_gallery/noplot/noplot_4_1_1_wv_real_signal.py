@@ -8,6 +8,7 @@
 
 """
 Example from seciton 4.1.1 of the tutorial.
+Figure 4.6 from the tutorial.
 """
 
 import numpy as np

@@ -11,6 +11,7 @@
 Energy Spectrum of an Audio Signal
 ==================================
 
+Figure 3.3 from the tutorial.
 """
 
 from os.path import dirname, abspath, join

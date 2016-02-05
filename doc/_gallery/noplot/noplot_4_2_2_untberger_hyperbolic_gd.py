@@ -8,6 +8,8 @@
 
 """
 Example showing a Unterberger distribution of a hyperbolic group delay signal.
+
+Figure 4.23 from the tutorial.
 """
 
 from tftb.processing import unterberger

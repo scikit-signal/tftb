@@ -13,6 +13,7 @@ Doppler Signal
 
 Generate a Doppler Signal.
 
+Figure 2.8 from the tutorial.
 """
 
 from tftb.generators import doppler

@@ -16,6 +16,7 @@ containing two complex sinusoids. In a scalogram, the frequency resolution
 varies on the scale of the signal. Here, the frequency resolution decreases at
 higher frequencies (lower scale).
 
+Figure 3.20 from the tutorial.
 """
 
 from tftb.processing import scalogram
