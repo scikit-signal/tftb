@@ -16,6 +16,7 @@ components, having the same Gaussian amplitude modulation and the same
 frequency, but different time centers. It also shows the effect of a Hamming
 window function when used with th STFT.
 
+Figure 3.7 from the tutorial.
 """
 
 import numpy as np

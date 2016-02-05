@@ -13,6 +13,7 @@ Energy Spectrum of a Noisy Chirp
 
 Generate a noisy chirp and plot its energy spectrum.
 
+Figure 1.5 from the tutorial.
 """
 
 from tftb.generators import fmlin, sigmerge, noisecg

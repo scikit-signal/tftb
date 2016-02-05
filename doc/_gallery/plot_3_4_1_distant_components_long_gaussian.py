@@ -16,6 +16,7 @@ separated in frequency ranges. A longer Gaussian analysis window suffices here
 to see the separation of frequencies, since the variation in frequencies is
 relatively slow.
 
+Figure 3.18 from the tutorial.
 """
 
 from tftb.generators import fmlin

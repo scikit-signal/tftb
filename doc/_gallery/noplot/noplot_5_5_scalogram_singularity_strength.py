@@ -13,6 +13,7 @@ Morlet Scalogram of a Lipschitz Singularity
 
 The time localization of the Lipschitz function can be seen at smaller scales.
 
+Figure 5.8 from the tutorial.
 """
 
 from tftb.processing import scalogram

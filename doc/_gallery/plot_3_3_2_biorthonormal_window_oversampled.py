@@ -11,6 +11,7 @@
 Gabor Representation of a Chirp with Oversampling
 =================================================
 
+Figure 3.13 from the tutorial.
 """
 
 from tftb.generators import fmlin

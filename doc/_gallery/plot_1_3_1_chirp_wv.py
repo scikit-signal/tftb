@@ -14,6 +14,7 @@ Wigner-Ville Distribution of a Chirp
 Construct a chirp signal and visualize its `Wigner-Ville distribution
 <https://en.wikipedia.org/wiki/Wigner_distribution_function>`_.
 
+Figure 1.3 from the tutorial.
 """
 
 from tftb.generators import fmlin

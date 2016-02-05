@@ -15,6 +15,7 @@ This example demonstrates the Wigner-Ville distribution of a Dirac impulse
 function, and shows the limitations of the WV distribution when applied to
 broadband signals.
 
+Figure 4.24 from the tutorial.
 """
 
 from tftb.generators import anapulse

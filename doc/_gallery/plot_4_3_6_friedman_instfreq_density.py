@@ -15,6 +15,7 @@ This example uses Friedman's method to calculate the instantaneous frequency
 density of a hybrid signal. The method consists of computing the histograms of
 frequency displacements of the spectrogram of the signal.
 
+Figure 4.38 from the tutorial.
 """
 
 import numpy as np

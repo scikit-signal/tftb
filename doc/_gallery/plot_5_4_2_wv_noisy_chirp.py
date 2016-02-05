@@ -15,6 +15,7 @@ This example shows the Wigner-Ville distribution of a noisy chirp signal. The
 linear frequency increase is undetectable in the time domain, but a straight
 line can be seen in the distribution.
 
+Figure 5.3 from the tutorial.
 """
 
 from tftb.generators import noisecg, sigmerge, fmlin

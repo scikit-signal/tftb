@@ -8,6 +8,8 @@
 
 """
 Examples from section 4.1.1 of the tutorial.
+
+Figure 4.1 from the tutorial.
 """
 
 from tftb.generators import fmlin

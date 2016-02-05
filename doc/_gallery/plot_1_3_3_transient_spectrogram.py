@@ -15,6 +15,7 @@ This example demonstrates the simple use of a Spectrogram to localize a signal
 in time and frequency. The transient signal appears at the normalized frequency
 0.25 and between time points 125 and 160.
 
+Figure 1.11 from the tutorial.
 """
 
 

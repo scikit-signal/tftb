@@ -18,6 +18,7 @@ and compute the following estimates:
     * frequency center
     * frequency spreading
 
+Example 2.1 from the tutorial.
 """
 
 from tftb.generators import fmlin, amgauss

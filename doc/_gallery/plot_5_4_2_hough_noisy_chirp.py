@@ -14,6 +14,7 @@ Wigner-Hough Transform of a Chirp
 This example demonstrates the use of the Hough transform to extract the
 estimates of a chirp signal from its Wigner Ville distribution.
 
+Figure 5.4 from the tutorial.
 """
 
 # FIXME: Use the scikit-image implementation of Hough.

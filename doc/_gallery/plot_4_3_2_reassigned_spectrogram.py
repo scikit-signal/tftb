@@ -15,6 +15,7 @@ This example compares the spectrogram and the reassigned spectrogram of a
 hybrid signal (containing sinusoidal, constant and linear frequency
 modulations), against its ideal time-frequency characteristics.
 
+Figure 4.34 from the tutorial.
 """
 
 from tftb.generators import fmsin, fmhyp

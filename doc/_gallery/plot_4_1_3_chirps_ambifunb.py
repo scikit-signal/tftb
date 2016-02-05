@@ -16,6 +16,7 @@ composed of two chirps with Gaussian amplitude modulation but havind linear
 frequency modulations with different slopes. Note that the AF interference
 terms are located away from the origin.
 
+Figure 4.13 from the tutorial.
 """
 
 from tftb.generators import fmlin, amgauss

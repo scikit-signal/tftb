@@ -8,6 +8,7 @@
 
 """
 Example showing a Bertrand distribution of a hyperbolic group delay signal.
+Figure 4.21 from the tutorial.
 """
 
 from tftb.processing import bertrand

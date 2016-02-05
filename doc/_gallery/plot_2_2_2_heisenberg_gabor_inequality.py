@@ -19,6 +19,8 @@ is lower bound by some constant (in this case normalized to unity). This means
 that a signal cannot have arbitrarily high precision in time and frequency
 simultaneously.
 
+Figure 2.2 from the tutorial.
+
 """
 
 from tftb.generators import amgauss

@@ -11,6 +11,7 @@
 STFT of an Audio Signal
 =======================
 
+Figure 3.4 from the tutorial.
 """
 
 from os.path import dirname, abspath, join

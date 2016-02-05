@@ -9,6 +9,8 @@
 """
 Comparison of the pseudo Page and the pseudo Margenau-Hill distributions with
 their reassinged counterparts.
+
+Figure 4.37 from the tutorial.
 """
 
 # FIXME: Include the Morlet scalogram in example 4.3.5

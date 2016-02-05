@@ -13,6 +13,7 @@ Wigner-Ville Distribution of a Noisy Chirp
 
 Generate a noisy chirp and visualize its Wigner-Ville spectrum.
 
+Figure 1.6 from the tutorial.
 """
 
 from tftb.generators import fmlin, sigmerge, noisecg

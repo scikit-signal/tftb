@@ -19,6 +19,7 @@ characteristics:
 
 And how to plot its energy spectrum.
 
+Figure 1.10 of the tutorial.
 """
 
 

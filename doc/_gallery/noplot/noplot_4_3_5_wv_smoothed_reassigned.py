@@ -9,6 +9,8 @@
 """
 Comparison of the Wigner Ville distribution with its smoothed and reassinged
 counterparts.
+
+Figure 4.35 from the tutorial.
 """
 
 import numpy as np

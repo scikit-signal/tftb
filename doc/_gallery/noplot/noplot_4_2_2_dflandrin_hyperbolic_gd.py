@@ -8,6 +8,7 @@
 
 """
 Example showing a D-Flandrin distribution of a hyperbolic group delay signal.
+Figure 4.22 from the tutorial.
 """
 
 from tftb.processing import d_flandrin

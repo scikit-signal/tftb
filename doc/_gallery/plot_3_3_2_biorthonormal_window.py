@@ -11,6 +11,7 @@
 Biorthonormal Window Function
 =============================
 
+Figure 3.10 from the tutorial.
 """
 
 from tftb.generators import fmlin

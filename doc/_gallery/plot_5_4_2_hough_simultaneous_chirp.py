@@ -14,6 +14,7 @@ Hough-Wigner Transform of Two Simultaneous Chirps
 Compute the Hough transform of the Wigner-Ville distribution of a signal
 composed of two chirps. Two peaks corresponding to the two chirps can be seen.
 
+Figure 5.6 from the tutorial.
 """
 
 from tftb.generators import fmlin, sigmerge

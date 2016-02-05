@@ -14,6 +14,7 @@ Wigner Ville Distribution of Two Simultaneous Chirps
 The signal to be analyzed contains two linear frequency modulations, each with
 a different slope. Note the interference between them.
 
+Figure 5.5 from the tutorial.
 """
 
 from tftb.generators import fmlin, sigmerge
