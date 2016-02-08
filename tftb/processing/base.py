@@ -100,7 +100,10 @@ class BaseTFRepresentation(object):
                 f = kwargs.get('contour_y', np.linspace(0, 0.5, self.signal.shape[0]))
                 t, f = np.meshgrid(t, f)
                 levels = kwargs.pop('levels', None)
-                axTF.contour(t, f, self.tfr, levels, **kwargs)
+                if levels is not None:
+                    axTF.contour(t, f, self.tfr, levels, **kwargs)
+                else:
+                    axTF.contour(t, f, self.tfr, **kwargs)
             from mpl_toolkits.axes_grid1 import make_axes_locatable
             divider = make_axes_locatable(axTF)
             axTime = divider.append_axes("top", 1.2, pad=0.5)
