@@ -66,7 +66,7 @@ class BaseTFRepresentation(object):
         return fwindow
 
     def plot(self, ax=None, kind='cmap', show=True, default_annotation=True,
-             show_tf=False, **kwargs):
+             show_tf=False, scale="linear", threshold=0.05, **kwargs):
         """Visualize the time frequency representation.
 
         :param ax: Axes object to draw the plot on.
@@ -99,7 +99,8 @@ class BaseTFRepresentation(object):
                 t = kwargs.get('contour_x', self.ts)
                 f = kwargs.get('contour_y', np.linspace(0, 0.5, self.signal.shape[0]))
                 t, f = np.meshgrid(t, f)
-                axTF.contour(t, f, self.tfr, **kwargs)
+                levels = kwargs.pop('levels', None)
+                axTF.contour(t, f, self.tfr, levels, **kwargs)
             from mpl_toolkits.axes_grid1 import make_axes_locatable
             divider = make_axes_locatable(axTF)
             axTime = divider.append_axes("top", 1.2, pad=0.5)
