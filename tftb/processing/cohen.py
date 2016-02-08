@@ -152,11 +152,18 @@ class WignerVilleDistribution(BaseTFRepresentation):
         return self.tfr, self.ts, self.freqs
 
     def plot(self, kind='cmap', threshold=0.05, sqmod=False, **kwargs):
+        scale = kwargs.pop("scale", "linear")
+        if scale == "log":
+            maxi = np.amax(self.tfr)
+            mini = max(np.amin(self.tfr), maxi * threshold)
+            levels = np.logspace(np.log10(mini), np.log10(maxi), 65)
+            kwargs['levels'] = levels
         if sqmod:
             self.tfr = np.abs(self.tfr) ** 2
         _threshold = np.amax(self.tfr) * threshold
         self.tfr[self.tfr <= _threshold] = 0.0
-        super(WignerVilleDistribution, self).plot(kind=kind, **kwargs)
+        super(WignerVilleDistribution, self).plot(kind=kind, threshold=threshold,
+                                                  **kwargs)
 
 
 class PseudoWignerVilleDistribution(WignerVilleDistribution):
