@@ -7,7 +7,13 @@
 # Distributed under terms of the MIT license.
 
 """
-Example from section 4.1.1 of the tutorial.
+=============================================
+Wigner-Ville Distribution of a Doppler Signal
+=============================================
+
+This example shows the Wigner-Ville distribution of a Doppler signal. The
+signal steadily rises and falls, but there are many interference terms present
+in the time-friequency plane, due to the bilinearity of the signal.
 
 Figure 4.2 from the tutorial.
 """
