@@ -150,7 +150,14 @@ class BaseTFRepresentation(object):
                 ax.plot_surface(X, Y, np.abs(self.tfr), cmap=plt.cm.jet)
                 if default_annotation:
                     ax.set_zlabel("Amplitude")
-
+            elif kind == "wireframe":
+                from mpl_toolkits.mplot3d import Axes3D
+                ax = fig.gca(projection="3d")
+                x = np.arange(self.signal.shape[0])
+                y = np.linspace(0, 0.5, self.signal.shape[0])
+                X, Y = np.meshgrid(x, y)
+                ax.plot_wireframe(X, Y, np.abs(self.tfr), cmap=plt.cm.jet,
+                                  rstride=3, cstride=3)
             else:
                 t, f = np.meshgrid(self.ts, np.linspace(0, 0.5, self.tfr.shape[0]))
                 ax.contour(t, f, self.tfr, **kwargs)

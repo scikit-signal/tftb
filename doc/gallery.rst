@@ -188,7 +188,7 @@ The Wigner-Ville Distribution
 
 The Wigner-Ville distribution of a linear chirp:
 
-.. plot:: _gallery/noplot/noplot_4_1_1_wv_surf.py
+.. plot:: _gallery/plot_4_1_1_wv_wireframe.py
 
 The Cohen's class of time-frequency representations
 ---------------------------------------------------
