@@ -18,4 +18,4 @@ from tftb.processing import WignerVilleDistribution
 sig = fmlin(256)[0]
 tfr = WignerVilleDistribution(sig)
 tfr.run()
-tfr.plot(kind='surf', sqmod=True)
+tfr.plot(threshold=0.0, kind='wireframe')
