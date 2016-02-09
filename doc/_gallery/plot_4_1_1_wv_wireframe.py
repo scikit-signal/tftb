@@ -7,7 +7,13 @@
 # Distributed under terms of the MIT license.
 
 """
-Examples from section 4.1.1 of the tutorial.
+====================================
+Wigner-Ville distribution of a Chirp
+====================================
+
+This example shows the wireframe plot of the Wigner-Ville distribution of a
+chirp. The WV distribution can take negative values, and has almost perfect
+localization in the time-frequency plane.
 
 Figure 4.1 from the tutorial.
 """
