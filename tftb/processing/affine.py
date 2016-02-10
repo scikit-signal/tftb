@@ -170,8 +170,6 @@ class BertrandDistribution(AffineDistribution):
             multiplier = np.dot(sp1_ana, sp2_ana)
 
         tfr = tfr * multiplier / integrate_2d(tfr, t, f) / self.n_voices
-        from IPython.core.debugger import Tracer
-        Tracer()()
         self.tfr = tfr
         return tfr, t, f
 
