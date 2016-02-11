@@ -103,7 +103,13 @@ class BaseTFRepresentation(object):
                 if levels is not None:
                     axTF.contour(t, f, self.tfr, levels, **kwargs)
                 else:
-                    axTF.contour(t, f, self.tfr, **kwargs)
+                    if self.name == "bertrand":
+                        maxi = np.amax(self.tfr)
+                        mini = max(np.amin(self.tfr), maxi * threshold)
+                        levels = np.linspace(mini, maxi, 65)
+                        axTF.contour(t, f, self.tfr, levels=levels, **kwargs)
+                    else:
+                        axTF.contour(t, f, self.tfr, **kwargs)
             from mpl_toolkits.axes_grid1 import make_axes_locatable
             divider = make_axes_locatable(axTF)
             axTime = divider.append_axes("top", 1.2, pad=0.5)
