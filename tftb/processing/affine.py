@@ -39,13 +39,13 @@ class AffineDistribution(BaseTFRepresentation):
     def _mellin_transform(self):
         pass
 
-    def plot(self):
+    def plot(self, **kwargs):
         # FIXME: Affine distributions don't have implicit spectrums
 
         # The spectra for Affine distributions need to be calculated with
         # interpolation, cannot just use the `freqs` parameter in the Base
         # class.
-        pass
+        super(AffineDistribution, self).plot(**kwargs)
 
 
 class BertrandDistribution(AffineDistribution):
