@@ -39,10 +39,18 @@ class AffineDistribution(BaseTFRepresentation):
     def _mellin_transform(self):
         pass
 
+    def plot(self):
+        # FIXME: Affine distributions don't have implicit spectrums
+
+        # The spectra for Affine distributions need to be calculated with
+        # interpolation, cannot just use the `freqs` parameter in the Base
+        # class.
+        pass
+
 
 class BertrandDistribution(AffineDistribution):
 
-    name = "Bertrand"
+    name = "bertrand"
 
     def __init__(self, signal, fmin=None, fmax=None, n_voices=None, **kwargs):
         super(BertrandDistribution, self).__init__(signal, **kwargs)
@@ -172,6 +180,10 @@ class BertrandDistribution(AffineDistribution):
         tfr = tfr * multiplier / integrate_2d(tfr, t, f) / self.n_voices
         self.tfr = tfr
         return tfr, t, f
+
+    def plot(self, kind="contour", show_tf=True, **kwargs):
+        super(BertrandDistribution, self).plot(kind=kind, show_tf=show_tf,
+              contour_y=self.freqs, freq_x=self.freqs, **kwargs)
 
 
 def bertrand(signal, timestamps=None, fmin=None, fmax=None, n_voices=None):
