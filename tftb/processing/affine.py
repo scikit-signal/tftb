@@ -118,8 +118,8 @@ class DFlandrinDistribution(AffineDistribution):
         super(DFlandrinDistribution, self).__init__(signal, fmin=fmin,
                                                    fmax=fmax, n_voices=n_voices,
                                                    **kwargs)
-        umax = umaxdfla_solve(self.fmax / self.fmin)
-        teq = self.m / (self.fmax * umax)
+        self.umax = umaxdfla_solve(self.fmax / self.fmin)
+        teq = self.m / (self.fmax * self.umax)
         if teq < 2 * self.m:
             m0 = np.round((2 * self.m ** 2) / teq - self.m) + 1
             self.T = 2 * (self.m + m0) - 1
@@ -128,6 +128,8 @@ class DFlandrinDistribution(AffineDistribution):
         self.m1 = int(np.round(self.m + m0))
         if n_voices is None:
             self._get_nvoices()
+        else:
+            self.n_voices = n_voices
 
     def run(self):
         S1, S2 = self._geometric_sample()
@@ -156,11 +158,12 @@ class DFlandrinDistribution(AffineDistribution):
                                     gamma <= self.geo_f[i] * ts2))
             x = gamma[ind]
             y = tffr[i, ind]
-            xi = (self.ts - ts2 - 1) * self.geo_f[i]
+            xi = (self.ts - ts2) * self.geo_f[i]
             tck = splrep(x, y)
             tfr[i, :] = splev(xi, tck).ravel()
         t = self.ts
         f = self.geo_f.ravel()
+        self.freqs = f
         sp1_ana, sp2_ana = self._normalize()
 
         if self.kind == "auto":
@@ -194,6 +197,8 @@ class BertrandDistribution(AffineDistribution):
         self.m1 = m1
         if n_voices is None:
             self._get_nvoices()
+        else:
+            self.n_voices = n_voices
 
     def run(self):
         S1, S2 = self._geometric_sample()
