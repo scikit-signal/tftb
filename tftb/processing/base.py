@@ -103,7 +103,7 @@ class BaseTFRepresentation(object):
                 if levels is not None:
                     axTF.contour(t, f, self.tfr, levels, **kwargs)
                 else:
-                    if self.name in ("bertrand", "d-flandrin"):
+                    if getattr(self, "isaffine", False):
                         maxi = np.amax(self.tfr)
                         mini = max(np.amin(self.tfr), maxi * threshold)
                         levels = np.linspace(mini, maxi, 65)
