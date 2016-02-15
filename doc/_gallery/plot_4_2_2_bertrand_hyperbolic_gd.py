@@ -14,7 +14,7 @@ Bertrand Distribution of a Hyperbolic Group Delay Signal
 This example shows the Bertrand distribution of a signal with hyperbolic group
 delay. The distribution is well localized around the hyperbola, but not
 perfectly. The Bertrand distribution operates only on a part of the frequency
-range between two bounds $f_{min}$ and $f_{max}$.
+range between two bounds :math:`f_{min}` and :math:`f_{max}`.
 
 Figure 4.21 from the tutorial.
 """

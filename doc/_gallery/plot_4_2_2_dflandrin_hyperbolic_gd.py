@@ -13,7 +13,7 @@ D-Flandrin Distribution of a Hyperbolic Group Delay Signal
 
 This example shows the D-Flandrin distribution of a signal having hyperbolic
 group delay. This is the only type of distribution that almost perfectly
-localizes signals having a group delay in $1 / \sqrt{\nu}$
+localizes signals having a group delay in :math:`1 / \sqrt{\\nu}`
 
 Figure 4.22 from the tutorial.
 """
