@@ -15,8 +15,6 @@ from tftb.generators import atoms
 from tftb.processing import renyi_information
 from tftb.processing.cohen import WignerVilleDistribution
 
-# FIXME: This is fully wrong.
-
 sig = atoms(128, np.array([[64, 0.25, 20, 1]]))
 tfr, _, _ = WignerVilleDistribution(sig).run()
 print(renyi_information(tfr))  # -0.2075

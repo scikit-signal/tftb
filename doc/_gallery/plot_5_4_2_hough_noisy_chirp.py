@@ -18,6 +18,8 @@ Figure 5.4 from the tutorial.
 """
 
 # FIXME: Use the scikit-image implementation of Hough.
+# A couple of example depend on the Hough transform, figure out a way to use
+# the skimage implementation.
 
 import numpy as np
 from tftb.generators import noisecg, sigmerge, fmlin

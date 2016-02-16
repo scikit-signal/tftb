@@ -13,11 +13,6 @@ counterparts.
 Figure 4.36 from the tutorial
 """
 
-# FIXME: Include the Morlet scalogram in example 4.3.5
-# Instead of the ideal tfr representation plot in
-# doc/examples/4_3_5_morlet_scalogram_spectrogram.py, use the Morlet scalogram
-# image.
-
 import numpy as np
 import matplotlib.pyplot as plt
 from tftb.generators import fmsin, fmlin, fmconst

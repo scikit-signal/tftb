@@ -26,6 +26,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 import matplotlib.pyplot as plt
 
 # FIXME: squared modulus of scalograms doesn't seem to be necessary.
+# Scalograms seem to render well even without the squared modulus computation
 
 sig = atoms(128, np.array([[38, 0.1, 32, 1], [96, 0.35, 32, 1]]))
 tfr, t, f, _ = scalogram(sig)
