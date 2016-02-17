@@ -11,7 +11,72 @@ Ambiguity functions.
 """
 
 import numpy as np
-from tftb.utils import init_default_args
+from scipy.signal import hilbert
+from tftb.utils import init_default_args, nextpow2
+
+
+def wide_band(signal, fmin, fmax, N=None):
+    if 1 in signal.shape:
+        signal = signal.ravel()
+    elif signal.ndim != 1:
+        raise ValueError("The input signal should be one dimensional.")
+    s_ana = hilbert(np.real(signal))
+    nx = signal.shape[0]
+    m = np.round(nx / 2.0)
+    t = np.arange(nx) - m
+    tmin = 0
+    tmax = nx - 1
+    T = tmax - tmin
+
+    B = fmax - fmin
+    R = B / ((fmin + fmax) / 2.0)
+    nq = np.ceil((B * T * (1 + 2.0 / R) * np.log((1 + R / 2.0) / (1 - R / 2.0))) / 2.0)
+    nmin = nq - (nq % 2)
+    if N is None:
+        N = 2 ** (nextpow2(nmin))
+
+    # geometric sampling for the analyzed spectrum
+    k = np.arange(1, N + 1)
+    q = (fmax / fmin) ** (1.0 / (N - 1))
+    geo_f = fmin * (np.exp((k - 1) * np.log(q)))
+    tfmatx = -2j * np.dot(t.reshape(-1, 1), geo_f.reshape(1, -1)) * np.pi
+    tfmatx = np.exp(tfmatx)
+    S = np.dot(s_ana.reshape(1, -1), tfmatx)
+    S = np.tile(S, (nx, 1))
+    Sb = S * tfmatx
+
+    tau = t
+    S = np.c_[S, np.zeros((nx, N))].T
+    Sb = np.c_[Sb, np.zeros((nx, N))].T
+
+    # mellin transform computation of the analyzed signal
+    p = np.arange(2 * N)
+    coef = np.exp(p / 2.0 * np.log(q))
+    mellinS = np.fft.fftshift(np.fft.ifft(S[:, 0] * coef))
+    mellinS = np.tile(mellinS, (nx, 1)).T
+
+    mellinSb = np.zeros((2 * N, nx), dtype=complex)
+    for i in range(nx):
+        mellinSb[:, i] = np.fft.fftshift(np.fft.ifft(Sb[:, i] * coef))
+
+    k = np.arange(1, 2 * N + 1)
+    scale = np.logspace(np.log10(fmin / fmax), np.log10(fmax / fmin), N)
+    theta = np.log(scale)
+    mellinSSb = mellinS * np.conj(mellinSb)
+
+    waf = np.fft.ifft(mellinSSb, N, axis=0)
+    no2 = int((N + N % 2) / 2.0)
+    waf = np.r_[waf[no2:(N + 1), :], waf[:no2, :]]
+
+    # normalization
+    s = np.real(s_ana)
+    SP = np.fft.fft(hilbert(s))
+    indmin = int(1 + np.round(fmin * (nx - 2)))
+    indmax = int(1 + np.round(fmax * (nx - 2)))
+    sp_ana = SP[(indmin - 1):indmax]
+    waf *= (np.linalg.norm(sp_ana) ** 2) / waf[no2 - 1, m - 1] / N
+
+    return waf, tau, theta
 
 
 def narrow_band(signal, lag=None, n_fbins=None):
@@ -55,10 +120,9 @@ def narrow_band(signal, lag=None, n_fbins=None):
     return naf, lag, xi
 
 if __name__ == '__main__':
-    from tftb.generators import anabpsk
-    sig = anabpsk(256, 8)[0]
-    naf, x, y = narrow_band(sig)
-    import matplotlib.pyplot as plt
-    plt.contour(2 * x, y, np.abs(naf) ** 2, 16)
-    plt.grid(True)
-    plt.show()
+    from tftb.generators.misc import altes
+    sig = altes(128, 0.1, 0.45)
+    waf, tau, theta = wide_band(sig, 0.1, 0.35, 64)
+    from matplotlib.pyplot import contour, show
+    contour(tau, theta, np.abs(waf) ** 2)
+    show()
