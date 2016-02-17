@@ -99,11 +99,6 @@ class AffineDistribution(BaseTFRepresentation):
         return beta, mellin1, mellin2
 
     def plot(self, kind="contour", show_tf=True, **kwargs):
-        # FIXME: Affine distributions don't have implicit spectrums
-
-        # The spectra for Affine distributions need to be calculated with
-        # interpolation, cannot just use the `freqs` parameter in the Base
-        # class.
         super(AffineDistribution, self).plot(kind=kind, show_tf=show_tf,
                                              contour_y=self.freqs,
                                              freq_x=self.freqs, **kwargs)
@@ -314,9 +309,6 @@ class BertrandDistribution(AffineDistribution):
 
         sp1_ana, sp2_ana = self._normalize()
 
-        # FIXME: Refactor the postprocessing of affine distributions
-        # The postprocessing for affine representations is common for Bertrand
-        # and D-Flandrin distributions.
         if self.kind == "auto":
             multiplier = np.linalg.norm(sp1_ana) ** 2
         else:
@@ -513,7 +505,6 @@ def scalogram(signal, fmin=None, fmax=None, n_voices=None, time_instants=None,
 :return:
 :rtype:
     """
-    # FIXME: Output from the MATLAB implementation differs significantly.
     if time_instants is None:
         time_instants = np.arange(signal.shape[0])
     if waveparams is None:
