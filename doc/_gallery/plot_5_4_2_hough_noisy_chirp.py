@@ -17,8 +17,6 @@ estimates of a chirp signal from its Wigner Ville distribution.
 Figure 5.4 from the tutorial.
 """
 
-# FIXME: Use the scikit-image implementation of Hough.
-
 import numpy as np
 from tftb.generators import noisecg, sigmerge, fmlin
 from tftb.processing.cohen import WignerVilleDistribution

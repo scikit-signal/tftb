@@ -25,8 +25,6 @@ import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import matplotlib.pyplot as plt
 
-# FIXME: squared modulus of scalograms doesn't seem to be necessary.
-
 sig = atoms(128, np.array([[38, 0.1, 32, 1], [96, 0.35, 32, 1]]))
 tfr, t, f, _ = scalogram(sig)
 t, f = np.meshgrid(t, f)

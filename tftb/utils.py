@@ -46,6 +46,9 @@ def init_default_args(signal, **kwargs):
     :return: tuple of default values
     :rtype: tuple
     """
+    # FIXME: Remove tftb.utils.init_default_args
+    # This function was used like __init__, no need for it now since most
+    # distributions have their own classes.
     for varname, value in kwargs.items():
         if "time" in varname:
             if value is None:

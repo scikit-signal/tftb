@@ -1,0 +1,3 @@
+[main]
+default_remote: upstream
+cache_location: /Users/jaidevd/.pyticks_cache.json

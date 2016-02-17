@@ -44,8 +44,9 @@ class TestAnalyticSignals(TestBase):
 
     def test_anaqpsk(self):
         """Test quaternary PSK signal."""
-        # FIXME: Need to dig deeper in qpsk and find a better way of testing
-        # it.
+        # FIXME: Better tests for analytical QPSK
+        # Currently only the analyticity of the analytical QPSK signal is being
+        # tested.
         signal, pm0 = ana.anaqpsk(512, 64, 0.05)
         self.assert_is_analytic(signal)
 
