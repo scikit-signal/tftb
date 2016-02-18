@@ -31,7 +31,7 @@ def fmconst(n_points, fnorm=0.25, t0=None):
     else:
         tmt0 = np.arange(n_points) - t0
         y = np.exp(1j * 2.0 * np.pi * fnorm * tmt0)
-        y = y / y[t0]
+        y = y / np.real(y[int(t0)])
         iflaw = fnorm * np.ones((n_points,))
         return y, iflaw
 
