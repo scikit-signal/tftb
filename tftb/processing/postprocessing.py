@@ -86,7 +86,9 @@ def renyi_information(tfr, timestamps=None, freq=None, alpha=3.0):
         raise ValueError("Distribution with negative values not allowed.")
     m, n = tfr.shape
     if timestamps is None:
-        timestamps = np.arange(n)
+        timestamps = np.arange(n) + 1
+    elif np.allclose(timestamps, np.arange(n)):
+        timestamps += 1
     if freq is None:
         freq = np.arange(m)
     freq.sort()
@@ -217,15 +219,9 @@ def ridges(tfr, re_mat, timestamps=None, method='rsp'):
     return time_points, freq_points
 
 if __name__ == '__main__':
-    from tftb.generators import fmlin
-    from tftb.processing.cohen import wigner_ville
-    from mpl_toolkits.mplot3d import Axes3D
-    import matplotlib.pyplot as plt
-    y = fmlin(64, 0.1, 0.3)[0]
-    image = wigner_ville(y, np.arange(64), 64)
-    ht, rho, theta = hough_transform(image, 64, 64)
-    theta, rho = np.meshgrid(theta, rho)
-    fig = plt.figure()
-    ax = fig.gca(projection='3d')
-    ax.plot_wireframe(theta, rho, ht)
-    plt.show()
+    from tftb.generators import atoms
+    from tftb.processing import Spectrogram
+    s = atoms(64, np.array([[32, 0.3, 16, 1]]))
+    spec = Spectrogram(s)
+    tfr, t, f = spec.run()
+    print renyi_information(tfr, t, f, 3)

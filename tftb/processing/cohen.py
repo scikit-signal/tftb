@@ -149,6 +149,7 @@ class WignerVilleDistribution(BaseTFRepresentation):
                                        (self.signal[ti - tau, 0] * np.conj(self.signal[ti + tau, 0]))
         self.tfr = np.fft.fft(self.tfr, axis=0)
         self.tfr = np.real(self.tfr)
+        self.freqs = 0.5 * np.arange(self.n_fbins, dtype=float) / self.n_fbins
         return self.tfr, self.ts, self.freqs
 
     def plot(self, kind='cmap', threshold=0.05, sqmod=False, **kwargs):
