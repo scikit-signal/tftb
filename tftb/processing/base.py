@@ -15,6 +15,9 @@ import matplotlib.pyplot as plt
 
 
 class BaseTFRepresentation(object):
+
+    isaffine = False
+
     def __init__(self, signal, **kwargs):
         """Create a base time-frequency representation object.
 
@@ -47,6 +50,14 @@ class BaseTFRepresentation(object):
                                np.arange(-(self.n_fbins - 1) / 2, 0)))
         self.freqs = freqs.astype(float) / self.n_fbins
         self.tfr = np.zeros((self.n_fbins, self.ts.shape[0]), dtype=complex)
+
+    def _get_spectrum(self):
+        if not self.isaffine:
+            return np.fft.fftshift(np.abs(np.fft.fft(self.signal)) ** 2)
+        nf2 = self.tfr.shape[0]
+        spec = np.abs(np.fft.fft(self.signal[self.ts.min():(self.ts.max() + 1)],
+                                 2 * nf2)) ** 2
+        return spec[:nf2]
 
     def _make_window(self):
         """Make a Hamming window function.
@@ -103,7 +114,7 @@ class BaseTFRepresentation(object):
                 if levels is not None:
                     axTF.contour(t, f, self.tfr, levels, **kwargs)
                 else:
-                    if getattr(self, "isaffine", False):
+                    if self.isaffine:
                         maxi = np.amax(self.tfr)
                         mini = max(np.amin(self.tfr), maxi * threshold)
                         levels = np.linspace(mini, maxi, 65)
@@ -116,10 +127,11 @@ class BaseTFRepresentation(object):
             axTime.plot(np.real(self.signal))
             axFreq = divider.append_axes("left", 1.2, pad=0.5)
             k = int(np.floor(self.signal.shape[0] / 2.0))
-            freq_x = kwargs.get('freq_x',
-                    abs(np.fft.fftshift(np.fft.fft(self.signal))) ** 2)[::-1][:k]
-            freq_y = kwargs.get('freq_y',
-                    np.arange(k))
+            freq_x = kwargs.get('freq_x', self._get_spectrum()[::-1][:k])
+            if self.isaffine:
+                freq_y = kwargs.get('freq_y', self.freqs)
+            else:
+                freq_y = kwargs.get('freq_y', np.arange(k))
             axFreq.plot(freq_x, freq_y)
             if default_annotation:
                 axTF.grid(True)
@@ -132,12 +144,17 @@ class BaseTFRepresentation(object):
                 axTime.set_ylabel('Real part')
                 axTime.set_title('Signal in time')
                 axTime.grid(True)
-                axFreq.set_ylim(0, freq_y.shape[0] - 1)
+                if not self.isaffine:
+                    axFreq.set_ylim(0, freq_y.shape[0] - 1)
+                else:
+                    axFreq.set_ylim(freq_y[0], freq_y[-1])
                 axFreq.set_ylabel('Spectrum')
                 axFreq.set_yticklabels([])
                 axFreq.set_xticklabels([])
                 axFreq.grid(True)
-                axFreq.invert_xaxis()
+                if not self.isaffine:
+                    axFreq.invert_xaxis()
+                    axFreq.invert_yaxis()
         else:
             if (ax is None) and (kind != "surf"):
                 fig = plt.figure()

@@ -22,11 +22,8 @@ Figure 4.8 from the tutorial.
 
 from tftb.generators import fmconst, amgauss
 from tftb.processing import WignerVilleDistribution
-import numpy as np
 
 sig = fmconst(128, 0.15)[0] + amgauss(128) * fmconst(128, 0.4)[0]
 tfr = WignerVilleDistribution(sig)
 tfr.run()
-tfr.plot(show_tf=True, kind='contour',
-        freq_x=(abs(np.fft.fftshift(np.fft.fft(sig))) ** 2)[::-1][:64],
-        freq_y=np.arange(sig.shape[0] / 2))
+tfr.plot(show_tf=True, kind='contour')
