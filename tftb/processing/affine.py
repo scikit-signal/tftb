@@ -99,9 +99,10 @@ class AffineDistribution(BaseTFRepresentation):
         return beta, mellin1, mellin2
 
     def plot(self, kind="contour", show_tf=True, **kwargs):
+        freq_y = np.linspace(self.fmin, self.fmax, self.signal.shape[0] / 2)
         super(AffineDistribution, self).plot(kind=kind, show_tf=show_tf,
                                              contour_y=self.freqs,
-                                             freq_x=self.freqs, **kwargs)
+                                             freq_y=freq_y, **kwargs)
 
     def run(self):
         raise NotImplementedError

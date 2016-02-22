@@ -54,6 +54,10 @@ class BaseTFRepresentation(object):
     def _get_spectrum(self):
         if not self.isaffine:
             return np.fft.fftshift(np.abs(np.fft.fft(self.signal)) ** 2)
+        nf2 = self.tfr.shape[0]
+        spec = np.abs(np.fft.fft(self.signal[self.ts.min():(self.ts.max() + 1)],
+                                 2 * nf2)) ** 2
+        return spec[:nf2]
 
     def _make_window(self):
         """Make a Hamming window function.
@@ -124,7 +128,10 @@ class BaseTFRepresentation(object):
             axFreq = divider.append_axes("left", 1.2, pad=0.5)
             k = int(np.floor(self.signal.shape[0] / 2.0))
             freq_x = kwargs.get('freq_x', self._get_spectrum()[::-1][:k])
-            freq_y = kwargs.get('freq_y', np.arange(k))
+            if self.isaffine:
+                freq_y = kwargs.get('freq_y', self.freqs)
+            else:
+                freq_y = kwargs.get('freq_y', np.arange(k))
             axFreq.plot(freq_x, freq_y)
             if default_annotation:
                 axTF.grid(True)
@@ -137,13 +144,17 @@ class BaseTFRepresentation(object):
                 axTime.set_ylabel('Real part')
                 axTime.set_title('Signal in time')
                 axTime.grid(True)
-                axFreq.set_ylim(0, freq_y.shape[0] - 1)
+                if not self.isaffine:
+                    axFreq.set_ylim(0, freq_y.shape[0] - 1)
+                else:
+                    axFreq.set_ylim(freq_y[0], freq_y[-1])
                 axFreq.set_ylabel('Spectrum')
                 axFreq.set_yticklabels([])
                 axFreq.set_xticklabels([])
                 axFreq.grid(True)
-                axFreq.invert_xaxis()
-                axFreq.invert_yaxis()
+                if not self.isaffine:
+                    axFreq.invert_xaxis()
+                    axFreq.invert_yaxis()
         else:
             if (ax is None) and (kind != "surf"):
                 fig = plt.figure()
