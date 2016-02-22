@@ -1,0 +1,24 @@
+doc-warnings: yes
+test-warnings: yes
+strictness: veryhigh
+mccabe:
+  run: false
+pylint:
+  disable:
+    - too-few-public-methods
+    - no-self-use
+    - too-many-instance-attributes
+    - invalid-name
+    - missing-docstring
+    - star-args
+    - logging-format-interpolation
+    - bad-builtin
+ignore-paths:
+  - docs
+pep8:
+  disable:
+    - E731
+    - E126
+    - E128
+    - E115
+    - N802
