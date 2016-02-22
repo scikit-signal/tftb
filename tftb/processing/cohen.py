@@ -106,7 +106,7 @@ class MargenauHillDistribution(BaseTFRepresentation):
 
 class PseudoMargenauHillDistribution(MargenauHillDistribution):
 
-    name = "pseudo margenau hill"
+    name = "pseudo margenau-hill"
 
     def _make_window(self):
         hlength = np.floor(self.n_fbins / 4.0)

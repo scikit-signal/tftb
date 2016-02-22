@@ -11,6 +11,10 @@
 import numpy as np
 
 
+def get_spectrum(signal):
+    return np.fft.fftshift(np.abs(np.fft.fft(signal)) ** 2)
+
+
 def integrate_2d(mat, x=None, y=None):
     """integrate_2d
 
