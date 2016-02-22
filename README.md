@@ -1,6 +1,7 @@
 [![Documentation Status](https://readthedocs.org/projects/pytftb/badge/?version=master)](http://pytftb.readthedocs.org/en/master/?badge=master)
 [![Build Status](https://travis-ci.org/scikit-signal/pytftb.svg)](https://travis-ci.org/scikit-signal/pytftb)
 [![Coverage Status](https://coveralls.io/repos/scikit-signal/pytftb/badge.svg?branch=master&service=github)](https://coveralls.io/github/scikit-signal/pytftb?branch=master)
+[![Code Health](https://landscape.io/github/scikit-signal/pytftb/master/landscape.svg?style=flat)](https://landscape.io/github/scikit-signal/pytftb/master)
 
 pytftb
 ======
