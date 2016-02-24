@@ -77,7 +77,7 @@ class BaseTFRepresentation(object):
         return fwindow
 
     def _plot_tfr(self, ax, kind, extent, contour_x=None, contour_y=None,
-                  levels=None, show_tf=True, cmap=plt.cm.jet):
+                  levels=None, show_tf=True, cmap=plt.cm.gray):
         if extent is None:
             extent = [self.ts.min(), self.ts.max(), self.freqs.min(),
                       self.freqs.max()]
@@ -168,7 +168,6 @@ class BaseTFRepresentation(object):
         :rtype: None
         """
         self._viz_threshold = threshold
-        print self._viz_threshold
 
         extent = kwargs.pop('extent', None)
         contour_x = kwargs.pop('contour_x', None)

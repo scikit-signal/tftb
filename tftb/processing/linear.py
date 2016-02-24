@@ -90,7 +90,8 @@ class ShortTimeFourierTransform(BaseTFRepresentation):
             self.tfr = np.abs(self.tfr) ** 2
         _threshold = np.amax(self.tfr) * threshold
         self.tfr[self.tfr <= _threshold] = 0.0
-        super(ShortTimeFourierTransform, self).plot(ax=ax, kind=kind, **kwargs)
+        super(ShortTimeFourierTransform, self).plot(ax=ax, kind=kind,
+                threshold=threshold, **kwargs)
 
 
 def gabor(signal, n_coeff=None, q_oversample=None, window=None):
