@@ -76,6 +76,76 @@ class BaseTFRepresentation(object):
         # fwindow = fwindow / np.linalg.norm(fwindow)
         return fwindow
 
+    def _plot_tfr(self, ax, kind, extent, contour_x=None, contour_y=None,
+                  levels=None, show_tf=True, cmap=plt.cm.jet):
+        if extent is None:
+            extent = [self.ts.min(), self.ts.max(), self.freqs.min(),
+                      self.freqs.max()]
+        if kind == "cmap":
+            ax.imshow(self.tfr, cmap=cmap, origin="bottomleft", extent=extent,
+                      aspect='auto')
+        elif kind == "contour":
+            if contour_x is None:
+                contour_x = self.ts
+            if contour_y is None:
+                if show_tf:
+                    contour_y = np.linspace(0, 0.5, self.signal.shape[0])
+                else:
+                    contour_y = np.linspace(0, 0.5, self.tfr.shape[0])
+            contour_x, contour_y = np.meshgrid(contour_x, contour_y)
+            if levels is not None:
+                ax.contour(contour_x, contour_y, self.tfr, levels)
+            else:
+                if self.isaffine:
+                    maxi = np.amax(self.tfr)
+                    mini = max(np.amin(self.tfr), maxi * self._viz_threshold)
+                    levels = np.linspace(mini, maxi, 65)
+                    ax.contour(contour_x, contour_y, self.tfr, levels=levels)
+                else:
+                    ax.contour(contour_x, contour_y, self.tfr)
+
+    def _annotate_tfr(self, ax):
+        ax.grid(True)
+        ax.set_xlabel("Time")
+        ax.set_ylabel("Normalized Frequency")
+        ax.set_title(self.name.upper())
+        ax.yaxis.set_label_position("right")
+
+    def _plot_signal(self, ax):
+        ax.plot(np.real(self.signal))
+
+    def _annotate_signal(self, ax):
+        ax.set_xticklabels([])
+        ax.set_xlim(0, self.signal.shape[0])
+        ax.set_ylabel('Real part')
+        ax.set_title('Signal in time')
+        ax.grid(True)
+
+    def _plot_spectrum(self, ax, freq_x, freq_y):
+        k = int(np.floor(self.signal.shape[0] / 2.0))
+        if freq_x is None:
+            freq_x = self._get_spectrum()[::-1][:k]
+        if freq_y is None:
+            if self.isaffine:
+                freq_y = self.freqs
+            else:
+                freq_y = np.arange(k)
+        ax.plot(freq_x, freq_y)
+        if not self.isaffine:
+            ax.set_ylim(0, freq_y.shape[0] - 1)
+        else:
+            ax.set_ylim(freq_y[0], freq_y[-1])
+        pass
+
+    def _annotate_spectrum(self, ax):
+        ax.set_ylabel('Spectrum')
+        ax.set_yticklabels([])
+        ax.set_xticklabels([])
+        ax.grid(True)
+        if not self.isaffine:
+            ax.invert_xaxis()
+            ax.invert_yaxis()
+
     def plot(self, ax=None, kind='cmap', show=True, default_annotation=True,
              show_tf=False, scale="linear", threshold=0.05, **kwargs):
         """Visualize the time frequency representation.
@@ -97,64 +167,33 @@ class BaseTFRepresentation(object):
         :return: None
         :rtype: None
         """
+        self._viz_threshold = threshold
+        print self._viz_threshold
+
         extent = kwargs.pop('extent', None)
-        if extent is None:
-            extent = [self.ts.min(), self.ts.max(), self.freqs.min(),
-                      self.freqs.max()]
+        contour_x = kwargs.pop('contour_x', None)
+        contour_y = kwargs.pop('contour_y', None)
+        levels = kwargs.pop('levels', None)
+        freq_x = kwargs.pop('freq_x', None)
+        freq_y = kwargs.pop('freq_y', None)
+
         if show_tf:
             fig, axTF = plt.subplots(figsize=(10, 8))
-            if kind == "cmap":
-                axTF.imshow(self.tfr, origin="bottomleft", extent=extent,
-                            aspect='auto', **kwargs)
-            else:
-                t = kwargs.get('contour_x', self.ts)
-                f = kwargs.get('contour_y', np.linspace(0, 0.5, self.signal.shape[0]))
-                t, f = np.meshgrid(t, f)
-                levels = kwargs.pop('levels', None)
-                if levels is not None:
-                    axTF.contour(t, f, self.tfr, levels, **kwargs)
-                else:
-                    if self.isaffine:
-                        maxi = np.amax(self.tfr)
-                        mini = max(np.amin(self.tfr), maxi * threshold)
-                        levels = np.linspace(mini, maxi, 65)
-                        axTF.contour(t, f, self.tfr, levels=levels, **kwargs)
-                    else:
-                        axTF.contour(t, f, self.tfr, **kwargs)
+            self._plot_tfr(axTF, kind, extent, contour_x, contour_y, levels,
+                        show_tf)
             from mpl_toolkits.axes_grid1 import make_axes_locatable
             divider = make_axes_locatable(axTF)
+
             axTime = divider.append_axes("top", 1.2, pad=0.5)
-            axTime.plot(np.real(self.signal))
-            axFreq = divider.append_axes("left", 1.2, pad=0.5)
-            k = int(np.floor(self.signal.shape[0] / 2.0))
-            freq_x = kwargs.get('freq_x', self._get_spectrum()[::-1][:k])
-            if self.isaffine:
-                freq_y = kwargs.get('freq_y', self.freqs)
-            else:
-                freq_y = kwargs.get('freq_y', np.arange(k))
-            axFreq.plot(freq_x, freq_y)
+            self._plot_signal(axTime)
+
+            axSpec = divider.append_axes("left", 1.2, pad=0.5)
+            self._plot_spectrum(axSpec, freq_x, freq_y)
+
             if default_annotation:
-                axTF.grid(True)
-                axTF.set_xlabel("Time")
-                axTF.set_ylabel("Normalized Frequency")
-                axTF.set_title(self.name.upper())
-                axTF.yaxis.set_label_position("right")
-                axTime.set_xticklabels([])
-                axTime.set_xlim(0, self.signal.shape[0])
-                axTime.set_ylabel('Real part')
-                axTime.set_title('Signal in time')
-                axTime.grid(True)
-                if not self.isaffine:
-                    axFreq.set_ylim(0, freq_y.shape[0] - 1)
-                else:
-                    axFreq.set_ylim(freq_y[0], freq_y[-1])
-                axFreq.set_ylabel('Spectrum')
-                axFreq.set_yticklabels([])
-                axFreq.set_xticklabels([])
-                axFreq.grid(True)
-                if not self.isaffine:
-                    axFreq.invert_xaxis()
-                    axFreq.invert_yaxis()
+                self._annotate_tfr(axTF)
+                self._annotate_signal(axTime)
+                self._annotate_spectrum(axSpec)
         else:
             if (ax is None) and (kind != "surf"):
                 fig = plt.figure()

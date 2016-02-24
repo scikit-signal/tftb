@@ -98,10 +98,14 @@ class AffineDistribution(BaseTFRepresentation):
         beta = (p / float(self.n_voices) - 1) / (2 * np.log(self.q))
         return beta, mellin1, mellin2
 
-    def plot(self, kind="contour", show_tf=True, **kwargs):
-        freq_y = np.linspace(self.fmin, self.fmax, self.signal.shape[0] / 2)
+    def plot(self, kind="contour", show_tf=True, threshold=0.05, **kwargs):
+        _thresh = np.amax(self.tfr) * threshold
+        self.tfr[self.tfr <= _thresh] = 0.0
+        freq_y = kwargs.pop("freq_y", np.linspace(self.fmin, self.fmax,
+                                                  self.signal.shape[0] / 2))
+
         super(AffineDistribution, self).plot(kind=kind, show_tf=show_tf,
-                                             contour_y=self.freqs,
+                                             #contour_y=self.freqs,
                                              freq_y=freq_y, **kwargs)
 
     def run(self):
@@ -112,13 +116,17 @@ class Scalogram(AffineDistribution):
     """Morlet Scalogram.
     """
 
+    name = "scalogram"
+    isaffine = False
+
     def __init__(self, signal, fmin=None, fmax=None, n_voices=None,
                  waveparams=None, **kwargs):
         super(Scalogram, self).__init__(signal, fmin=fmin, fmax=fmax)
         if waveparams is None:
             waveparams = np.sqrt(signal.shape[0])
         if n_voices is None:
-            self.n_voices = self.signal.shape[0]
+            n_voices = self.signal.shape[0]
+        self.n_voices = n_voices
         self.waveparams = waveparams
         s_centered = np.real(self.signal) - np.real(self.signal).mean()
         self.z = hilbert(s_centered)
