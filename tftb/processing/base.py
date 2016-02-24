@@ -89,7 +89,10 @@ class BaseTFRepresentation(object):
                 contour_x = self.ts
             if contour_y is None:
                 if show_tf:
-                    contour_y = np.linspace(0, 0.5, self.signal.shape[0])
+                    if self.isaffine:
+                        contour_y = np.linspace(self.fmin, self.fmax, self.n_voices)
+                    else:
+                        contour_y = np.linspace(0, 0.5, self.signal.shape[0])
                 else:
                     contour_y = np.linspace(0, 0.5, self.tfr.shape[0])
             contour_x, contour_y = np.meshgrid(contour_x, contour_y)

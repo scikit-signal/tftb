@@ -19,9 +19,6 @@ Figure 1.11 from the tutorial.
 """
 
 
-# dsp=fftshift(abs(fft(sign)).^2);
-# plot((-128:127)/256,dsp);
-
 import numpy as np
 from scipy.signal import hamming
 from tftb.generators import amexpos, fmconst, sigmerge, noisecg
@@ -35,4 +32,4 @@ signal = sigmerge(signal, noisecg(256), -5)
 fwindow = hamming(65)
 spec = Spectrogram(signal, n_fbins=128, fwindow=fwindow)
 spec.run()
-spec.plot(kind="contour", threshold=0.1)
+spec.plot(kind="contour", threshold=0.1, show_tf=False)
