@@ -35,7 +35,6 @@ class AffineDistribution(BaseTFRepresentation):
             self.x1 = self.x2 = self.signal.copy()
         self.s1 = np.real(self.x1)
         self.s2 = np.real(self.x2)
-        self.m = (self.signal.shape[0] + (self.signal.shape[0] % 2)) / 2
         if (fmin is None) or (fmax is None):
             stf1 = np.fft.fft(np.fft.fftshift(self.s1[self.ts.min():self.ts.max() + 1]))
             stf2 = np.fft.fft(np.fft.fftshift(self.s2[self.ts.min():self.ts.max() + 1]))
@@ -54,8 +53,15 @@ class AffineDistribution(BaseTFRepresentation):
                 indmax = np.arange(mask.shape[0], dtype=int)[mask.astype(bool)].max()
                 fmax = 0.05 * np.ceil(f[indmax] / 0.05)
         self.fmax, self.fmin = fmax, fmin
-        self.bw = fmax - fmin
+        self.bw = self.fmax - self.fmin
+        n_voices = kwargs.get('n_voices', None)
+        if n_voices is None:
+            self._get_nvoices()
+        else:
+            self.n_voices = n_voices
+        self.m = (self.signal.shape[0] + (self.signal.shape[0] % 2)) / 2
         self.R = self.bw / (fmin + fmax) * 2.0
+        self.tfr = np.zeros((self.n_voices, self.ts.shape[0]))
 
     def _get_nvoices(self):
         nq = np.ceil((self.bw * self.T * (1 + 2.0 / self.R) * np.log((1 + self.R / 2.0) / (1 - self.R / 2.0))) / 2)
@@ -101,12 +107,8 @@ class AffineDistribution(BaseTFRepresentation):
     def plot(self, kind="contour", show_tf=True, threshold=0.05, **kwargs):
         _thresh = np.amax(self.tfr) * threshold
         self.tfr[self.tfr <= _thresh] = 0.0
-        freq_y = kwargs.pop("freq_y", np.linspace(self.fmin, self.fmax,
-                                                  self.signal.shape[0] / 2))
-
         super(AffineDistribution, self).plot(kind=kind, show_tf=show_tf,
-                                             #contour_y=self.freqs,
-                                             freq_y=freq_y, **kwargs)
+                                             freq=self.freqs, **kwargs)
 
     def run(self):
         raise NotImplementedError
@@ -117,16 +119,18 @@ class Scalogram(AffineDistribution):
     """
 
     name = "scalogram"
-    isaffine = False
+
+    def _get_nvoices(self):
+        return 2 ** nextpow2(self.signal.shape[0])
 
     def __init__(self, signal, fmin=None, fmax=None, n_voices=None,
                  waveparams=None, **kwargs):
+        if n_voices is None:
+            n_voices = signal.shape[0]
+        self.n_voices = n_voices
         super(Scalogram, self).__init__(signal, fmin=fmin, fmax=fmax)
         if waveparams is None:
             waveparams = np.sqrt(signal.shape[0])
-        if n_voices is None:
-            n_voices = self.signal.shape[0]
-        self.n_voices = n_voices
         self.waveparams = waveparams
         s_centered = np.real(self.signal) - np.real(self.signal).mean()
         self.z = hilbert(s_centered)
@@ -134,6 +138,7 @@ class Scalogram(AffineDistribution):
 
     def run(self):
         f = np.logspace(np.log10(self.fmin), np.log10(self.fmax), self.n_voices)
+        self.freqs = f
         a = np.logspace(np.log10(self.fmax / float(self.fmin)), np.log10(1), self.n_voices)
         wt = np.zeros((self.n_voices, self.ts.shape[0]), dtype=complex)
         if self.waveparams > 0:
@@ -211,10 +216,6 @@ class UnterbergerDistribution(AffineDistribution):
             m0 = 0
             m1 = self.m
         self.m1 = int(np.round(m1))
-        if n_voices is None:
-            self._get_nvoices()
-        else:
-            self.n_voices = n_voices
 
     def run(self):
         S1, S2 = self._geometric_sample()
@@ -335,6 +336,7 @@ class BertrandDistribution(AffineDistribution):
     name = "bertrand"
 
     def __init__(self, signal, fmin=None, fmax=None, n_voices=None, **kwargs):
+        self.signal = signal
         super(BertrandDistribution, self).__init__(signal, fmin=fmin,
                                                    fmax=fmax, n_voices=n_voices,
                                                    **kwargs)

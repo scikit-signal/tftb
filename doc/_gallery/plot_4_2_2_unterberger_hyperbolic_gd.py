@@ -24,4 +24,4 @@ from tftb.generators import gdpower
 sig = gdpower(128, -1)[0]
 dist = UnterbergerDistribution(sig, fmin=0.01, fmax=0.22, n_voices=172)
 dist.run()
-dist.plot()
+dist.plot(threshold=0.1)
