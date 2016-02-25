@@ -143,28 +143,21 @@ class BaseTFRepresentation(object):
         ax.set_title('Signal in time')
         ax.grid(True)
 
-    def _plot_spectrum(self, ax, freqs, spec, scale, maxsp, freqr, nf2):
-        # the axis here is the spectrum axis
-        if scale == "linear":
-            ax.plot(freqs, spec)
-            ax.set_ylim(maxsp * self._viz_threshold, maxsp * 1.2)
-        elif scale == "log":
-            ax.plot(freqs, 10 * np.log10(spec / maxsp))
-            ax.set_ylim(10 * np.log10(self._viz_threshold), 0)
-        ax.set_xlim(self.fmin, self.fmax)
-        if self._isaffine:
-            freqs = np.linspace(freqr[0], freqr[nf2 - 1], nf2)
-            spec = interp1d(0.5 * self.f_sample * np.arange(nf2) / nf2,
-                            spec[:nf2])(freqs)
+    def _plot_spectrum(self, ax, freq_x, freq_y):
+        k = int(np.floor(self.signal.shape[0] / 2.0))
+        if freq_x is None:
+            freq_x = self._get_spectrum()[::-1][:k]
+        if freq_y is None:
+            if self.isaffine:
+                freq_y = self.freqs
+            else:
+                freq_y = np.arange(k)
+        ax.plot(freq_x, freq_y)
+        if not self.isaffine:
+            ax.set_ylim(0, freq_y.shape[0] - 1)
         else:
-            freqs = freqr
-            spec = spec[:nf2]
-        maxsp = np.amax(spec)
-        if scale == "linear":
-            ax.set_ylim(maxsp * self._viz_threshold, maxsp * 1.2)
-        elif scale == "log":
-            ax.set_ylim(10 * np.log10(self._viz_threshold), 0)
-        ax.set_xlim(self.fmin * self.f_sample, self.fmax * self.f_sample)
+            ax.set_ylim(freq_y[0], freq_y[-1])
+        pass
 
     def _annotate_spectrum(self, ax):
         ax.set_ylabel('Spectrum')
@@ -176,8 +169,7 @@ class BaseTFRepresentation(object):
             ax.invert_yaxis()
 
     def plot(self, ax=None, kind='cmap', show=True, default_annotation=True,
-             show_tf=False, scale="linear", threshold=0.05, f_sample=1.0,
-             n_levels=64, fmin=0.0, fmax=None, **kwargs):
+             show_tf=False, scale="linear", threshold=0.05, **kwargs):
         """Visualize the time frequency representation.
 
         :param ax: Axes object to draw the plot on.
@@ -198,92 +190,15 @@ class BaseTFRepresentation(object):
         :rtype: None
         """
         self._viz_threshold = threshold
-        self.f_sample = f_sample
-        self.n_levels = n_levels
-        self.fmin = fmin
-        if fmax is None:
-            fmax = 0.5 * self.f_sample
-        self.fmax = fmax
 
         extent = kwargs.pop('extent', None)
         contour_x = kwargs.pop('contour_x', None)
         contour_y = kwargs.pop('contour_y', None)
         levels = kwargs.pop('levels', None)
-
-        # data required for the plotting
-        maxi = np.amax(self.tfr)
-        tfrrow = self.tfr.shape[0]
-
-        # Number of interesting frequency points to consider
-        if self.has_negative_frequencies:
-            nf2 = tfrrow / 2
-        else:
-            nf2 = tfrrow
-
-        if self._isaffine:
-            if "freq" not in kwargs:
-                raise ValueError("Freq required for affine methods.")
-            freq = kwargs.pop('freq')
-        else:
-            freq = 0.5 * np.arange(nf2) / nf2
-        freqr = freq * f_sample
-        self.ts = self.ts / f_sample
-
-        if scale == "linear":
-            if kind in ("surf", "mesh"):
-                mini = np.amin(self.tfr)
-            else:
-                mini = np.max([np.amin(self.tfr), maxi * threshold])
-            levels = np.linspace(mini, maxi, self.n_levels + 1)
-        elif scale == "log":
-            mini = np.max([np.amin(self.tfr), maxi * threshold])
-            levels = np.logspace(np.log10(mini), np.log10(maxi), self.n_levels + 1)
-
-        alpha = 2
-        lt = self.ts.max() - self.ts.min() + 1
-        if 2 * nf2 >= lt:
-            spec = np.abs(np.fft.fft(self.signal[self.ts.min():self.ts.max()],
-                                     2 * nf2)) ** 2
-        else:
-            nb_tranches_fog = np.floor(lt / (2 * nf2))
-            spec = np.zeros((2 * nf2,))
-            for i in range(int(nb_tranches_fog)):
-                _spec = np.fft.fft(self.signal[self.ts.astype(int).min() + 2 * nf2 * i + np.arange(2 * nf2)])
-                spec += np.abs(_spec) ** 2
-            if lt > nb_tranches_fog * 2 * nf2:
-                start = self.ts.min() + 2 * tfrrow * nb_tranches_fog
-                spectre_fog = np.fft.fft(self.signal[start:self.ts.max()], 2 * nf2)
-                spec += np.abs(spectre_fog) ** 2
-        spec1 = np.sum(spec[:nf2])
-        spec2 = np.sum(spec[nf2:])
-        if spec2 > 0.1 * spec1:
-            import warnings
-            warnings.warn("The signal is not analytic.", UserWarning)
-            if not np.all(np.isreal(self.signal)):
-                alpha = 1
+        freq_x = kwargs.pop('freq_x', None)
+        freq_y = kwargs.pop('freq_y', None)
 
         if show_tf:
-            if self._isaffine:
-                f1 = freqr[0]
-                f2 = freqr[nf2 - 1]
-                d = f2 - f1
-                nf4 = np.round((nf2 - 1) * self.f_sample / (2 * d)) + 1
-                start = self.ts.astype(int).min()
-                stop = self.ts.astype(int).max() + 1
-                _spec_size = int(alpha * nf4)
-                if _spec_size > spec.shape[0]:
-                    spec = np.abs(np.fft.fft(self.signal[start:stop], int(alpha * nf4))) ** 2
-                else:
-                    spec[:_spec_size] = np.abs(np.fft.fft(self.signal[start:stop], int(alpha * nf4))) ** 2
-                start = np.round(f1 * 2 * (nf4 - 1) / self.f_sample + 1)
-                stop = np.round(f1 * 2 * (nf4 - 1) / self.f_sample + nf2) + 1
-                spec = spec[start:stop]
-                freqs = np.linspace(f1, f2, nf2)
-            else:
-                freqs = freqr
-                spec = spec[:nf2]
-            maxsp = np.amax(spec)
-
             fig, axTF = plt.subplots(figsize=(10, 8))
             self._plot_tfr(axTF, kind, extent, contour_x, contour_y, levels,
                         show_tf)
@@ -294,7 +209,7 @@ class BaseTFRepresentation(object):
             self._plot_signal(axTime)
 
             axSpec = divider.append_axes("left", 1.2, pad=0.5)
-            self._plot_spectrum(axSpec, freqs, spec, scale, maxsp, freqr, nf2)
+            self._plot_spectrum(axSpec, freq_x, freq_y)
 
             if default_annotation:
                 self._annotate_tfr(axTF)
