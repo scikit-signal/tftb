@@ -11,7 +11,6 @@ Bilinear Time-Frequency Processing in the Cohen’s Class.
 """
 
 import numpy as np
-from tftb.utils import init_default_args
 from tftb.processing.linear import ShortTimeFourierTransform
 from tftb.processing.base import BaseTFRepresentation
 
@@ -208,8 +207,10 @@ def smoothed_pseudo_wigner_ville(signal, timestamps=None, freq_bins=None,
     :return: Smoothed pseudo Wigner Ville distribution
     :rtype: array-like
     """
-    timestamps, freq_bins = init_default_args(signal, timestamps=timestamps,
-                                              n_fbins=freq_bins)
+    if timestamps is None:
+        timestamps = np.arange(signal.shape[0])
+    if freq_bins is None:
+        freq_bins = signal.shape[0]
 
     if fwindow is None:
         winlength = np.floor(freq_bins / 4.0)

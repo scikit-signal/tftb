@@ -11,7 +11,6 @@ Postprocessing functions.
 """
 
 import numpy as np
-from tftb.utils import init_default_args
 from tftb.processing.utils import integrate_2d
 
 
@@ -114,8 +113,10 @@ def ideal_tfr(iflaws, timestamps=None, n_fbins=None):
 :rtype:
     """
     ifrow, ifcol = iflaws.shape
-    timestamps, n_fbins = init_default_args(iflaws[0, :],
-            timestamps=timestamps, n_fbins=n_fbins)
+    if timestamps is None:
+        timestamps = np.arange(iflaws[0, :].shape[0])
+    if n_fbins is None:
+        n_fbins = iflaws[0, :].shape[0]
 
     tcol = timestamps.shape[0]
 

@@ -9,7 +9,6 @@
 """Miscellaneous utilities."""
 
 import numpy as np
-import warnings
 
 
 TYPE1 = ['pmh', 'rpmh', 'sp', 'rsp', 'ppage', 'rppag', 'mhs', 'rgab', 'mh',
@@ -36,31 +35,6 @@ def is_linear(x, decimals=5):
     derivative = np.diff(x)
     derivative = np.around(derivative, decimals)
     return np.unique(derivative).shape[0] == 1
-
-
-def init_default_args(signal, **kwargs):
-    """Initialize default arguments for common time frequency representations.
-
-    :param x: signal, based on which default arguments are initialized.
-    :type x: numpy.ndarray
-    :return: tuple of default values
-    :rtype: tuple
-    """
-    # FIXME: Remove tftb.utils.init_default_args
-    # This function was used like __init__, no need for it now since most
-    # distributions have their own classes.
-    for varname, value in kwargs.items():
-        if "time" in varname:
-            if value is None:
-                kwargs[varname] = np.arange(signal.shape[0])
-        elif ("n_fbins" in varname) or ("freq_bins" in varname):
-            if value is None:
-                kwargs[varname] = signal.shape[0]
-            elif 2 ** nextpow2(value) != value:
-                msg = "For faster computations, n_fbins should be a power of 2."
-                warnings.warn(msg, UserWarning)
-
-    return list(kwargs.values())
 
 
 def izak(x):
@@ -128,7 +102,3 @@ def modulo(x, N):
     else:
         y = np.mod(np.real(x), N) + 1j * np.mod(np.imag(x), N)
     return y
-
-
-if __name__ == '__main__':
-    print(init_default_args(np.arange(10), timestamps=list(range(10)), n_fbins=3))
