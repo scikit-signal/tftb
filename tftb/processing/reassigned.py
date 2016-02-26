@@ -11,7 +11,6 @@
 import numpy as np
 import scipy.signal as ssig
 from tftb.processing.utils import derive_window
-from tftb.utils import init_default_args
 
 
 def pseudo_wigner_ville(signal, timestamps=None, n_fbins=None, fwindow=None):
@@ -29,8 +28,10 @@ def pseudo_wigner_ville(signal, timestamps=None, n_fbins=None, fwindow=None):
 :rtype:
     """
     xrow = signal.shape[0]
-    timestamps, n_fbins = init_default_args(signal, timestamps=timestamps,
-                                            n_fbins=n_fbins)
+    if timestamps is None:
+        timestamps = np.arange(signal.shape[0])
+    if n_fbins is None:
+        n_fbins = signal.shape[0]
     tcol = timestamps.shape[0]
 
     if fwindow is None:
@@ -107,8 +108,10 @@ def pseudo_margenau_hill(signal, timestamps=None, n_fbins=None, fwindow=None):
 :rtype:
     """
     xrow = signal.shape[0]
-    timestamps, n_fbins = init_default_args(signal, timestamps=timestamps,
-                                            n_fbins=n_fbins)
+    if timestamps is None:
+        timestamps = np.arange(signal.shape[0])
+    if n_fbins is None:
+        n_fbins = signal.shape[0]
     tcol = timestamps.shape[0]
 
     if fwindow is None:
@@ -179,8 +182,10 @@ def pseudo_page(signal, timestamps=None, n_fbins=None, fwindow=None):
 :return:
 :rtype:
     """
-    timestamps, n_fbins = init_default_args(signal, timestamps=timestamps,
-                                            n_fbins=n_fbins)
+    if timestamps is None:
+        timestamps = np.arange(signal.shape[0])
+    if n_fbins is None:
+        n_fbins = signal.shape[0]
     tcol = timestamps.shape[0]
 
     if fwindow is None:
@@ -252,8 +257,10 @@ def morlet_scalogram(signal, timestamps=None, n_fbins=None, tbp=0.25):
 :rtype:
     """
     xrow = signal.shape[0]
-    timestamps, n_fbins = init_default_args(signal, timestamps=timestamps,
-                                            n_fbins=n_fbins)
+    if timestamps is None:
+        timestamps = np.arange(signal.shape[0])
+    if n_fbins is None:
+        n_fbins = signal.shape[0]
     k = 0.001
     tcol = timestamps.shape[0]
     deltat = timestamps[1:] - timestamps[:-1]
@@ -371,8 +378,10 @@ def smoothed_pseudo_wigner_ville(signal, timestamps=None, n_fbins=None,
     """
     xrow = signal.shape[0]
 
-    timestamps, n_fbins = init_default_args(signal, timestamps=timestamps,
-                                            n_fbins=n_fbins)
+    if timestamps is None:
+        timestamps = np.arange(signal.shape[0])
+    if n_fbins is None:
+        n_fbins = signal.shape[0]
     if fwindow is None:
         hlength = np.floor(n_fbins / 4.0)
         hlength += 1 - (hlength % 2)
@@ -479,7 +488,8 @@ def spectrogram(signal, time_samples=None, n_fbins=None, window=None):
         time_samples = np.arange(signal.shape[0])
     elif np.unique(np.diff(time_samples)).shape[0] > 1:
         raise ValueError('Time instants must be regularly sampled.')
-    n_fbins = init_default_args(signal, n_fbins=n_fbins)[0]
+    if n_fbins is None:
+        n_fbins = signal.shape[0]
     if window is None:
         wlength = int(np.floor(signal.shape[0] / 4.0))
         wlength += 1 - np.remainder(wlength, 2)

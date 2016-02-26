@@ -12,7 +12,7 @@ Ambiguity functions.
 
 import numpy as np
 from scipy.signal import hilbert
-from tftb.utils import init_default_args, nextpow2
+from tftb.utils import nextpow2
 
 
 def wide_band(signal, fmin, fmax, N=None):
@@ -101,7 +101,8 @@ def narrow_band(signal, lag=None, n_fbins=None):
         lag = np.arange(tau_start, tau_end)
     taucol = lag.shape[0]
 
-    n_fbins = init_default_args(signal, n_fbins=n_fbins)[0]
+    if n_fbins is None:
+        n_fbins = signal.shape[0]
 
     naf = np.zeros((n_fbins, taucol), dtype=complex)
     for icol in range(taucol):
