@@ -15,7 +15,7 @@ from scipy.signal import hilbert
 from tftb.utils import nextpow2
 
 
-def wide_band(signal, fmin, fmax, N=None):
+def wide_band(signal, fmin=None, fmax=None, N=None):
     if 1 in signal.shape:
         signal = signal.ravel()
     elif signal.ndim != 1:
@@ -28,12 +28,26 @@ def wide_band(signal, fmin, fmax, N=None):
     tmax = nx - 1
     T = tmax - tmin
 
+    # determine default values for fmin, fmax
+    if (fmin is None) or (fmax is None):
+        from matplotlib.mlab import find
+        STF = np.fft.fftshift(s_ana)
+        sp = np.abs(STF[:m]) ** 2
+        maxsp = np.amax(sp)
+        f = np.linspace(0, 0.5, m + 1)
+        f = f[:m]
+        indmin = find(sp > maxsp / 100.0).min()
+        indmax = find(sp > maxsp / 100.0).max()
+        if fmin is None:
+            fmin = max([0.01, 0.05 * np.fix(f[indmin] / 0.05)])
+        if fmax is None:
+            fmax = 0.05 * np.ceil(f[indmax] / 0.05)
     B = fmax - fmin
     R = B / ((fmin + fmax) / 2.0)
     nq = np.ceil((B * T * (1 + 2.0 / R) * np.log((1 + R / 2.0) / (1 - R / 2.0))) / 2.0)
     nmin = nq - (nq % 2)
     if N is None:
-        N = 2 ** (nextpow2(nmin))
+        N = int(2 ** (nextpow2(nmin)))
 
     # geometric sampling for the analyzed spectrum
     k = np.arange(1, N + 1)
@@ -123,7 +137,7 @@ def narrow_band(signal, lag=None, n_fbins=None):
 if __name__ == '__main__':
     from tftb.generators.misc import altes
     sig = altes(128, 0.1, 0.45)
-    waf, tau, theta = wide_band(sig, 0.1, 0.35, 64)
+    waf, tau, theta = wide_band(sig)
     from matplotlib.pyplot import contour, show
     contour(tau, theta, np.abs(waf) ** 2)
     show()
