@@ -20,12 +20,13 @@ Figure 3.19 from the tutorial.
 """
 
 from tftb.generators import anapulse
-from tftb.processing import scalogram
+from tftb.processing import Scalogram
 import numpy as np
 import matplotlib.pyplot as plt
 
 sig1 = anapulse(128)
-tfr, t, f, _ = scalogram(sig1, waveparams=6, fmin=0.05, fmax=0.45, n_voices=128)
+tfr, t, f, _ = Scalogram(sig1, waveparams=6, fmin=0.05, fmax=0.45,
+                         n_voices=128).run()
 tfr = np.abs(tfr) ** 2
 threshold = np.amax(tfr) * 0.05
 tfr[tfr <= threshold] = 0.0

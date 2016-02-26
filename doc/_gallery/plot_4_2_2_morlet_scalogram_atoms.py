@@ -19,15 +19,16 @@ Figure 4.18 from the tutorial.
 
 """
 
-from tftb.processing import scalogram
+from tftb.processing import Scalogram
 from tftb.generators import atoms
 import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import matplotlib.pyplot as plt
 
 sig = atoms(128, np.array([[38, 0.1, 32, 1], [96, 0.35, 32, 1]]))
-tfr, t, f, _ = scalogram(sig)
-t, f = np.meshgrid(t, f)
+tfr, t, freqs, _ = Scalogram(sig, fmin=0.05, fmax=0.45,
+                             time_instants=np.arange(1, 129)).run()
+t, f = np.meshgrid(t, freqs)
 
 fig, axContour = plt.subplots()
 axContour.contour(t, f, tfr)
@@ -46,9 +47,11 @@ axTime.set_xlim(0, 128)
 axTime.set_ylabel('Real part')
 axTime.set_title('Signal in time')
 axTime.grid(True)
-axFreq.plot((abs(np.fft.fftshift(np.fft.fft(sig))) ** 2)[::-1][:64],
-            np.arange(sig.shape[0] / 2))
-axFreq.set_ylim(0, sig.shape[0] / 2 - 1)
+freq_y = np.linspace(0, 0.5, sig.shape[0] / 2)
+freq_x = (abs(np.fft.fftshift(np.fft.fft(sig))) ** 2)[::-1][:64]
+ix = np.logical_and(freq_y >= 0.05, freq_y <= 0.45)
+axFreq.plot(freq_x[ix], freq_y[ix])
+# axFreq.set_ylim(0.05, 0.45)
 axFreq.set_yticklabels([])
 axFreq.set_xticklabels([])
 axFreq.grid(True)

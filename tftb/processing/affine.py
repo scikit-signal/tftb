@@ -98,14 +98,96 @@ class AffineDistribution(BaseTFRepresentation):
         beta = (p / float(self.n_voices) - 1) / (2 * np.log(self.q))
         return beta, mellin1, mellin2
 
-    def plot(self, kind="contour", show_tf=True, **kwargs):
-        freq_y = np.linspace(self.fmin, self.fmax, self.signal.shape[0] / 2)
+    def plot(self, kind="contour", show_tf=True, threshold=0.05, **kwargs):
+        _thresh = np.amax(self.tfr) * threshold
+        self.tfr[self.tfr <= _thresh] = 0.0
+        freq_y = kwargs.pop("freq_y", np.linspace(self.fmin, self.fmax,
+                                                  self.signal.shape[0] / 2))
+
         super(AffineDistribution, self).plot(kind=kind, show_tf=show_tf,
-                                             contour_y=self.freqs,
+                                             #contour_y=self.freqs,
                                              freq_y=freq_y, **kwargs)
 
     def run(self):
         raise NotImplementedError
+
+
+class Scalogram(AffineDistribution):
+    """Morlet Scalogram.
+    """
+
+    name = "scalogram"
+    isaffine = False
+
+    def __init__(self, signal, fmin=None, fmax=None, n_voices=None,
+                 waveparams=None, **kwargs):
+        super(Scalogram, self).__init__(signal, fmin=fmin, fmax=fmax)
+        if waveparams is None:
+            waveparams = np.sqrt(signal.shape[0])
+        if n_voices is None:
+            n_voices = self.signal.shape[0]
+        self.n_voices = n_voices
+        self.waveparams = waveparams
+        s_centered = np.real(self.signal) - np.real(self.signal).mean()
+        self.z = hilbert(s_centered)
+        self.tfr = self.tfr.astype(complex)
+
+    def run(self):
+        f = np.logspace(np.log10(self.fmin), np.log10(self.fmax), self.n_voices)
+        a = np.logspace(np.log10(self.fmax / float(self.fmin)), np.log10(1), self.n_voices)
+        wt = np.zeros((self.n_voices, self.ts.shape[0]), dtype=complex)
+        if self.waveparams > 0:
+            for ptr in range(self.n_voices):
+                nha = self.waveparams * a[ptr]
+                tha = np.arange(-np.round(nha), np.round(nha) + 1)
+                x = np.exp(-(2 * np.log(10) / (nha ** 2)) * tha ** 2)
+                y = np.exp(1j * 2 * np.pi * f[ptr] * tha)
+                ha = x * y
+                detail = np.convolve(self.z, ha) / np.sqrt(a[ptr])
+                ix = np.arange(round(nha), detail.shape[0] - np.round(nha) + 1,
+                            dtype=int)
+                wt[ptr, :] = detail[self.ts]
+                detail = detail[ix]
+                self.tfr[ptr, :] = detail[self.ts] * np.conj(detail[self.ts])
+        elif self.waveparams == 0:
+            for ptr in range(self.n_voices):
+                ha = mexhat(f[ptr])
+                nha = (ha.shape[0] - 1) / 2
+                detail = np.convolve(self.z, ha) / np.sqrt(a[ptr])
+                ix = np.arange(round(nha) + 1, detail.shape[0] - np.round(nha) + 1)
+                detail = detail[ix]
+                wt[ptr, :] = detail[self.ts]
+                self.tfr[ptr, :] = detail[self.ts] * np.conj(detail[self.ts])
+        elif isinstance(self.waveparams, np.ndarray):
+            rwav, cwav = self.waveparams.shape
+            if cwav > rwav:
+                self.waveparams = self.waveparams.T
+            wavef = np.fft.fft(self.waveparams, axis=0)
+            nwave = self.waveparams.shape[0]
+            f0 = wavef[np.abs(wavef[:nwave / 2]) == np.amax(np.abs(wavef[:nwave / 2]))]
+            f0 = ((f0 - 1) * (1 / nwave)).mean()
+            a = np.logspace(np.log10(f0 / float(self.fmin)), np.log10(f0 / float(self.fmax)), self.n_voices)
+            B = 0.99
+            R = B / (1.001 / 2)
+            nscale = np.max([128, np.round((B * nwave * (1 + 2.0 / R) * np.log((1 +
+                R / 2.0) / (1 - R / 2.0))) / 2)])
+            wts = scale(self.waveparams, a, self.fmin, self.fmax, nscale)
+            for ptr in range(self.n_voices):
+                ha = wts[ptr, :]
+                nha = ha.shape[0] / 2
+                detail = np.convolve(self.z, ha) / np.sqrt(a[ptr])
+                detail = detail[int(np.floor(nha)):(detail.shape[0] - np.round(nha))]
+                wt[ptr, :] = detail[self.ts]
+                self.tfr[ptr, :] = detail[self.ts] * np.conj(detail[self.ts])
+
+        # Normalization
+        SP = np.fft.fft(self.z, axis=0)
+        indmin = 1 + np.round(self.fmin * (self.signal.shape[0] - 2))
+        indmax = 1 + np.round(self.fmax * (self.signal.shape[0] - 2))
+        SPana = SP[indmin:(indmax + 1)]
+        self.tfr = np.real(self.tfr)
+        self.tfr = self.tfr * (np.linalg.norm(SPana) ** 2) / integrate_2d(self.tfr, self.ts, f) / self.n_voices
+        return self.tfr, self.ts, f, wt
 
 
 class UnterbergerDistribution(AffineDistribution):
@@ -356,8 +438,8 @@ def smoothed_pseudo_wigner(signal, timestamps=None, K='bertrand', nh0=None,
     :type fmin:
     :type fmax:
     :type n_voices:
-:return:
-:rtype:
+    :return:
+    :rtype:
     """
     xrow = signal.shape[0]
     if timestamps is None:
@@ -417,10 +499,10 @@ def smoothed_pseudo_wigner(signal, timestamps=None, K='bertrand', nh0=None,
     # Wavelet decomposition computation
     matxte1 = np.zeros((n_voices, tcol), dtype=complex)
     matxte2 = np.zeros((n_voices, tcol), dtype=complex)
-    _, _, _, wt1 = scalogram(s1, time_instants=timestamps, waveparams=nh0,
-            fmin=fmin, fmax=fmax, n_voices=n_voices)
-    _, _, _, wt2 = scalogram(s2, time_instants=timestamps, waveparams=nh0,
-            fmin=fmin, fmax=fmax, n_voices=n_voices)
+    _, _, _, wt1 = Scalogram(s1, time_instants=timestamps, waveparams=nh0,
+            fmin=fmin, fmax=fmax, n_voices=n_voices).run()
+    _, _, _, wt2 = Scalogram(s2, time_instants=timestamps, waveparams=nh0,
+            fmin=fmin, fmax=fmax, n_voices=n_voices).run()
     for ptr in range(n_voices):
         matxte1[ptr, :] = wt1[ptr, :] * np.sqrt(a[n_voices - ptr - 1])
         matxte2[ptr, :] = wt2[ptr, :] * np.sqrt(a[n_voices - ptr - 1])
@@ -486,110 +568,6 @@ def umaxdfla_solve(ratio):
     roots = np.roots(coeffs)
     return np.min(np.abs(roots - 0))
 
-
-def scalogram(signal, fmin=None, fmax=None, n_voices=None, time_instants=None,
-              waveparams=None):
-    """scalogram
-
-    :param signal:
-    :param fmin:
-    :param fmax:
-    :param n_voices:
-    :param time_instants:
-    :param waveparams:
-    :type signal:
-    :type fmin:
-    :type fmax:
-    :type n_voices:
-    :type time_instants:
-    :type waveparams:
-:return:
-:rtype:
-    """
-    if time_instants is None:
-        time_instants = np.arange(signal.shape[0])
-    if waveparams is None:
-        waveparams = np.sqrt(signal.shape[0])
-    if n_voices is None:
-        n_voices = signal.shape[0]
-
-    s_centered = np.real(signal) - np.real(signal).mean()
-    z = hilbert(s_centered)
-
-    if (fmin is None) or (fmax is None):
-        stf = np.fft.fft(np.fft.fftshift(z[time_instants.min():time_instants.max() + 1]))
-        nstf = stf.shape[0]
-        sp = np.abs(stf[:int(np.round(nstf / 2.0))]) ** 2
-        maxsp = sp.max()
-        f = np.linspace(0, 0.5, np.round(nstf / 2.0) + 1)
-        if fmin is None:
-            mask = sp > maxsp / 100.0
-            indmin = np.arange(mask.shape[0], dtype=int)[mask.astype(bool)].min()
-            fmin = max([0.01, 0.05 * np.floor(f[indmin] / 0.05)])
-        if fmax is None:
-            mask = sp > maxsp / 100.0
-            indmax = np.arange(mask.shape[0], dtype=int)[mask.astype(bool)].max()
-            fmax = 0.05 * np.ceil(f[indmax] / 0.05)
-
-    f = np.logspace(np.log10(fmin), np.log10(fmax), n_voices)
-    a = np.logspace(np.log10(fmax / float(fmin)), np.log10(1), n_voices)
-    wt = np.zeros((n_voices, time_instants.shape[0]), dtype=complex)
-    tfr = np.zeros((n_voices, time_instants.shape[0]), dtype=complex)
-
-    if waveparams > 0:
-        for ptr in range(n_voices):
-            nha = waveparams * a[ptr]
-            tha = np.arange(-np.round(nha), np.round(nha) + 1)
-            x = np.exp(-(2 * np.log(10) / (nha ** 2)) * tha ** 2)
-            y = np.exp(1j * 2 * np.pi * f[ptr] * tha)
-            ha = x * y
-            detail = np.convolve(z, ha) / np.sqrt(a[ptr])
-            ix = np.arange(round(nha), detail.shape[0] - np.round(nha) + 1,
-                           dtype=int)
-            wt[ptr, :] = detail[time_instants]
-            detail = detail[ix]
-            tfr[ptr, :] = detail[time_instants] * np.conj(detail[time_instants])
-    elif waveparams == 0:
-        for ptr in range(n_voices):
-            ha = mexhat(f[ptr])
-            nha = (ha.shape[0] - 1) / 2
-            detail = np.convolve(z, ha) / np.sqrt(a[ptr])
-            ix = np.arange(round(nha) + 1, detail.shape[0] - np.round(nha) + 1)
-            detail = detail[ix]
-            wt[ptr, :] = detail[time_instants]
-            tfr[ptr, :] = detail[time_instants] * np.conj(detail[time_instants])
-    elif isinstance(waveparams, np.ndarray):
-        rwav, cwav = waveparams.shape
-        if cwav > rwav:
-            waveparams = waveparams.T
-        wavef = np.fft.fft(waveparams, axis=0)
-        nwave = waveparams.shape[0]
-        f0 = wavef[np.abs(wavef[:nwave / 2]) == np.amax(np.abs(wavef[:nwave / 2]))]
-        f0 = ((f0 - 1) * (1 / nwave)).mean()
-        a = np.logspace(np.log10(f0 / float(fmin)), np.log10(f0 / float(fmax)), n_voices)
-        B = 0.99
-        R = B / (1.001 / 2)
-        nscale = np.max([128, np.round((B * nwave * (1 + 2.0 / R) * np.log((1 +
-            R / 2.0) / (1 - R / 2.0))) / 2)])
-        wts = scale(waveparams, a, fmin, fmax, nscale)
-        for ptr in range(n_voices):
-            ha = wts[ptr, :]
-            nha = ha.shape[0] / 2
-            detail = np.convolve(z, ha) / np.sqrt(a[ptr])
-            detail = detail[int(np.floor(nha)):(detail.shape[0] - np.round(nha))]
-            wt[ptr, :] = detail[time_instants]
-            tfr[ptr, :] = detail[time_instants] * np.conj(detail[time_instants])
-
-    t = time_instants
-    f = f.T
-    # Normalization
-    SP = np.fft.fft(z, axis=0)
-    indmin = 1 + np.round(fmin * (signal.shape[0] - 2))
-    indmax = 1 + np.round(fmax * (signal.shape[0] - 2))
-    SPana = SP[indmin:(indmax + 1)]
-    tfr = np.real(tfr)
-    tfr = tfr * (np.linalg.norm(SPana) ** 2) / integrate_2d(tfr, t, f) / n_voices
-    return tfr, t, f, wt
 
 if __name__ == '__main__':
     from tftb.generators import altes
