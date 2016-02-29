@@ -11,10 +11,6 @@
 import numpy as np
 
 
-TYPE1 = ['pmh', 'rpmh', 'sp', 'rsp', 'ppage', 'rppag', 'mhs', 'rgab', 'mh',
-         'mmce', 'rmsc', 'page', 'gabor', 'ri', 'msc', 'type1', 'stft']
-
-
 def is_linear(x, decimals=5):
     """Check if an array is linear.
 
@@ -86,6 +82,10 @@ def nearest_odd(N):
         return y
     if N % 2 == 0:
         return N + 1
+    elif np.floor(N) % 2 == 0:
+        return np.ceil(N)
+    elif np.floor(N) % 2 != 0:
+        return np.floor(N)
     return N
 
 

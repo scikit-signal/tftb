@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.signal import hilbert
+from scipy.integrate import trapz
 # from tftb.utils import nextpow2
 
 
@@ -24,22 +25,6 @@ def sigmerge(x1, x2, ratio=0.0):
     h = np.sqrt(ex1 / (ex2 * 10 ** (ratio / 10.0)))
     sig = x1 + h * x2
     return sig
-
-
-def integrate(y, x):
-    n = y.shape[0]
-    dy = y[:(n - 1)] + y[1:]
-    dx = (x[1:n] - x[:(n - 1)]) / 2.0
-    return np.dot(dy, dx)
-
-
-def integ2d(mat, x, y):
-    m, n = mat.shape
-    mat = np.sum(mat.T, axis=0).T - mat[:, 0] / 2 - mat[:, n - 1] / 2
-    mat *= (x[1] - x[0])
-    dmat = mat[:(m - 1)] + mat[1:m]
-    dy = (y[1:m] - y[:(m - 1)]) / 2
-    return np.sum(dmat * dy)
 
 
 def scale(X, a, fmin, fmax, N):
@@ -97,7 +82,7 @@ def scale(X, a, fmin, fmax, N):
                                                  geo_f.reshape((1, 128))))
         dilate_sig = np.zeros((2 * Mcurrent,), dtype=complex)
         for kk in range(2 * int(Mcurrent)):
-            dilate_sig[kk] = integrate(itfmatx[kk, :] * DS[:N], geo_f)
+            dilate_sig[kk] = trapz(itfmatx[kk, :] * DS[:N], geo_f)
         S[(Mmax - Mcurrent):(Mmax + Mcurrent)] = dilate_sig
         ptr += 1
 

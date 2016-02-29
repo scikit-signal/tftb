@@ -19,6 +19,7 @@ from tftb.tests.base import TestBase
 class TestTimeDomainProcessors(TestBase):
 
     def test_loctime(self):
+        """Test computation of localized time characteristics."""
         signal = am.amgauss(160, 80, 50)
         tm, T = tmd.loctime(signal)
         self.assertAlmostEqual(tm, 79, places=6)

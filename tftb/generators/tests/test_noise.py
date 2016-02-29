@@ -17,14 +17,17 @@ from tftb.generators import noise
 class TestNoise(TestBase):
 
     def test_noisecu(self):
+        """Test uniform white noise generation."""
         x = noise.noisecu(128)
         self.assertAlmostEqual(x.std() ** 2, 1, places=1)
 
     def test_noisecg(self):
+        """Test Gaussian white noise generation."""
         x = noise.noisecg(128)
         self.assertAlmostEqual(x.std() ** 2, 1, places=1)
 
     def test_dopnoise(self):
+        """Test doppler noise generation"""
         signal, iflaw = noise.dopnoise(500, 200, 60, 10, 70, 128)
         energy = np.sum(np.abs(signal) ** 2)
         self.assertAlmostEqual(energy, 1, 3)
