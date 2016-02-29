@@ -22,6 +22,7 @@ from tftb.processing import utils
 class TestUtils(unittest.TestCase):
 
     def test_derive_window(self):
+        """Test derivative of window function."""
         from scipy.signal import gaussian
         g = gaussian(129, 10)
         dwindow = utils.derive_window(g)

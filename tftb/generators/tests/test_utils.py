@@ -23,6 +23,7 @@ from tftb.generators import utils, fmlin
 class TestUtils(unittest.TestCase):
 
     def test_sigmerge(self):
+        """Test merging of signals with a given SNR."""
         signal = fmlin(128)[0]
         noise = np.random.randn(128,)
         noisy_signal = utils.sigmerge(signal, noise)

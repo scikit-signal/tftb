@@ -21,12 +21,14 @@ from tftb.tests.base import TestBase
 class TestCohen(TestBase):
 
     def test_spectrogram_reality(self):
+        """Test the reality property of the spectrogram."""
         signal, _ = fmlin(128, 0.1, 0.4)
         window = kaiser(17, 3 * np.pi)
         tfr, _, _ = cohen.Spectrogram(signal, n_fbins=64, fwindow=window).run()
         self.assertTrue(np.all(np.isreal(tfr)))
 
     def test_spectrogram_linearity(self):
+        """Test the linearity property of the spectrogram."""
         signal, _ = fmlin(128, 0.1, 0.4)
         window = kaiser(17, 3 * np.pi)
         tfr1, _, _ = cohen.Spectrogram(signal, n_fbins=64,
