@@ -27,15 +27,6 @@ def sigmerge(x1, x2, ratio=0.0):
     return sig
 
 
-def integ2d(mat, x, y):
-    m, n = mat.shape
-    mat = np.sum(mat.T, axis=0).T - mat[:, 0] / 2 - mat[:, n - 1] / 2
-    mat *= (x[1] - x[0])
-    dmat = mat[:(m - 1)] + mat[1:m]
-    dy = (y[1:m] - y[:(m - 1)]) / 2
-    return np.sum(dmat * dy)
-
-
 def scale(X, a, fmin, fmax, N):
     """Scale a signal with the Mellin transform.
 
