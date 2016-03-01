@@ -61,3 +61,8 @@ class TestBase(unittest.TestCase):
         derivative = np.diff(signal)
         if not np.all(derivative <= 0):
             raise AssertionError("Signal is not monotonically decreasing.")
+
+    def assert_is_hermitian(self, x):
+        """Assert that the input is a Hermitian matrix."""
+        conj_trans = np.conj(x).T
+        np.testing.assert_allclose(x, conj_trans)
