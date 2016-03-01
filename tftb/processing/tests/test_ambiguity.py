@@ -17,9 +17,22 @@ Tests for tftb.processing.ambiguity
 import unittest
 import numpy as np
 
-from tftb.generators import fmlin, amgauss
+from tftb.generators import fmlin, amgauss, altes
 from tftb.processing import ambiguity
 from tftb.tests.base import TestBase
+
+
+class TestWideBand(TestBase):
+    """Tests for the wide band ambiguity function."""
+    def setUp(self):
+        self.signal = altes(128, 0.1, 0.45)
+        self.tfr, self.tau, self.theta = ambiguity.wide_band(self.signal)
+
+    def test_max_value(self):
+        """Test if the maximum value of the ambiguity function occurs at the
+        origin"""
+        max_ix = np.argmax(np.abs(self.tfr))
+        self.assertAlmostEqual(float(self.tfr.size) / max_ix, 2, places=1)
 
 
 class TestNarrowBand(TestBase):
