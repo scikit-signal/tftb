@@ -11,6 +11,8 @@
 
 import unittest
 import numpy as np
+from scipy import angle, unwrap
+from scipy.stats import mode
 from tftb.tests.base import TestBase
 from tftb.generators import analytic_signals as ana
 
@@ -44,11 +46,16 @@ class TestAnalyticSignals(TestBase):
 
     def test_anaqpsk(self):
         """Test quaternary PSK signal."""
-        # FIXME: Better tests for analytical QPSK
-        # Currently only the analyticity of the analytical QPSK signal is being
-        # tested.
-        signal, pm0 = ana.anaqpsk(512, 64, 0.05)
+        signal, phases = ana.anaqpsk(512, 64, 0.25)
         self.assert_is_analytic(signal)
+        # Count discontinuities in the signal and the phases and assert that
+        # they appear in the same locations
+        uphase = unwrap(angle(signal))
+        dphase = np.diff(uphase)
+        base_value = mode(dphase)[0][0]
+        signal_phase_change = np.abs(dphase - base_value) > 0.0001
+        ideal_phase_change = np.diff(phases) != 0
+        np.testing.assert_allclose(signal_phase_change, ideal_phase_change)
 
     def test_anastep(self):
         """Test analytic unit step signal."""
