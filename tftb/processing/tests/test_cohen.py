@@ -20,6 +20,42 @@ from tftb.tests.base import TestBase
 
 class TestCohen(TestBase):
 
+    def test_spectrogram_time_invariance(self):
+        """Test the time invariance property of the spectrogram."""
+        signal, _ = fmlin(128, 0.1, 0.4)
+        window = kaiser(17, 3 * np.pi)
+        tfr, ts, freqs = cohen.Spectrogram(signal, n_fbins=64, fwindow=window).run()
+        shift = 64
+        timeshifted_signal = np.roll(signal, shift)
+        timeshifted_tfr, _, _ = cohen.Spectrogram(timeshifted_signal, n_fbins=64,
+                                            fwindow=window).run()
+        rolled_tfr = np.roll(tfr, shift, axis=1)
+        # the time invariance property holds mostly qualitatively. The shifted
+        # TFR is not numerically indentical to the rolled TFR, having
+        # differences at the edges; so clip with two TFRs where there are
+        # discontinuities in the TFR.
+        edge = 10
+        xx = np.c_[timeshifted_tfr[:, edge:(shift - edge)],
+                   timeshifted_tfr[:, (shift + edge):-edge]]
+        yy = np.c_[rolled_tfr[:, edge:(shift - edge)],
+                   rolled_tfr[:, (shift + edge):-edge]]
+        np.testing.assert_allclose(xx, yy)
+
+    def test_spectrogram_non_negativity(self):
+        """Test that the spectrogram is non negative."""
+        signal, _ = fmlin(128, 0.1, 0.4)
+        window = kaiser(17, 3 * np.pi)
+        tfr, _, _ = cohen.Spectrogram(signal, n_fbins=64, fwindow=window).run()
+        self.assertTrue(np.all(tfr >= 0))
+
+    def test_spectrogram_energy_conservation(self):
+        """Test the energy conservation property of the spectrogram."""
+        signal, _ = fmlin(128, 0.1, 0.4)
+        window = kaiser(17, 3 * np.pi)
+        tfr, ts, freqs = cohen.Spectrogram(signal, n_fbins=64, fwindow=window).run()
+        e_sig = (np.abs(signal) ** 2).sum()
+        self.assertAlmostEqual(tfr.sum().sum() / 64, e_sig)
+
     def test_spectrogram_reality(self):
         """Test the reality property of the spectrogram."""
         signal, _ = fmlin(128, 0.1, 0.4)
