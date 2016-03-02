@@ -20,8 +20,17 @@ class Spectrogram(ShortTimeFourierTransform):
     name = "spectrogram"
 
     def run(self):
-        super(Spectrogram, self).run()
-        self.tfr = np.abs(self.tfr) ** 2
+        lh = (self.fwindow.shape[0] - 1) / 2
+        for icol in range(self.tfr.shape[1]):
+            ti = self.ts[icol]
+            start = -np.min([np.round(self.n_fbins / 2.0) - 1, lh, ti - 1])
+            end = np.min([np.round(self.n_fbins / 2.0) - 1, lh,
+                          self.signal.shape[0] - ti])
+            tau = np.arange(start, end + 1).astype(int)
+            indices = np.remainder(self.n_fbins + tau, self.n_fbins)
+            self.tfr[indices.astype(int), icol] = self.signal[ti + tau - 1] * \
+                np.conj(self.fwindow[lh + tau]) / np.linalg.norm(self.fwindow[lh + tau])
+        self.tfr = np.abs(np.fft.fft(self.tfr, axis=0)) ** 2
         return self.tfr, self.ts, self.freqs
 
     def plot(self, kind='cmap', **kwargs):
