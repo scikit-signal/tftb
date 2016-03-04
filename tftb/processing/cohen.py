@@ -19,6 +19,23 @@ class Spectrogram(ShortTimeFourierTransform):
 
     name = "spectrogram"
 
+<<<<<<< HEAD
+    def __init__(self , signal , timestamps=None , n_fbins=None, fwindow=None ):
+        
+        super(Spectrogram, self).__init__(signal=signal,
+            n_fbins=n_fbins, timestamps=timestamps, fwindow=fwindow)
+
+    def run(self , nperseg = 256 , noverlap = None , fs = 1.0 ):
+        #nperseg 
+        #noverlap
+        #nfft is this n_fbins ? have to check that 
+        #fs 
+        self.freqs ,  self.ts , self.tfr  = spectrogram(x , fs = fs , window= self.fwindow , nperseg = nperseg , noverlap = noverlap , nfft = self.n_fbins )
+
+        return self.tfr, self.ts , self.freqs 
+
+   
+=======
     def run(self):
         lh = (self.fwindow.shape[0] - 1) / 2
         for icol in range(self.tfr.shape[1]):
@@ -32,6 +49,7 @@ class Spectrogram(ShortTimeFourierTransform):
                 np.conj(self.fwindow[lh + tau]) / np.linalg.norm(self.fwindow[lh + tau])
         self.tfr = np.abs(np.fft.fft(self.tfr, axis=0)) ** 2
         return self.tfr, self.ts, self.freqs
+>>>>>>> parent of a21870c... changes spectrgram function to include scipy one
 
     def plot(self, kind='cmap', **kwargs):
         thresh = kwargs.pop("threshold", 0.0)
