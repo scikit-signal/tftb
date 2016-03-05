@@ -13,25 +13,25 @@ Bilinear Time-Frequency Processing in the Cohen’s Class.
 import numpy as np
 from tftb.processing.linear import ShortTimeFourierTransform
 from tftb.processing.base import BaseTFRepresentation
-
+from scipy import signal
 
 class Spectrogram(ShortTimeFourierTransform):
 
     name = "spectrogram"
 
-    def run(self):
-        lh = (self.fwindow.shape[0] - 1) / 2
-        for icol in range(self.tfr.shape[1]):
-            ti = self.ts[icol]
-            start = -np.min([np.round(self.n_fbins / 2.0) - 1, lh, ti - 1])
-            end = np.min([np.round(self.n_fbins / 2.0) - 1, lh,
-                          self.signal.shape[0] - ti])
-            tau = np.arange(start, end + 1).astype(int)
-            indices = np.remainder(self.n_fbins + tau, self.n_fbins)
-            self.tfr[indices.astype(int), icol] = self.signal[ti + tau - 1] * \
-                np.conj(self.fwindow[lh + tau]) / np.linalg.norm(self.fwindow[lh + tau])
-        self.tfr = np.abs(np.fft.fft(self.tfr, axis=0)) ** 2
-        return self.tfr, self.ts, self.freqs
+    def __init__(self , signal , timestamps=None , n_fbins=None, fwindow=None ):
+        
+        super(Spectrogram, self).__init__(signal=signal,
+            n_fbins=n_fbins, timestamps=timestamps, fwindow=fwindow)
+
+    def run(self , nperseg = 256 , noverlap = None , fs = 1.0 ):
+        #nperseg 
+        #noverlap
+        #nfft is this n_fbins ? have to check that 
+        #fs 
+        self.freqs ,  self.ts , self.tfr  = signal.spectrogram(x , fs = fs , window= self.fwindow , nperseg = nperseg , noverlap = noverlap , nfft = self.n_fbins )
+
+        return self.tfr, self.ts , self.freqs 
 
     def plot(self, kind='cmap', **kwargs):
         thresh = kwargs.pop("threshold", 0.0)
