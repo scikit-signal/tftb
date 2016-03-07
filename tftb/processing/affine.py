@@ -105,7 +105,6 @@ class AffineDistribution(BaseTFRepresentation):
                                                   self.signal.shape[0] / 2))
 
         super(AffineDistribution, self).plot(kind=kind, show_tf=show_tf,
-                                             #contour_y=self.freqs,
                                              freq_y=freq_y, **kwargs)
 
     def _get_interpolated_tf(self, tffr):
@@ -130,6 +129,7 @@ class AffineDistribution(BaseTFRepresentation):
         else:
             multiplier = np.dot(sp1_ana, sp2_ana)
         tfr = tfr * multiplier / integrate_2d(tfr, t, f) / self.n_voices
+        self.tfr = tfr
         return tfr, t, f
 
     def run(self):
