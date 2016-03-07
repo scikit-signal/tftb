@@ -105,8 +105,32 @@ class AffineDistribution(BaseTFRepresentation):
                                                   self.signal.shape[0] / 2))
 
         super(AffineDistribution, self).plot(kind=kind, show_tf=show_tf,
-                                             #contour_y=self.freqs,
                                              freq_y=freq_y, **kwargs)
+
+    def _get_interpolated_tf(self, tffr):
+        tfr = np.zeros((self.n_voices, self.ts.shape[0]))
+        ts2 = (self.signal.shape[0] - 1.0) / 2
+        gamma = np.linspace(-self.geo_f[self.n_voices - 1] * ts2,
+                            self.geo_f[self.n_voices - 1] * ts2, 2 * self.m1)
+        for i in range(self.n_voices):
+            ind = find(np.logical_and(gamma >= -self.geo_f[i] * ts2,
+                                    gamma <= self.geo_f[i] * ts2))
+            x = gamma[ind]
+            y = tffr[i, ind]
+            xi = (self.ts - ts2) * self.geo_f[i]
+            tck = splrep(x, y)
+            tfr[i, :] = splev(xi, tck).ravel()
+        t = self.ts
+        f = self.geo_f.ravel()
+        self.freqs = f
+        sp1_ana, sp2_ana = self._normalize()
+        if self.kind == "auto":
+            multiplier = np.linalg.norm(sp1_ana) ** 2
+        else:
+            multiplier = np.dot(sp1_ana, sp2_ana)
+        tfr = tfr * multiplier / integrate_2d(tfr, t, f) / self.n_voices
+        self.tfr = tfr
+        return tfr, t, f
 
     def run(self):
         raise NotImplementedError
@@ -301,33 +325,8 @@ class DFlandrinDistribution(AffineDistribution):
         tffr = np.fft.ifft(waf, axis=0)
         tffr = np.real(np.rot90(np.vstack((tffr[self.m1:(2 * self.m1 + 1), :],
                                         tffr[:self.m1, :])), k=-1))
-
         # conversion from tff to tf using 1d interpolation
-        tfr = np.zeros((self.n_voices, self.ts.shape[0]))
-        ts2 = (self.signal.shape[0] - 1.0) / 2
-        gamma = np.linspace(-self.geo_f[self.n_voices - 1] * ts2,
-                            self.geo_f[self.n_voices - 1] * ts2, 2 * self.m1)
-        for i in range(self.n_voices):
-            ind = find(np.logical_and(gamma >= -self.geo_f[i] * ts2,
-                                    gamma <= self.geo_f[i] * ts2))
-            x = gamma[ind]
-            y = tffr[i, ind]
-            xi = (self.ts - ts2) * self.geo_f[i]
-            tck = splrep(x, y)
-            tfr[i, :] = splev(xi, tck).ravel()
-        t = self.ts
-        f = self.geo_f.ravel()
-        self.freqs = f
-        sp1_ana, sp2_ana = self._normalize()
-
-        if self.kind == "auto":
-            multiplier = np.linalg.norm(sp1_ana) ** 2
-        else:
-            multiplier = np.dot(sp1_ana, sp2_ana)
-
-        tfr = tfr * multiplier / integrate_2d(tfr, t, f) / self.n_voices
-        self.tfr = tfr
-        return tfr, t, f
+        return self._get_interpolated_tf(tffr)
 
 
 class BertrandDistribution(AffineDistribution):
@@ -374,32 +373,7 @@ class BertrandDistribution(AffineDistribution):
         tffr = np.real(np.rot90(np.vstack((tffr[self.m1:(2 * self.m1 + 1), :],
                                         tffr[:self.m1, :])), k=-1))
         # conversion from tff to tf using 1d interpolation
-        tfr = np.zeros((self.n_voices, self.ts.shape[0]))
-        ts2 = (self.signal.shape[0] - 1.0) / 2
-        gamma = np.linspace(-self.geo_f[self.n_voices - 1] * ts2,
-                            self.geo_f[self.n_voices - 1] * ts2, 2 * self.m1)
-        for i in range(self.n_voices):
-            ind = find(np.logical_and(gamma >= -self.geo_f[i] * ts2,
-                                    gamma <= self.geo_f[i] * ts2))
-            x = gamma[ind]
-            y = tffr[i, ind]
-            xi = (self.ts - ts2) * self.geo_f[i]
-            tck = splrep(x, y)
-            tfr[i, :] = splev(xi, tck).ravel()
-        t = self.ts
-        f = self.geo_f.ravel()
-        self.freqs = f
-
-        sp1_ana, sp2_ana = self._normalize()
-
-        if self.kind == "auto":
-            multiplier = np.linalg.norm(sp1_ana) ** 2
-        else:
-            multiplier = np.dot(sp1_ana, sp2_ana)
-
-        tfr = tfr * multiplier / integrate_2d(tfr, t, f) / self.n_voices
-        self.tfr = tfr
-        return tfr, t, f
+        return self._get_interpolated_tf(tffr)
 
 
 def lambdak(u, k):
