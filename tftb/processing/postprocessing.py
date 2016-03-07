@@ -12,6 +12,7 @@ Postprocessing functions.
 
 import numpy as np
 from tftb.processing.utils import integrate_2d
+from skimage.transform import hough_line
 
 
 def hough_transform(image, m=None, n=None):
@@ -32,38 +33,22 @@ def hough_transform(image, m=None, n=None):
     if n is None:
         n = ymax
 
-    rhomax = np.sqrt((xmax ** 2) + (ymax ** 2)) / 2.0
-    deltar = rhomax / (m - 1.0)
-    deltat = 2 * np.pi / n
+    image_out = image[:m, :n]
+    max_index = np.unravel_index(image_out.argmax(),image_out.shape)
+    maxi  = image_out[max_index[0]][max_index[1]]
+    
+    min_index = np.unravel_index(image_out.argmin(),image_out.shape)
+    mini = image_out[min_index[0]][min_index[1]]
 
-    ht = np.zeros((m, n))
-    imax = np.amax(image)
+    #a , b = np.unique(image_out,return_index=True)
 
-    if xmax % 2 != 0:
-        xc = (xmax + 1) / 2
-        xf = xc - 1
-    else:
-        xc = xf = xmax / 2
-    x0 = 1 - xc
+    image_out_changed = image_out*256/(maxi - mini)
+    image_out_changed2 = image_out_changed.astype(np.int8)
 
-    if ymax % 2 != 0:
-        yc = (ymax + 1) / 2
-        yf = yc - 1
-    else:
-        yc = yf = ymax / 2
-    y0 = 1 - yc
+    ht, theta , rho = hough_line(image_out_changed2)
 
-    for x in range(x0, xf + 1):
-        for y in range(y0, yf + 1):
-            if np.abs(image[x + xc - 1, y + yc - 1]) > imax / 20.0:
-                for theta in np.linspace(0, 2 * np.pi - deltat, n):
-                    rho = x * np.cos(theta) - y * np.sin(theta)
-                    if (rho >= 0) and (rho <= rhomax):
-                        ht[int(np.round(rho / deltar)),
-                           int(np.round(theta / deltat))] += image[x + xc - 1,
-                                                                   y + yc - 1]
-    rho = np.linspace(0, rhomax, n)
-    theta = np.linspace(0, 2 * np.pi - deltat, n)
+
+
     return ht, rho, theta
 
 
