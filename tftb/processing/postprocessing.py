@@ -23,8 +23,8 @@ def hough_transform(image, m=None, n=None):
     :type image:
     :type m:
     :type n:
-:return:
-:rtype:
+    :return:
+    :rtype:
     """
     xmax, ymax = image.shape
     if m is None:
@@ -78,8 +78,8 @@ def renyi_information(tfr, timestamps=None, freq=None, alpha=3.0):
     :type timestamps:
     :type freq:
     :type alpha:
-:return:
-:rtype:
+    :return:
+    :rtype:
     """
     if alpha == 1 and tfr.min().min() < 0:
         raise ValueError("Distribution with negative values not allowed.")
@@ -109,8 +109,8 @@ def ideal_tfr(iflaws, timestamps=None, n_fbins=None):
     :type iflaws:
     :type timestamps:
     :type n_fbins:
-:return:
-:rtype:
+    :return:
+    :rtype:
     """
     ifrow, ifcol = iflaws.shape
     if timestamps is None:
@@ -141,8 +141,8 @@ def friedman_density(tfr, re_mat, timestamps=None):
     :type tfr:
     :type re_mat:
     :type timestamps:
-:return:
-:rtype:
+    :return:
+    :rtype:
     """
     tfrrow, tfrcol = tfr.shape
     hatrow, hatcol = re_mat.shape
@@ -174,8 +174,8 @@ def ridges(tfr, re_mat, timestamps=None, method='rsp'):
     :type re_mat:
     :type timestamps:
     :type method:
-:return:
-:rtype:
+    :return:
+    :rtype:
     """
     method = method.lower()
     tfrrow, tfrcol = tfr.shape
