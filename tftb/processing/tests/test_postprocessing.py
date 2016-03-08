@@ -26,6 +26,7 @@ import unittest
 class TestPostprocessing(TestBase):
 
     def test_renyi_information(self):
+        """Check if Renyi entropy computation is correct."""
         sig = atoms(128, np.array([[64., 0.25, 20., 1.]]))
         tfr, _, _ = WignerVilleDistribution(sig).run()
         R1 = pproc.renyi_information(tfr)
@@ -36,6 +37,8 @@ class TestPostprocessing(TestBase):
         self.assertAlmostEqual(R2 - R1, 0.98, places=1)
 
     def test_ideal_tfr(self):
+        """Test if the ideal TFR can be found using the instantaneous frequency
+        laws."""
         _, iflaw1 = fmlin(128, 0.0, 0.2)
         _, iflaw2 = fmlin(128, 0.3, 0.5)
         iflaws = np.c_[iflaw1, iflaw2].T
