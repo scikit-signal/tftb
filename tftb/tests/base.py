@@ -13,6 +13,7 @@ import unittest
 import numpy as np
 from scipy import angle
 from tftb.utils import is_linear
+from skimage.measure import structural_similarity as ssim
 
 ispy2 = sys.version_info.major < 3
 
@@ -66,3 +67,15 @@ class TestBase(unittest.TestCase):
         """Assert that the input is a Hermitian matrix."""
         conj_trans = np.conj(x).T
         np.testing.assert_allclose(x, conj_trans)
+
+    def assert_tfr_equal(self, x, y, sqmod=True, threshold=0.05, tol=0.99):
+        """Assert that TFRs x and y are qualitatively equivalent."""
+        if sqmod:
+            x = np.abs(x) ** 2
+            y = np.abs(y) ** 2
+        x_thresh = np.amax(x) * threshold
+        x[x <= x_thresh] = 0.0
+        y_thresh = np.amax(y) * threshold
+        y[y <= y_thresh] = 0.0
+        similarity = ssim(x, y)
+        self.assertTrue(similarity >= tol)
