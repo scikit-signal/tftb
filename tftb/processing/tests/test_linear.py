@@ -53,5 +53,14 @@ class TestLinear(TestBase):
         tfrx_shifted = np.roll(tfrx, int(np.ceil(128 * 0.3)), axis=0)
         self.assert_tfr_equal(tfrx_shifted, tfrh, tol=0.95)
 
+    @unittest.skip("Known failure")
+    def test_stft_conjugation(self):
+        x = fmlin(128, 0, 0.2)[0]
+        h = np.conjugate(x)
+        lhs, _, _ = linear.ShortTimeFourierTransform(h).run()
+        rhs, _, _ = linear.ShortTimeFourierTransform(x[::-1]).run()
+        rhs = np.conjugate(rhs)
+        np.testing.assert_allclose(lhs, rhs)
+
 if __name__ == '__main__':
     unittest.main()
