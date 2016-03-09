@@ -77,5 +77,7 @@ class TestBase(unittest.TestCase):
         x[x <= x_thresh] = 0.0
         y_thresh = np.amax(y) * threshold
         y[y <= y_thresh] = 0.0
+        x = np.ascontiguousarray(x)
+        y = np.ascontiguousarray(y)
         similarity = ssim(x, y)
         self.assertTrue(similarity >= tol)
