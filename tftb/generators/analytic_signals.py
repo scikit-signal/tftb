@@ -29,7 +29,7 @@ def anaask(n_points, n_comp=None, f0=0.25):
     m = int(np.ceil(n_points / n_comp))
     jumps = np.random.rand(m)
     am = np.kron(jumps, np.ones((n_comp,)))[:n_points]
-    fm, iflaw = fmconst(n_points, f0, 1)
+    fm, _ = fmconst(n_points, f0, 1)
     y = am * fm
     return y, am
 
@@ -149,6 +149,7 @@ def anaqpsk(n_points, n_comp=None, f0=0.25):
 
 def anasing(n_points, t0=None, h=0.0):
     """Lipschitz singularity.
+    Refer to the wiki page on `Lipschitz condition`, good test case.
 
     :param n_points: number of points in time.
     :param t0: time localization of singularity
@@ -164,7 +165,6 @@ def anasing(n_points, t0=None, h=0.0):
 
     .. plot:: docstring_plots/generators/analytic_signals/anasing.py
     """
-    """Refer to the wiki page on `Lipschitz condition`, good test case."""
     if t0 is None:
         t0 = n_points / 2.0
     if h <= 0:

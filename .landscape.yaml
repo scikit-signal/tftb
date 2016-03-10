@@ -13,8 +13,10 @@ pylint:
     - star-args
     - logging-format-interpolation
     - bad-builtin
+    - too-many-arguments
+    - expression-not-assigned
 ignore-paths:
-  - docs
+  - doc
 pep8:
   disable:
     - E731

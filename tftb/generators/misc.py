@@ -212,7 +212,7 @@ def gdpower(n_points, degree=0.0, rate=1.0):
         tfx[:lnu] = np.exp(-1j * 2 * np.pi * (t0 * nu + d * np.log(nu))) * am
         x = np.fft.ifft(tfx)
     elif degree == 1.:
-        from analytic_signals import anapulse
+        from tftb.generators.analytic_signals import anapulse
         t0 = n_points
         x = anapulse(n_points, t0)
     elif degree > 1.:
