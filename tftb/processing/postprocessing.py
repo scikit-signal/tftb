@@ -112,7 +112,7 @@ def ideal_tfr(iflaws, timestamps=None, n_fbins=None):
     :return:
     :rtype:
     """
-    ifrow, ifcol = iflaws.shape
+    ifrow = iflaws.shape[0]
     if timestamps is None:
         timestamps = np.arange(iflaws[0, :].shape[0])
     if n_fbins is None:
@@ -145,7 +145,6 @@ def friedman_density(tfr, re_mat, timestamps=None):
     :rtype:
     """
     tfrrow, tfrcol = tfr.shape
-    hatrow, hatcol = re_mat.shape
     if timestamps is None:
         timestamps = np.arange(tfrcol)
 
@@ -179,7 +178,6 @@ def ridges(tfr, re_mat, timestamps=None, method='rsp'):
     """
     method = method.lower()
     tfrrow, tfrcol = tfr.shape
-    hatrow, hatcol = re_mat.shape
     if timestamps is None:
         timestamps = np.arange(tfrcol)
 

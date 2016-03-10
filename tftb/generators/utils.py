@@ -91,4 +91,4 @@ def scale(X, a, fmin, fmax, N):
 
 if __name__ == '__main__':
     from tftb.generators import altes
-    S = altes(256, 0.1, 0.45, 10000)
+    sig = altes(256, 0.1, 0.45, 10000)

@@ -138,7 +138,6 @@ class BaseTFRepresentation(object):
             ax.set_ylim(0, freq_y.shape[0] - 1)
         else:
             ax.set_ylim(freq_y[0], freq_y[-1])
-        pass
 
     def _annotate_spectrum(self, ax):
         ax.set_ylabel('Spectrum')

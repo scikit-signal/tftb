@@ -547,7 +547,7 @@ if __name__ == '__main__':
     from tftb.generators import altes
     import matplotlib.pyplot as plt
     sig = altes(64, 0.1, 0.45)
-    tfr, t, f = smoothed_pseudo_wigner(sig)
+    tfr, timestamps, frequencies = smoothed_pseudo_wigner(sig)
     tfr = np.abs(tfr) ** 2
     threshold = np.amax(tfr) * 0.05
     tfr[tfr <= threshold] = 0.0
