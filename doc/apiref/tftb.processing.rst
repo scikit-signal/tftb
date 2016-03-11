@@ -20,6 +20,14 @@ tftb.processing.ambiguity module
     :undoc-members:
     :show-inheritance:
 
+tftb.processing.base module
+---------------------------
+
+.. automodule:: tftb.processing.base
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 tftb.processing.cohen module
 ----------------------------
 

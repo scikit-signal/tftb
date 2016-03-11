@@ -12,42 +12,10 @@ tftb.tests.base module
     :undoc-members:
     :show-inheritance:
 
-tftb.tests.test_amplitude_modulations module
---------------------------------------------
-
-.. automodule:: tftb.tests.test_amplitude_modulations
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-tftb.tests.test_analytic_signals module
----------------------------------------
-
-.. automodule:: tftb.tests.test_analytic_signals
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-tftb.tests.test_frequency_modulations module
---------------------------------------------
-
-.. automodule:: tftb.tests.test_frequency_modulations
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-tftb.tests.test_misc module
----------------------------
-
-.. automodule:: tftb.tests.test_misc
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-tftb.tests.test_noise module
+tftb.tests.test_utils module
 ----------------------------
 
-.. automodule:: tftb.tests.test_noise
+.. automodule:: tftb.tests.test_utils
     :members:
     :undoc-members:
     :show-inheritance:

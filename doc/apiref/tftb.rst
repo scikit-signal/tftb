@@ -13,14 +13,6 @@ Subpackages
 Submodules
 ----------
 
-tftb.transutils module
-----------------------
-
-.. automodule:: tftb.transutils
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 tftb.utils module
 -----------------
 
