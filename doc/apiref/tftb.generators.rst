@@ -1,6 +1,13 @@
 tftb.generators package
 =======================
 
+Subpackages
+-----------
+
+.. toctree::
+
+    tftb.generators.tests
+
 Submodules
 ----------
 
