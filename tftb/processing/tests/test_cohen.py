@@ -20,6 +20,13 @@ from tftb.tests.base import TestBase
 
 class TestCohen(TestBase):
 
+    def test_page_reality(self):
+        """Test the reality property of the Page distribution."""
+        signal, _ = fmsin(128)
+        signal = signal / 128.0
+        tfr, _, _ = cohen.PageRepresentation(signal).run()
+        self.assertTrue(np.all(np.isreal(tfr)))
+
     def test_spectrogram_time_invariance(self):
         """Test the time invariance property of the spectrogram."""
         signal, _ = fmlin(128, 0.1, 0.4)

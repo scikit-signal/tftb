@@ -65,6 +65,11 @@ class TestAnalyticSignals(TestBase):
         np.testing.assert_allclose(recons, np.real(signal), rtol=1e-5,
                                    atol=1e-5)
 
+    def test_anasing(self):
+        """Test the analytic singularity signal."""
+        signal = ana.anasing(128)
+        self.assert_is_analytic(signal, amlaw=np.abs(signal))
+
 
 if __name__ == '__main__':
     unittest.main()
