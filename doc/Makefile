@@ -4,9 +4,11 @@
 # You can set these variables from the command line.
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
+SPHINXAPIDOC  = sphinx-apidoc
 PAPER         =
 BUILDDIR      = _build
 EXAMPLEDIR    = auto_examples
+APIREF        = apiref
 
 # User-friendly check for sphinx-build
 ifeq ($(shell which $(SPHINXBUILD) >/dev/null 2>&1; echo $$?), 1)
@@ -50,8 +52,10 @@ help:
 clean:
 	rm -rf $(BUILDDIR)/*
 	rm -rf $(EXAMPLEDIR)/*
+	rm -rf $(APIREF)/*
 
 html:
+	$(SPHINXAPIDOC) -o apiref ../tftb
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
