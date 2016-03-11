@@ -32,6 +32,10 @@ class TestNoise(TestBase):
         energy = np.sum(np.abs(signal) ** 2)
         self.assertAlmostEqual(energy, 1, 3)
         self.assert_is_monotonic_decreasing(iflaw)
+        signal, iflaw = noise.dopnoise(500, 200, 60, 10, 70)
+        energy = np.sum(np.abs(signal) ** 2)
+        self.assertAlmostEqual(energy, 1, 3)
+        self.assert_is_monotonic_decreasing(iflaw)
 
 if __name__ == '__main__':
     unittest.main()
