@@ -12,6 +12,7 @@ Contents:
    :maxdepth: 2
    
    introduction
+   nonstationary_signals
    auto_gallery
    api
 
