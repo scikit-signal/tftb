@@ -12,9 +12,9 @@ def noisecu(n_points):
     :rtype: numpy.ndarray
     :Examples:
     >>> noise = noisecu(512)
-    >>> print noise.mean()
+    >>> print(noise.mean())
     0.0
-    >>> print std(noise) ** 2
+    >>> print(std(noise) ** 2)
     1.0
     >>> subplot(211), plot(real(noise))
     >>> subplot(212), plot(linspace(-0.5, 0.5, 512), abs(fftshift(fft(noise))) ** 2)
@@ -47,9 +47,9 @@ def noisecg(n_points, a1=None, a2=None):
     :rtype: numpy.ndarray
     :Examples:
     >>> noise = noisecg(512)
-    >>> print noise.mean()
+    >>> print(noise.mean())
     0.0
-    >>> print std(noise) ** 2
+    >>> print(std(noise) ** 2)
     1.0
     >>> subplot(211), plot(real(noise))
     >>> subplot(212), plot(linspace(-0.5, 0.5, 512), abs(fftshift(fft(noise))) ** 2)

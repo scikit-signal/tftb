@@ -13,9 +13,9 @@ def locfreq(signal):
     :Example:
     >>> z = amgauss(160, 80, 50)
     >>> fm, B = locfreq(z)
-    >>> print fm
+    >>> print(fm)
     -9.1835e-14
-    >>> print B
+    >>> print(B)
     0.02
     """
     if signal.ndim > 1:
