@@ -35,7 +35,7 @@ class AffineDistribution(BaseTFRepresentation):
             self.x1 = self.x2 = self.signal.copy()
         self.s1 = np.real(self.x1)
         self.s2 = np.real(self.x2)
-        self.m = (self.signal.shape[0] + (self.signal.shape[0] % 2)) / 2
+        self.m = (self.signal.shape[0] + (self.signal.shape[0] % 2)) // 2
         if (fmin is None) or (fmax is None):
             stf1 = np.fft.fft(np.fft.fftshift(self.s1[self.ts.min():self.ts.max() + 1]))
             stf2 = np.fft.fft(np.fft.fftshift(self.s2[self.ts.min():self.ts.max() + 1]))
@@ -93,7 +93,7 @@ class AffineDistribution(BaseTFRepresentation):
         umin = -self.umax
         du = np.abs(self.umax - umin) / (2 * self.m1)
         u = np.linspace(umin, self.umax - du, (self.umax - umin) / du)
-        u[self.m1] = 0
+        u[int(self.m1)] = 0
         self.u = u
         beta = (p / float(self.n_voices) - 1) / (2 * np.log(self.q))
         return beta, mellin1, mellin2
@@ -206,8 +206,8 @@ class Scalogram(AffineDistribution):
 
         # Normalization
         SP = np.fft.fft(self.z, axis=0)
-        indmin = 1 + np.round(self.fmin * (self.signal.shape[0] - 2))
-        indmax = 1 + np.round(self.fmax * (self.signal.shape[0] - 2))
+        indmin = 1 + int(np.round(self.fmin * (self.signal.shape[0] - 2)))
+        indmax = 1 + int(np.round(self.fmax * (self.signal.shape[0] - 2)))
         SPana = SP[indmin:(indmax + 1)]
         self.tfr = np.real(self.tfr)
         self.tfr = self.tfr * (np.linalg.norm(SPana) ** 2) / integrate_2d(self.tfr, self.ts, f) / self.n_voices
@@ -225,7 +225,7 @@ class UnterbergerDistribution(AffineDistribution):
                 fmax=fmax, n_voices=n_voices, **kwargs)
         umaxunt = lambda x: (np.sqrt(1 + (x / 2.0) ** 2) + x / 2.0) / (np.sqrt(1 + (x / 2.0) ** 2) - x / 2.0) - self.fmax / self.fmin
         self.umax = newton(umaxunt, 0)
-        self.m = (self.signal.shape[0] + (self.signal.shape[0] % 2)) / 2
+        self.m = (self.signal.shape[0] + (self.signal.shape[0] % 2)) // 2
         teq = self.m / (self.fmax * self.umax)
         if teq < 2 * self.m:
             m0 = np.round((2 * self.m ** 2) / teq - self.m) + 1
@@ -357,7 +357,7 @@ class BertrandDistribution(AffineDistribution):
         S1, S2 = self._geometric_sample()
         beta, mellin1, mellin2 = self._mellin_transform(S1, S2)
         # Computation of P0(t. f, f)
-        waf = np.zeros((2 * self.m1, self.n_voices), dtype=complex)
+        waf = np.zeros((2 * int(self.m1), self.n_voices), dtype=complex)
         for n in np.hstack((np.arange(1, self.m1 + 1), np.arange(self.m1 + 2, 2 * self.m1 + 1))):
             mx1 = np.exp((-2 * 1j * np.pi * beta + 0.5) * np.log((self.u[n - 1] / 2) *
                 np.exp(-self.u[n - 1] / 2.0) / np.sinh(self.u[n - 1] / 2))) * mellin1

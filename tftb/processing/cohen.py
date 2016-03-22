@@ -20,7 +20,7 @@ class Spectrogram(ShortTimeFourierTransform):
     name = "spectrogram"
 
     def run(self):
-        lh = (self.fwindow.shape[0] - 1) / 2
+        lh = (self.fwindow.shape[0] - 1) // 2
         for icol in range(self.tfr.shape[1]):
             ti = self.ts[icol]
             start = -np.min([np.round(self.n_fbins / 2.0) - 1, lh, ti - 1])
@@ -103,7 +103,7 @@ class MargenauHillDistribution(BaseTFRepresentation):
         return self.tfr, self.ts, self.freqs
 
     def plot(self, kind='cmap', threshold=0.05, sqmod=True, **kwargs):
-        self.tfr = self.tfr[:(self.tfr.shape[0] / 2), :]
+        self.tfr = self.tfr[:(self.tfr.shape[0] // 2), :]
         if sqmod:
             self.tfr = np.abs(self.tfr) ** 2
         _threshold = np.amax(self.tfr) * threshold
@@ -180,7 +180,7 @@ class PseudoWignerVilleDistribution(WignerVilleDistribution):
     name = "pseudo winger-ville"
 
     def run(self):
-        lh = (self.fwindow.shape[0] - 1) / 2
+        lh = (self.fwindow.shape[0] - 1) // 2
         for icol in range(self.ts.shape[0]):
             ti = self.ts[icol]
             taumaxvals = (ti, self.signal.shape[0] - ti - 1,

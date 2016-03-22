@@ -41,7 +41,7 @@ def pseudo_wigner_ville(signal, timestamps=None, n_fbins=None, fwindow=None):
         fwindow = ssig.hamming(hlength)
     elif fwindow.shape[0] % 2 == 0:
         raise ValueError('The smoothing fwindow must have an odd length.')
-    lh = (fwindow.shape[0] - 1) / 2
+    lh = (fwindow.shape[0] - 1) // 2
     fwindow = fwindow / fwindow[lh]
 
     tfr = np.zeros((n_fbins, tcol), dtype=complex)
@@ -81,8 +81,8 @@ def pseudo_wigner_ville(signal, timestamps=None, n_fbins=None, fwindow=None):
         for jcol in range(n_fbins):
             if np.abs(tfr[jcol, icol]) > threshold:
                 jcolhat = jcol - tf2[jcol, icol]
-                jcolhat = np.remainder(np.remainder(jcolhat - 1,
-                                                    n_fbins) + n_fbins, n_fbins)
+                jcolhat =int(np.remainder(np.remainder(jcolhat - 1,
+                                                       n_fbins) + n_fbins, n_fbins))
                 jcolhat += 1
                 rtfr[jcolhat - 1, icol] += tfr[jcol, icol]
                 tf2[jcol, icol] = jcolhat
@@ -500,14 +500,14 @@ def spectrogram(signal, time_samples=None, n_fbins=None, window=None):
     tfr = np.zeros((n_fbins, time_samples.shape[0]), dtype=complex)
     tf2 = np.zeros((n_fbins, time_samples.shape[0]), dtype=complex)
     tf3 = np.zeros((n_fbins, time_samples.shape[0]), dtype=complex)
-    lh = (window.shape[0] - 1) / 2
+    lh = (window.shape[0] - 1) // 2
     th = window * np.arange(-lh, lh + 1)
     dwin = derive_window(window)
 
     for icol in range(time_samples.shape[0]):
         ti = time_samples[icol]
         tau = np.arange(-np.min([np.round(n_fbins / 2) - 1, lh, ti]),
-                        np.min([np.round(n_fbins / 2) - 1, lh, signal.shape[0] - ti]) + 1)
+                        np.min([np.round(n_fbins / 2) - 1, lh, signal.shape[0] - ti]) + 1).astype(int)
         indices = np.remainder(n_fbins + tau, n_fbins)
         norm_h = np.linalg.norm(window[lh + tau], ord=2)
         tfr[indices, icol] = signal[ti + tau - 1] * np.conj(window[lh + tau]) / norm_h
