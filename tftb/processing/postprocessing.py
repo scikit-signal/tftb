@@ -223,4 +223,4 @@ if __name__ == '__main__':
     s = atoms(64, np.array([[32, 0.3, 16, 1]]))
     spec = Spectrogram(s)
     tfr, t, f = spec.run()
-    print renyi_information(tfr, t, f, 3)
+    print(renyi_information(tfr, t, f, 3))
