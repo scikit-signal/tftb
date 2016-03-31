@@ -12,9 +12,9 @@ def loctime(sig):
     :Example:
     >>> x = amgauss(160, 80.0, 50.0)
     >>> tm, T = loctime(x)
-    >>> print tm
+    >>> print(tm)
     80.0
-    >>> print T
+    >>> print(T)
     50.0
     """
     if sig.ndim > 2:

@@ -105,7 +105,7 @@ def fmlin(n_points, fnormi=0.0, fnormf=0.5, t0=None):
         y = fnormi * (y - t0) + ((fnormf - fnormi) / (2.0 * (n_points - 1))) * \
             ((y - 1) ** 2 - (t0 - 1) ** 2)
         y = np.exp(1j * 2.0 * np.pi * y)
-        y = y / y[t0 - 1]
+        y = y / y[int(t0) - 1]
         iflaw = np.linspace(fnormi, fnormf, n_points)
         return y, iflaw
 
