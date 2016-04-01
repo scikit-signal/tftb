@@ -191,6 +191,111 @@ variables whose associated operators do not mutually commute. This helps us
 apply the Uncertainty principle in signal processing in the same way as in
 quantum physics.
 
+Instantaneous Frequency
+-----------------------
+
+An alternative way to localize a signal in time and frequency is its
+instantaneous frequency. Instantaneous frequencies are defined for analytic
+signals, which are defined as follows::
+
+	.. math::
+
+      x_{a}(t) = x(t) + jH(x(t))
+
+where :math:`x(t)` is a real valued time domain signal and `H` denotes the
+Hilbert transform (``scipy.signal.hilbert``). From this defition of the
+analytic signal, the following quantities can be derived:
+
+* Instantaneous amplitude
+  :math:`a(t) = \left|x_{a}(t)\right|`
+* Instantaneous frequency
+  :math:`f(t) = \frac{1}{2\pi}\frac{d}{dt}arg(x_{a}(t))`
+
+An implementation of these functions can be found in ``tftb.processing.instfreq``
+
+Example: Instantaneous Frequency
+````````````````````````````````
+
+    >>> from tftb.processign import inst_freq, plotifl
+    >>> signal, _ = fmlin(256)
+    >>> time_samples = np.arange(3, 257)
+    >>> ifr = inst_freq(signal)[0]
+    >>> plotifl(time_samples, ifr)
+
+    .. plot:: _gallery/plot_2_3_instantaneous_frequency.py
+
+
+Group Delay
+-----------
+
+The frequency domain equivalent of instantaneous frequency is called group
+delay, which localizes time characteristics of a signal as function of the
+frequency.
+
+  .. math::
+
+    t_{x}(\nu) = -\frac{1}{2\pi}\frac{d}{d\nu}arg(X_{a}(\nu))
+
+
+Example: Group Delay
+````````````````````
+
+The group delay of the signal in the previous example can be obtained as
+follows
+
+    >>> from tftb.processign import group_delay
+    >>> fnorm = np.linspace(0, .5, 10)
+    >>> gd = group_delay(signal, fnorm)
+    >>> plt.plot(gd, fnorm)
+
+    .. plot:: _gallery/plot_2_4_group_delay.py
+
+
+Example: Comparison of Instantaneous Frequency and Group Delay
+``````````````````````````````````````````````````````````````
+
+Ideally, for a signal localized perfectly in time and frequency, its
+instantaneous frequency and group delay would be expected to be identical.
+However, mathematically they are two different fuctions in the time-frequency
+space, and only coincide for signals with high time-bandwidth products. This
+makes sense, since a high time-bandwidth product implies that the
+signal would be pushed away from the Heisenberg-Gabor inequality, thereby
+leading to lesser ambiguity. Consider the following example, where we construct
+two signals - one with a high time-bandwidth product, and one with a low one -
+and then estimate their respective instantaneous frequencies and group delays.
+
+    >>> # generate a signal with a high TB
+    >>> time_instants = np.arange(2, 256)
+    >>> sig1 = amgauss(256, 128, 90) * fmlin(256)[0]
+    >>> tm, T1 = loctime(sig1)
+    >>> fm, B1 = locfreq(sig1)
+    >>> print T1 * B1
+    15.9138
+    >>> ifr1 = inst_freq(sig1, time_instants)[0]
+    >>> f1 = np.linspace(0, 0.5 - 1.0 / 256, 256)
+    >>> gd1 = group_delay(sig1, f1)
+    >>> 
+    >>> plt.subplot(211)
+    >>> plt.plot(time_instants, ifr1, '*', label='inst_freq')
+    >>> plt.plot(gd1, f1, '-', label='group delay')
+    >>> 
+    >>> # generate a signal with low TB
+    >>> sig2 = amgauss(256, 128, 30) * fmlin(256, 0.2, 0.4)[0]
+    >>> tm, T2 = loctime(sig2)
+    >>> fm, B2 = locfreq(sig2)
+    >>> print T2 * B2
+    1.224
+    >>> ifr2 = inst_freq(sig2, time_instants)[0]
+    >>> f2 = np.linspace(0.02, 0.4, 256)
+    >>> gd2 = group_delay(sig2, f2)
+    >>> 
+    >>> plt.subplot(212)
+    >>> plt.plot(time_instants, ifr2, '*', label='inst_freq')
+    >>> plt.plot(gd2, f2, '-', label='group delay')
+
+    .. plot:: _gallery/plot_2_4_group_delay.py
+
+
 A Note on Stationarity
 ----------------------
 
@@ -223,8 +328,7 @@ and listen to the file ``tone.wav`` with your favourite music player.)
 Since the signal is composed of two sinusoids, ``y1`` and ``y2``, we would
 expect it to be stationary. Let's try and assert this qualitatively. Let's try
 to plot the signal in its phase space. In order to do so, we will first need to
-construct an analytic representation of the signal. This can be achieved by
-taking the Hilbert transform of the signal. For simplicity, we shall only
+construct an analytic representation of the signal. For simplicity, we shall only
 consider a part of the original signal
 
 
