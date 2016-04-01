@@ -34,7 +34,7 @@ If we now consider the energy spectrum of the signal ``z`` by squaring the modul
     >>> plt.grid()
     >>> plt.show()
 
-    .. plot:: auto_examples/plot_1_3_1_chirp_spectrum.py
+    .. plot:: _gallery/plot_1_3_1_chirp_spectrum.py
 
 we still can not say, from this plot, anything about the evolution in time of the frequency content. This is due to the
 fact that the Fourier transform is a decomposition on complex exponentials, which are of infinite duration and
@@ -50,7 +50,7 @@ Wigner-Ville distribution on this signal.
     >>> wvd.run()
     >>> wvd.plot(kind='contour', extent=[0, n_points, fmin, fmax])
 
-    .. plot:: auto_examples/plot_1_3_1_chirp_wv.py
+    .. plot:: _gallery/plot_1_3_1_chirp_wv.py
 
 we can see that the linear progression of the frequency with time, from 0 to 0.5, is clearly shown.
 
@@ -66,7 +66,7 @@ If we now add some complex white gaussian noise on this signal,
     >>> plt.grid()
     >>> plt.show()
 
-    .. plot:: auto_examples/plot_1_3_1_noisy_chirp.py
+    .. plot:: _gallery/plot_1_3_1_noisy_chirp.py
 
 and consider the spectrum of it,
 
@@ -79,7 +79,7 @@ and consider the spectrum of it,
     >>> plt.grid()
     >>> plt.show()
 
-    .. plot:: auto_examples/plot_1_3_1_noisy_chirp_spectrum.py
+    .. plot:: _gallery/plot_1_3_1_noisy_chirp_spectrum.py
 
 it is worse than before to interpret these plots. On the other hand, the Wigner-Ville distribution still show quite
 clearly the linear progression of the frequency with time.
@@ -88,4 +88,4 @@ clearly the linear progression of the frequency with time.
     >>> wvd.run()
     >>> wvd.plot(kind='contour')
 
-    .. plot:: auto_examples/plot_1_3_1_noisy_chirp_wv.py
+    .. plot:: _gallery/plot_1_3_1_noisy_chirp_wv.py
