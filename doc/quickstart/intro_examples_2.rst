@@ -35,7 +35,7 @@ follows:
     >>>
     >>> plt.show()
 
-    .. plot:: auto_examples/plot_1_3_3_transient.py
+    .. plot:: _gallery/plot_1_3_3_transient.py
 
 From these representations, it is difficult to localize precisely the signal in the time-domain as well as in the
 frequency domain. Now let us have a look at the spectrogram of this signal:
@@ -47,6 +47,6 @@ frequency domain. Now let us have a look at the spectrogram of this signal:
     >>> spec.run()
     >>> spec.plot(kind="contour", threshold=0.1, show_tf=False)
 
-    .. plot:: auto_examples/plot_1_3_3_transient_spectrogram.py
+    .. plot:: _gallery/plot_1_3_3_transient_spectrogram.py
 
 the transient signal appears distinctly around the normalized frequency 0.25, and between time points 125 and 160.
