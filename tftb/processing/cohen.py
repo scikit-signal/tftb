@@ -13,24 +13,35 @@ Bilinear Time-Frequency Processing in the Cohen’s Class.
 import numpy as np
 from tftb.processing.linear import ShortTimeFourierTransform
 from tftb.processing.base import BaseTFRepresentation
+from scipy import signal
 
 
 class Spectrogram(ShortTimeFourierTransform):
 
     name = "spectrogram"
 
+    def __init__(self , signal, timestamps=None , n_fbins=None , fwindow=None ,nperseg =None ,noverlap =None , fs = 1.0):
+
+        super(Spectrogram, self).__init__(signal=signal,
+            n_fbins=n_fbins, timestamps=timestamps , fwindow=fwindow )
+
+        if nperseg == None:
+            self.nperseg = self.fwindow.shape[0]
+        else :
+            self.nperseg = nperseg
+
+        self.noverlap = noverlap
+        self.fs = fs
+
+
     def run(self):
-        lh = (self.fwindow.shape[0] - 1) / 2
-        for icol in range(self.tfr.shape[1]):
-            ti = self.ts[icol]
-            start = -np.min([np.round(self.n_fbins / 2.0) - 1, lh, ti - 1])
-            end = np.min([np.round(self.n_fbins / 2.0) - 1, lh,
-                          self.signal.shape[0] - ti])
-            tau = np.arange(start, end + 1).astype(int)
-            indices = np.remainder(self.n_fbins + tau, self.n_fbins)
-            self.tfr[indices.astype(int), icol] = self.signal[ti + tau - 1] * \
-                np.conj(self.fwindow[lh + tau]) / np.linalg.norm(self.fwindow[lh + tau])
-        self.tfr = np.abs(np.fft.fft(self.tfr, axis=0)) ** 2
+        
+
+        self.freqs , self.ts , self.tfr  = signal.spectrogram(self.signal , fs = self.fs ,
+            window = self.fwindow , nperseg = self.nperseg , noverlap = self.noverlap )
+
+        #self.tfr = self.tfr[:self.tfr.shape[0]/2, :]
+
         return self.tfr, self.ts, self.freqs
 
     def plot(self, kind='cmap', **kwargs):
