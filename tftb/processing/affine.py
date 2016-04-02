@@ -163,12 +163,12 @@ class Scalogram(AffineDistribution):
         if self.waveparams > 0:
             for ptr in range(self.n_voices):
                 nha = self.waveparams * a[ptr]
-                tha = np.arange(-np.round(nha), np.round(nha) + 1)
+                tha = np.arange(-int(np.round(nha)), int(np.round(nha)) + 1)
                 x = np.exp(-(2 * np.log(10) / (nha ** 2)) * tha ** 2)
                 y = np.exp(1j * 2 * np.pi * f[ptr] * tha)
                 ha = x * y
                 detail = np.convolve(self.z, ha) / np.sqrt(a[ptr])
-                ix = np.arange(round(nha), detail.shape[0] - np.round(nha) + 1,
+                ix = np.arange(int(np.round(nha)), detail.shape[0] - int(np.round(nha)) + 1,
                             dtype=int)
                 wt[ptr, :] = detail[self.ts]
                 detail = detail[ix]
@@ -178,7 +178,7 @@ class Scalogram(AffineDistribution):
                 ha = mexhat(f[ptr])
                 nha = (ha.shape[0] - 1) / 2
                 detail = np.convolve(self.z, ha) / np.sqrt(a[ptr])
-                ix = np.arange(round(nha) + 1, detail.shape[0] - np.round(nha) + 1)
+                ix = np.arange(int(np.round(nha)) + 1, detail.shape[0] - int(np.round(nha)) + 1)
                 detail = detail[ix]
                 wt[ptr, :] = detail[self.ts]
                 self.tfr[ptr, :] = detail[self.ts] * np.conj(detail[self.ts])
@@ -228,7 +228,7 @@ class UnterbergerDistribution(AffineDistribution):
         self.m = (self.signal.shape[0] + (self.signal.shape[0] % 2)) // 2
         teq = self.m / (self.fmax * self.umax)
         if teq < 2 * self.m:
-            m0 = np.round((2 * self.m ** 2) / teq - self.m) + 1
+            m0 = int(np.round((2 * self.m ** 2) / teq - self.m)) + 1
             m1 = self.m + m0
             self.T = 2 * (self.m + m0) - 1
         else:
@@ -299,7 +299,7 @@ class DFlandrinDistribution(AffineDistribution):
         self.umax = umaxdfla_solve(self.fmax / self.fmin)
         teq = self.m / (self.fmax * self.umax)
         if teq < 2 * self.m:
-            m0 = np.round((2 * self.m ** 2) / teq - self.m) + 1
+            m0 = int(round((2 * self.m ** 2) / teq - self.m)) + 1
             self.T = 2 * (self.m + m0) - 1
         else:
             m0 = 0
@@ -341,7 +341,7 @@ class BertrandDistribution(AffineDistribution):
         self.umax = brenth(umaxbert, 0, 4)
         teq = self.m / (self.fmax * self.umax)
         if teq < self.signal.shape[0]:
-            m0 = np.round((2 * self.m ** 2) / teq - self.m) + 1
+            m0 = int(np.round((2 * self.m ** 2) / teq - self.m)) + 1
             m1 = self.m + m0
             self.T = 2 * m1 - 1
         else:
@@ -527,8 +527,8 @@ def smoothed_pseudo_wigner(signal, timestamps=None, K='bertrand', nh0=None,
     # Normalization
     sp1 = np.fft.fft(hilbert(s1))
     sp2 = np.fft.fft(hilbert(s2))
-    indmin = 1 + np.round(fmin * (xrow - 2))
-    indmax = 1 + np.round(fmax * (xrow - 2))
+    indmin = 1 + int(np.round(fmin * (xrow - 2)))
+    indmax = 1 + int(np.round(fmax * (xrow - 2)))
     sp1_ana = sp1[indmin:(indmax + 1)]
     sp2_ana = sp2[indmin:(indmax + 1)]
     xx = np.dot(np.real(sp1_ana), np.real(sp2_ana))
