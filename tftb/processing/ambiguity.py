@@ -22,7 +22,7 @@ def wide_band(signal, fmin=None, fmax=None, N=None):
         raise ValueError("The input signal should be one dimensional.")
     s_ana = hilbert(np.real(signal))
     nx = signal.shape[0]
-    m = np.round(nx / 2.0)
+    m = int(np.round(nx / 2.0))
     t = np.arange(nx) - m
     tmin = 0
     tmax = nx - 1
@@ -120,16 +120,16 @@ def narrow_band(signal, lag=None, n_fbins=None):
 
     naf = np.zeros((n_fbins, taucol), dtype=complex)
     for icol in range(taucol):
-        taui = lag[icol]
-        t = np.arange(abs(taui), n - abs(taui))
+        taui = int(lag[icol])
+        t = np.arange(abs(taui), n - abs(taui)).astype(int)
         naf[t, icol] = signal[t + taui] * np.conj(signal[t - taui])
     naf = np.fft.fft(naf, axis=0)
 
-    _ix1 = np.arange((n_fbins + (n_fbins % 2)) / 2, n_fbins)
-    _ix2 = np.arange((n_fbins + (n_fbins % 2)) / 2)
+    _ix1 = np.arange((n_fbins + (n_fbins % 2)) // 2, n_fbins)
+    _ix2 = np.arange((n_fbins + (n_fbins % 2)) // 2)
 
-    _xi1 = -(n_fbins - (n_fbins % 2)) / 2
-    _xi2 = ((n_fbins + (n_fbins % 2)) / 2 - 1)
+    _xi1 = -(n_fbins - (n_fbins % 2)) // 2
+    _xi2 = ((n_fbins + (n_fbins % 2)) // 2 - 1)
     xi = np.arange(_xi1, _xi2 + 1, dtype=float) / n_fbins
     naf = naf[np.hstack((_ix1, _ix2)), :]
     return naf, lag, xi

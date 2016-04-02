@@ -35,7 +35,7 @@ class AffineDistribution(BaseTFRepresentation):
             self.x1 = self.x2 = self.signal.copy()
         self.s1 = np.real(self.x1)
         self.s2 = np.real(self.x2)
-        self.m = (self.signal.shape[0] + (self.signal.shape[0] % 2)) / 2
+        self.m = (self.signal.shape[0] + (self.signal.shape[0] % 2)) // 2
         if (fmin is None) or (fmax is None):
             stf1 = np.fft.fft(np.fft.fftshift(self.s1[self.ts.min():self.ts.max() + 1]))
             stf2 = np.fft.fft(np.fft.fftshift(self.s2[self.ts.min():self.ts.max() + 1]))
@@ -93,7 +93,7 @@ class AffineDistribution(BaseTFRepresentation):
         umin = -self.umax
         du = np.abs(self.umax - umin) / (2 * self.m1)
         u = np.linspace(umin, self.umax - du, (self.umax - umin) / du)
-        u[self.m1] = 0
+        u[int(self.m1)] = 0
         self.u = u
         beta = (p / float(self.n_voices) - 1) / (2 * np.log(self.q))
         return beta, mellin1, mellin2
@@ -163,12 +163,12 @@ class Scalogram(AffineDistribution):
         if self.waveparams > 0:
             for ptr in range(self.n_voices):
                 nha = self.waveparams * a[ptr]
-                tha = np.arange(-np.round(nha), np.round(nha) + 1)
+                tha = np.arange(-int(np.round(nha)), int(np.round(nha)) + 1)
                 x = np.exp(-(2 * np.log(10) / (nha ** 2)) * tha ** 2)
                 y = np.exp(1j * 2 * np.pi * f[ptr] * tha)
                 ha = x * y
                 detail = np.convolve(self.z, ha) / np.sqrt(a[ptr])
-                ix = np.arange(round(nha), detail.shape[0] - np.round(nha) + 1,
+                ix = np.arange(int(np.round(nha)), detail.shape[0] - int(np.round(nha)) + 1,
                             dtype=int)
                 wt[ptr, :] = detail[self.ts]
                 detail = detail[ix]
@@ -178,7 +178,7 @@ class Scalogram(AffineDistribution):
                 ha = mexhat(f[ptr])
                 nha = (ha.shape[0] - 1) / 2
                 detail = np.convolve(self.z, ha) / np.sqrt(a[ptr])
-                ix = np.arange(round(nha) + 1, detail.shape[0] - np.round(nha) + 1)
+                ix = np.arange(int(np.round(nha)) + 1, detail.shape[0] - int(np.round(nha)) + 1)
                 detail = detail[ix]
                 wt[ptr, :] = detail[self.ts]
                 self.tfr[ptr, :] = detail[self.ts] * np.conj(detail[self.ts])
@@ -206,8 +206,8 @@ class Scalogram(AffineDistribution):
 
         # Normalization
         SP = np.fft.fft(self.z, axis=0)
-        indmin = 1 + np.round(self.fmin * (self.signal.shape[0] - 2))
-        indmax = 1 + np.round(self.fmax * (self.signal.shape[0] - 2))
+        indmin = 1 + int(np.round(self.fmin * (self.signal.shape[0] - 2)))
+        indmax = 1 + int(np.round(self.fmax * (self.signal.shape[0] - 2)))
         SPana = SP[indmin:(indmax + 1)]
         self.tfr = np.real(self.tfr)
         self.tfr = self.tfr * (np.linalg.norm(SPana) ** 2) / integrate_2d(self.tfr, self.ts, f) / self.n_voices
@@ -225,10 +225,10 @@ class UnterbergerDistribution(AffineDistribution):
                 fmax=fmax, n_voices=n_voices, **kwargs)
         umaxunt = lambda x: (np.sqrt(1 + (x / 2.0) ** 2) + x / 2.0) / (np.sqrt(1 + (x / 2.0) ** 2) - x / 2.0) - self.fmax / self.fmin
         self.umax = newton(umaxunt, 0)
-        self.m = (self.signal.shape[0] + (self.signal.shape[0] % 2)) / 2
+        self.m = (self.signal.shape[0] + (self.signal.shape[0] % 2)) // 2
         teq = self.m / (self.fmax * self.umax)
         if teq < 2 * self.m:
-            m0 = np.round((2 * self.m ** 2) / teq - self.m) + 1
+            m0 = int(np.round((2 * self.m ** 2) / teq - self.m)) + 1
             m1 = self.m + m0
             self.T = 2 * (self.m + m0) - 1
         else:
@@ -299,7 +299,7 @@ class DFlandrinDistribution(AffineDistribution):
         self.umax = umaxdfla_solve(self.fmax / self.fmin)
         teq = self.m / (self.fmax * self.umax)
         if teq < 2 * self.m:
-            m0 = np.round((2 * self.m ** 2) / teq - self.m) + 1
+            m0 = int(round((2 * self.m ** 2) / teq - self.m)) + 1
             self.T = 2 * (self.m + m0) - 1
         else:
             m0 = 0
@@ -341,7 +341,7 @@ class BertrandDistribution(AffineDistribution):
         self.umax = brenth(umaxbert, 0, 4)
         teq = self.m / (self.fmax * self.umax)
         if teq < self.signal.shape[0]:
-            m0 = np.round((2 * self.m ** 2) / teq - self.m) + 1
+            m0 = int(np.round((2 * self.m ** 2) / teq - self.m)) + 1
             m1 = self.m + m0
             self.T = 2 * m1 - 1
         else:
@@ -357,7 +357,7 @@ class BertrandDistribution(AffineDistribution):
         S1, S2 = self._geometric_sample()
         beta, mellin1, mellin2 = self._mellin_transform(S1, S2)
         # Computation of P0(t. f, f)
-        waf = np.zeros((2 * self.m1, self.n_voices), dtype=complex)
+        waf = np.zeros((2 * int(self.m1), self.n_voices), dtype=complex)
         for n in np.hstack((np.arange(1, self.m1 + 1), np.arange(self.m1 + 2, 2 * self.m1 + 1))):
             mx1 = np.exp((-2 * 1j * np.pi * beta + 0.5) * np.log((self.u[n - 1] / 2) *
                 np.exp(-self.u[n - 1] / 2.0) / np.sinh(self.u[n - 1] / 2))) * mellin1
@@ -527,8 +527,8 @@ def smoothed_pseudo_wigner(signal, timestamps=None, K='bertrand', nh0=None,
     # Normalization
     sp1 = np.fft.fft(hilbert(s1))
     sp2 = np.fft.fft(hilbert(s2))
-    indmin = 1 + np.round(fmin * (xrow - 2))
-    indmax = 1 + np.round(fmax * (xrow - 2))
+    indmin = 1 + int(np.round(fmin * (xrow - 2)))
+    indmax = 1 + int(np.round(fmax * (xrow - 2)))
     sp1_ana = sp1[indmin:(indmax + 1)]
     sp2_ana = sp2[indmin:(indmax + 1)]
     xx = np.dot(np.real(sp1_ana), np.real(sp2_ana))

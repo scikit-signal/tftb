@@ -40,17 +40,17 @@ def hough_transform(image, m=None, n=None):
     imax = np.amax(image)
 
     if xmax % 2 != 0:
-        xc = (xmax + 1) / 2
+        xc = (xmax + 1) // 2
         xf = xc - 1
     else:
-        xc = xf = xmax / 2
+        xc = xf = xmax // 2
     x0 = 1 - xc
 
     if ymax % 2 != 0:
-        yc = (ymax + 1) / 2
+        yc = (ymax + 1) // 2
         yf = yc - 1
     else:
-        yc = yf = ymax / 2
+        yc = yf = ymax // 2
     y0 = 1 - yc
 
     for x in range(x0, xf + 1):
