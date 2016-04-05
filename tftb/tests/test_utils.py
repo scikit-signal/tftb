@@ -11,11 +11,17 @@ Tests for tftb.utils
 """
 
 import unittest
+import six
 import numpy as np
 from tftb import utils
 
 
 class TestUtils(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        if six.PY3:
+            cls.assertItemsEqual = cls.assertSequenceEqual
 
     def test_is_linear(self):
         """Test the is_linear function."""
@@ -38,7 +44,7 @@ class TestUtils(unittest.TestCase):
         """Test the divider function."""
         self.assertItemsEqual(utils.divider(4), (2, 2))
         self.assertItemsEqual(utils.divider(17), (1, 17))
-        self.assertItemsEqual(utils.divider(60), (10, 6))
+        self.assertItemsEqual(utils.divider(60), (6, 10))
         x = np.arange(1, 101)
         lowers = np.zeros(x.shape)
         uppers = np.zeros(x.shape)

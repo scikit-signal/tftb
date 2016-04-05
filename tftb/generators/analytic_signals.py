@@ -82,7 +82,7 @@ def anafsk(n_points, n_comp=None, Nbf=4):
     .. plot:: docstring_plots/generators/analytic_signals/anafsk.py
     """
     if n_comp is None:
-        n_comp = np.round(n_points / 5)
+        n_comp = int(np.round(n_points / 5))
     m = np.ceil(n_points / n_comp)
     m = int(np.ceil(n_points / n_comp))
     freqs = 0.25 + 0.25 * (np.floor(Nbf * np.random.rand(m, 1)) / Nbf - (Nbf - 1) / (2 * Nbf))

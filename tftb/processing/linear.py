@@ -53,7 +53,7 @@ class ShortTimeFourierTransform(BaseTFRepresentation):
         .. math:: X[m, w] = \sum_{n=-\infty}^{\infty}x[n]w[n - m]e^{-j\omega n}
 
         Where :math:`w` is a Hamming window."""
-        lh = (self.fwindow.shape[0] - 1) / 2
+        lh = (self.fwindow.shape[0] - 1) // 2
         for icol in range(self.tfr.shape[1]):
             ti = self.ts[icol]
             start = -np.min([np.round(self.n_fbins / 2.0) - 1, lh, ti - 1])
@@ -115,9 +115,9 @@ def gabor(signal, n_coeff=None, q_oversample=None, window=None):
     if window is None:
         window = np.exp(np.log(0.005) * np.linspace(-1, 1, nearest_odd(n_coeff)) ** 2)
         window = window / np.linalg.norm(window)
-    m = q_oversample * signal.shape[0] / float(n_coeff)
-    mb = signal.shape[0] / float(n_coeff)
-    nb = signal.shape[0] / float(m)
+    m = int(q_oversample * signal.shape[0] / float(n_coeff))
+    mb = int(signal.shape[0] / float(n_coeff))
+    nb = int(signal.shape[0] / float(m))
 
     # Zak transform?
     nh = window.shape[0]
@@ -130,7 +130,7 @@ def gabor(signal, n_coeff=None, q_oversample=None, window=None):
     end = np.round((signal.shape[0] + nh - 1) / 2) - alpha
     hn1[np.arange(start - 1, end).astype(int)] = window
 
-    msig = hn1.reshape(nb, m, order='F')
+    msig = hn1.reshape(int(nb), int(m), order='F')
     dzth = np.fft.fft(msig.T, axis=0) / np.sqrt(m)
     mzh = np.zeros((m, mb))
     x = np.arange(1, m + 1, dtype=float)
