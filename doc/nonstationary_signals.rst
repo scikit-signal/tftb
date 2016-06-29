@@ -196,11 +196,11 @@ Instantaneous Frequency
 
 An alternative way to localize a signal in time and frequency is its
 instantaneous frequency. Instantaneous frequencies are defined for analytic
-signals, which are defined as follows::
+signals, which are defined as follows
 
-	.. math::
+.. math::
 
-      x_{a}(t) = x(t) + jH(x(t))
+    x_{a}(t) = x(t) + jH(x(t))
 
 where :math:`x(t)` is a real valued time domain signal and `H` denotes the
 Hilbert transform (``scipy.signal.hilbert``). From this defition of the
