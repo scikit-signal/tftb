@@ -52,7 +52,6 @@ coverage.xml
 
 # Sphinx documentation
 doc/_build/
-doc/apiref/*.rst
 doc/modules/generated/
 
 # PyBuilder
