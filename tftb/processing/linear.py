@@ -54,15 +54,20 @@ class ShortTimeFourierTransform(BaseTFRepresentation):
 
         Where :math:`w` is a Hamming window."""
         lh = (self.fwindow.shape[0] - 1) // 2
+        rangemin = min([round(self.n_fbins / 2.0), lh])
+        starts = -np.min(np.c_[rangemin * np.ones(self.ts.shape), self.ts - 1],
+                axis=1).astype(int)
+        ends = np.min(np.c_[rangemin * np.ones(self.ts.shape),
+            self.signal.shape[0] - self.ts], axis=1).astype(int)
+        conj_fwindow = np.conj(self.fwindow)
         for icol in range(self.tfr.shape[1]):
             ti = self.ts[icol]
-            start = -np.min([np.round(self.n_fbins / 2.0) - 1, lh, ti - 1])
-            end = np.min([np.round(self.n_fbins / 2.0) - 1, lh,
-                          self.signal.shape[0] - ti])
+            start = starts[icol]
+            end = ends[icol]
             tau = np.arange(start, end + 1).astype(int)
-            indices = np.remainder(self.n_fbins + tau, self.n_fbins)
-            self.tfr[indices.astype(int), icol] = self.signal[ti + tau - 1] * \
-                np.conj(self.fwindow[lh + tau])
+            index = np.remainder(self.n_fbins + tau, self.n_fbins)
+            self.tfr[index, icol] = self.signal[ti + tau - 1] * \
+                conj_fwindow[lh + tau]
         self.tfr = np.fft.fft(self.tfr, axis=0)
         return self.tfr, self.ts, self.freqs
 
@@ -159,4 +164,3 @@ if __name__ == '__main__':
     sig = np.r_[fmconst(128, 0.2)[0], fmconst(128, 0.4)[0]]
     tfr = ShortTimeFourierTransform(sig)
     tfr.run()
-    tfr.plot()
