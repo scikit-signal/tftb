@@ -23,12 +23,12 @@ def anaask(n_points, n_comp=None, f0=0.25):
     .. plot:: docstring_plots/generators/analytic_signals/anaask.py
     """
     if n_comp is None:
-        n_comp = np.round(n_points / 2)
+        n_comp = round(n_points / 2.0)
     if (f0 < 0) or (f0 > 0.5):
         raise TypeError("f0 must be between 0 and 0.5")
     m = int(np.ceil(n_points / n_comp))
     jumps = np.random.rand(m)
-    am = np.kron(jumps, np.ones((n_comp,)))[:n_points]
+    am = np.repeat(jumps, n_comp)[:n_points]
     fm, _ = fmconst(n_points, f0, 1)
     y = am * fm
     return y, am
@@ -53,12 +53,12 @@ def anabpsk(n_points, n_comp=None, f0=0.25):
     .. plot:: docstring_plots/generators/analytic_signals/anabpsk.py
     """
     if n_comp is None:
-        n_comp = np.round(n_points / 5)
+        n_comp = round(n_points / 5.0)
     if (f0 < 0) or (f0 > 0.5):
         raise TypeError("f0 must be between 0 and 0.5")
     m = int(np.ceil(n_points / n_comp))
     jumps = 2.0 * np.round(np.random.rand(m)) - 1
-    am = np.kron(jumps, np.ones((n_comp,)))[:n_points]
+    am = np.repeat(jumps, n_comp)[:n_points]
     y = am * fmconst(n_points, f0, 1)[0]
     return y, am
 
@@ -82,11 +82,11 @@ def anafsk(n_points, n_comp=None, Nbf=4):
     .. plot:: docstring_plots/generators/analytic_signals/anafsk.py
     """
     if n_comp is None:
-        n_comp = int(np.round(n_points / 5))
+        n_comp = int(round(n_points / 5.0))
     m = np.ceil(n_points / n_comp)
     m = int(np.ceil(n_points / n_comp))
     freqs = 0.25 + 0.25 * (np.floor(Nbf * np.random.rand(m, 1)) / Nbf - (Nbf - 1) / (2 * Nbf))
-    iflaw = np.kron(freqs, np.ones((n_comp,))).ravel()
+    iflaw = np.repeat(freqs, n_comp).ravel()
     y = np.exp(1j * 2 * pi * np.cumsum(iflaw))
     return y, iflaw
 
@@ -134,13 +134,13 @@ def anaqpsk(n_points, n_comp=None, f0=0.25):
     .. plot:: docstring_plots/generators/analytic_signals/anaqpsk.py
     """
     if n_comp is None:
-        n_comp = np.round(n_points / 5)
+        n_comp = round(n_points / 5.0)
     if (f0 < 0) or (f0 > 0.5):
         raise TypeError("f0 must be between 0 and 0.5")
     m = int(np.ceil(n_points / n_comp))
     jumps = np.floor(4 * np.random.rand(m))
     jumps[jumps == 4] = 3
-    pm0 = (np.pi * np.kron(jumps, np.ones((n_comp,))) / 2).ravel()
+    pm0 = (np.pi * np.repeat(jumps, n_comp) / 2).ravel()
     tm = np.arange(n_points) - 1
     pm = 2 * np.pi * f0 * tm + pm0
     y = np.exp(1j * pm)
@@ -207,6 +207,9 @@ def anastep(n_points, ti=None):
     return y
 
 if __name__ == '__main__':
-    sig = anasing(64)
-    from matplotlib.pyplot import plot, show
-    plot(np.real(sig)), show()
+    anaask(128)
+    anabpsk(128, 128)
+    anafsk(128)
+    anapulse(128)
+    anasing(128)
+    anastep(128)
