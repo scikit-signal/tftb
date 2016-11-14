@@ -22,7 +22,7 @@ def fmconst(n_points, fnorm=0.25, t0=None):
     .. plot:: docstring_plots/generators/frequency_modulated/fmconst.py
     """
     if t0 is None:
-        t0 = np.round(n_points / 2)
+        t0 = round(n_points / 2.0)
 
     if n_points <= 0:
         raise TypeError
@@ -92,12 +92,12 @@ def fmlin(n_points, fnormi=0.0, fnormf=0.5, t0=None):
     .. plot:: docstring_plots/generators/frequency_modulated/fmlin.py
     """
     if t0 is None:
-        t0 = np.round(n_points / 2)
+        t0 = round(n_points / 2.0)
 
     if n_points <= 0:
         raise TypeError
 
-    elif (np.abs(fnormi) > 0.5) or (np.abs(fnormf) > 0.5):
+    elif (abs(fnormi) > 0.5) or (abs(fnormf) > 0.5):
         raise TypeError
 
     else:
@@ -255,7 +255,10 @@ def fmsin(n_points, fnormin=0.05, fnormax=0.45, period=None, t0=None,
     return y, iflaw
 
 if __name__ == '__main__':
-    x2, if2 = fmsin(70, 0.35, 0.45, 60)
-    from matplotlib.pyplot import plot, show
-    plot(if2), show()
-    plot(np.real(x2)), show()
+    fmconst(128)
+    fmhyp(128, (1, 0.5), (32, 0.1))
+    fmlin(128)
+    fmodany(np.random.rand(128) - 0.5)
+    fmpar(128, (0.4, -0.0112, 8.6806e-05))
+    fmpower(128, 0.5, (1, 0.5, 100, 0.1))
+    fmsin(128)

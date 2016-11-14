@@ -1,4 +1,5 @@
 import numpy as np
+from math import sqrt
 
 
 def amgauss(n_points, t0=None, spread=None):
@@ -24,10 +25,10 @@ def amgauss(n_points, t0=None, spread=None):
     .. plot:: docstring_plots/generators/amplitude_modulated/amgauss2.py
     """
     if t0 is None:
-        t0 = np.round(n_points / 2)
+        t0 = round(n_points / 2.0)
 
     if spread is None:
-        spread = 2 * np.sqrt(n_points)
+        spread = 2 * sqrt(n_points)
 
     if n_points <= 0:
         raise TypeError("n_points should be >= 0")
@@ -64,18 +65,18 @@ def amexpos(n_points, t0=None, spread=None, kind="bilateral"):
     .. plot:: docstring_plots/generators/amplitude_modulated/amexpos_unilateral.py
     """
     if t0 is None:
-        t0 = np.round(n_points / 2)
+        t0 = round(n_points / 2.0)
     if spread is None:
-        spread = 2 * np.sqrt(n_points)
+        spread = 2 * sqrt(n_points)
 
     if n_points <= 0:
         raise TypeError
     else:
         tmt0 = np.arange(n_points) - t0
         if kind == "bilateral":
-            y = np.exp(-np.sqrt(2 * np.pi) * np.abs(tmt0) / spread)
+            y = np.exp(-sqrt(2 * np.pi) * np.abs(tmt0) / spread)
         else:
-            y = np.exp(-np.sqrt(np.pi) * tmt0 / spread) * (tmt0 >= 0.0)
+            y = np.exp(-sqrt(np.pi) * tmt0 / spread) * (tmt0 >= 0.0)
         return y
 
 
@@ -97,15 +98,15 @@ def amrect(n_points, t0=None, spread=None):
     .. plot:: docstring_plots/generators/amplitude_modulated/amrect1.py
     """
     if t0 is None:
-        t0 = np.round(n_points / 2)
+        t0 = round(n_points / 2.0)
     if spread is None:
-        spread = 2 * np.sqrt(n_points)
+        spread = 2 * sqrt(n_points)
 
     if n_points <= 0:
         raise TypeError
     else:
         tmt0 = np.arange(n_points) - t0
-        y = np.abs(tmt0) <= 0.5 * spread * np.sqrt(3.0 / np.pi)
+        y = np.abs(tmt0) <= 0.5 * spread * sqrt(3.0 / np.pi)
         return y
 
 
@@ -127,17 +128,23 @@ def amtriang(n_points, t0=None, spread=None):
     .. plot:: docstring_plots/generators/amplitude_modulated/amtriang1.py
     """
     if t0 is None:
-        t0 = np.round(n_points / 2)
+        t0 = round(n_points / 2.0)
     if spread is None:
-        spread = 2 * np.sqrt(n_points)
+        spread = 2 * sqrt(n_points)
 
     if n_points <= 0:
         raise TypeError
     else:
         tmt0 = np.arange(n_points) - t0
-        L = np.sqrt(10.0 / np.pi) * spread / 2.0
-        t = np.amin(np.vstack((L + tmt0, L - tmt0)).T, axis=1)
-        t = np.hstack((t.reshape((len(t), 1)), np.zeros((len(t), 1))))
+        L = sqrt(10.0 / np.pi) * spread / 2.0
+        t = np.amin(np.c_[L + tmt0, L - tmt0], axis=1)
+        t = np.c_[t, np.zeros(t.shape)]
         y = np.amax(t, axis=1) / L
 
         return y
+
+if __name__ == '__main__':
+    amgauss(128)
+    amexpos(128)
+    amrect(128)
+    amtriang(128)

@@ -21,15 +21,20 @@ class Spectrogram(ShortTimeFourierTransform):
 
     def run(self):
         lh = (self.fwindow.shape[0] - 1) // 2
+        rangemin = min([round(self.n_fbins / 2.0) - 1, lh])
+        starts = -np.min(np.c_[rangemin * np.ones(self.ts.shape), self.ts - 1],
+                axis=1).astype(int)
+        ends = np.min(np.c_[rangemin * np.ones(self.ts.shape),
+            self.signal.shape[0] - self.ts], axis=1).astype(int)
+        conj_fwindow = np.conj(self.fwindow)
         for icol in range(self.tfr.shape[1]):
             ti = self.ts[icol]
-            start = -np.min([np.round(self.n_fbins / 2.0) - 1, lh, ti - 1])
-            end = np.min([np.round(self.n_fbins / 2.0) - 1, lh,
-                          self.signal.shape[0] - ti])
+            start = starts[icol]
+            end = ends[icol]
             tau = np.arange(start, end + 1).astype(int)
             indices = np.remainder(self.n_fbins + tau, self.n_fbins)
             self.tfr[indices.astype(int), icol] = self.signal[ti + tau - 1] * \
-                np.conj(self.fwindow[lh + tau]) / np.linalg.norm(self.fwindow[lh + tau])
+                conj_fwindow[lh + tau] / np.linalg.norm(self.fwindow[lh + tau])
         self.tfr = np.abs(np.fft.fft(self.tfr, axis=0)) ** 2
         return self.tfr, self.ts, self.freqs
 
@@ -144,17 +149,23 @@ class WignerVilleDistribution(BaseTFRepresentation):
     name = "wigner-ville"
 
     def run(self):
+        tausec = round(self.n_fbins / 2.0)
+        winlength = tausec - 1
+        taulens = np.min(np.c_[self.ts, self.signal.shape[0] - self.ts - 1,
+            winlength * np.ones(self.ts.shape)], axis=1)
+        conj_signal = np.conj(self.signal)
         for icol in range(self.ts.shape[0]):
             ti = self.ts[icol]
-            taumax = np.min((ti, self.signal.shape[0] - ti - 1,
-                             np.round(self.n_fbins / 2.0) - 1))
+            taumax = taulens[icol]
             tau = np.arange(-taumax, taumax + 1).astype(int)
             indices = np.remainder(self.n_fbins + tau, self.n_fbins).astype(int)
-            self.tfr[indices, icol] = self.signal[ti + tau] * np.conj(self.signal[ti - tau])
-            tau = np.round(self.n_fbins / 2.0)
-            if (ti <= self.signal.shape[0] - tau) and (ti >= tau + 1):
-                self.tfr[tau, icol] = 0.5 * (self.signal[ti + tau, 0] * np.conj(self.signal[ti - tau, 0])) + \
-                                       (self.signal[ti - tau, 0] * np.conj(self.signal[ti + tau, 0]))
+            self.tfr[indices, icol] = self.signal[ti + tau] * \
+                conj_signal[ti - tau]
+            if (ti <= self.signal.shape[0] - tausec) and (ti >= tausec + 1):
+                self.tfr[tausec, icol] = 0.5 * (self.signal[ti + tausec, 0] *
+                        np.conj(self.signal[ti - tausec, 0])) + \
+                        (self.signal[ti - tausec, 0] *
+                        conj_signal[ti + tausec, 0])
         self.tfr = np.fft.fft(self.tfr, axis=0)
         self.tfr = np.real(self.tfr)
         self.freqs = 0.5 * np.arange(self.n_fbins, dtype=float) / self.n_fbins
@@ -274,9 +285,8 @@ def smoothed_pseudo_wigner_ville(signal, timestamps=None, freq_bins=None,
 
 
 if __name__ == '__main__':
-    from tftb.generators import fmlin
-    sig = fmlin(128, 0.1, 0.4)[0]
-    spec = PseudoWignerVilleDistribution(sig)
-    tfr, _, _ = spec.run()
-    from scipy.io import savemat
-    savemat("/tmp/foo.mat", dict(tfr2=tfr))
+    from tftb.generators import anapulse
+    sig = anapulse(128)
+    spec = WignerVilleDistribution(sig)
+    spec.run()
+    spec.plot(kind="contour", scale="log")
