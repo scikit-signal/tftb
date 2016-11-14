@@ -1,5 +1,6 @@
 import numpy as np
 from numpy import pi
+from math import sqrt
 from tftb.generators.amplitude_modulated import amgauss
 from tftb.generators.frequency_modulated import fmconst
 
@@ -59,7 +60,7 @@ def atoms(n_points, coordinates):
     signal = np.zeros((n_points,), dtype=complex)
     n_atoms = coordinates.shape[0]
     for k in range(n_atoms):
-        t0 = np.round(np.max((np.min((coordinates[k, 0], n_points)), 1)))
+        t0 = round(np.max((np.min((coordinates[k, 0], n_points)), 1)))
         f0 = np.max((np.min((coordinates[k, 1], 0.5)), 0.0))
         T = coordinates[k, 2]
         A = coordinates[k, 3]
@@ -170,7 +171,7 @@ def mexhat(nu=0.05):
     alpha = np.pi ** 2 * nu ** 2
     n = np.ceil(n_points / nu)
     t = np.arange(-n, n + 1, step=1)
-    h = nu * np.sqrt(np.pi) / 2 * np.exp(-alpha * t ** 2) * (1 - 2 * alpha * t ** 2)
+    h = nu * sqrt(pi) / 2 * np.exp(-alpha * t ** 2) * (1 - 2 * alpha * t ** 2)
     return h
 
 
@@ -191,7 +192,7 @@ def gdpower(n_points, degree=0.0, rate=1.0):
     degree = float(degree)
     rate = float(rate)
     t0 = 0
-    lnu = int(np.ceil(n_points / 2))
+    lnu = int(np.ceil(n_points / 2.0))
     nu = np.linspace(0, 0.5, lnu + 1)
     nu = nu[1:]
     am = nu ** ((degree - 2.0) / 6.0)
@@ -236,7 +237,11 @@ def gdpower(n_points, degree=0.0, rate=1.0):
     return x, gpd, nu
 
 if __name__ == "__main__":
-    sig = gdpower(128)[0]
-    import matplotlib.pyplot as plt
-    plt.plot(np.real(sig))
-    plt.show()
+    altes(128)
+    coordinates = np.array([[32.0, 0.3, 32.0, 1.0],
+                            [0.15, 0.15, 48.0, 1.22]])
+    atoms(128, coordinates)
+    doppler(128, 200.0, 65.0, 10.0, 50.0)
+    klauder(128)
+    mexhat()
+    gdpower(128)
