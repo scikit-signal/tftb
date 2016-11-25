@@ -11,13 +11,14 @@ def noisecu(n_points):
     :return: analytic complex uniform white noise signal of length N
     :rtype: numpy.ndarray
     :Examples:
+    >>> import numpy as np
     >>> noise = noisecu(512)
-    >>> print(noise.mean())
-    0.0
-    >>> print(std(noise) ** 2)
+    >>> print("%.2f" % abs((noise ** 2).mean()))
+    0.00
+    >>> print("%.1f" % np.std(noise) ** 2)
     1.0
-    >>> subplot(211), plot(real(noise))
-    >>> subplot(212), plot(linspace(-0.5, 0.5, 512), abs(fftshift(fft(noise))) ** 2)
+    >>> subplot(211), plot(real(noise))                                              #doctest: +SKIP
+    >>> subplot(212), plot(linspace(-0.5, 0.5, 512), abs(fftshift(fft(noise))) ** 2) #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/noise/noisecu.py
     """
@@ -46,13 +47,14 @@ def noisecg(n_points, a1=None, a2=None):
     :return: Analytic complex Gaussian noise of length n_points.
     :rtype: numpy.ndarray
     :Examples:
+    >>> import numpy as np
     >>> noise = noisecg(512)
-    >>> print(noise.mean())
-    0.0
-    >>> print(std(noise) ** 2)
+    >>> print("%.2f" % abs((noise ** 2).mean()))
+    0.00
+    >>> print("%.1f" % np.std(noise) ** 2)
     1.0
-    >>> subplot(211), plot(real(noise))
-    >>> subplot(212), plot(linspace(-0.5, 0.5, 512), abs(fftshift(fft(noise))) ** 2)
+    >>> subplot(211), plot(real(noise))                                              #doctest: +SKIP
+    >>> subplot(212), plot(linspace(-0.5, 0.5, 512), abs(fftshift(fft(noise))) ** 2) #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/noise/noisecg.py
     """
@@ -87,10 +89,12 @@ def dopnoise(n_points, s_freq, f_target, distance, v_target,
     :return: tuple (output signal, instantaneous frequency law.)
     :rtype: tuple(array-like)
     :Example:
+    >>> import numpy as np
+    >>> from tftb.processing import inst_freq
     >>> z, iflaw = dopnoise(500, 200.0, 60.0, 10.0, 70.0, 128.0)
-    >>> subplot(211), plot(real(z))
-    >>> ifl = instfreq(z, np.arange(11, 479), 10)
-    >>> subplot(212), plot(iflaw, 'r', ifl, 'g')
+    >>> subplot(211), plot(real(z))                #doctest: +SKIP
+    >>> ifl = inst_freq(z, np.arange(11, 479), 10)
+    >>> subplot(212), plot(iflaw, 'r', ifl, 'g')   #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/noise/dopnoise.py
     """

@@ -38,9 +38,9 @@ class ShortTimeFourierTransform(BaseTFRepresentation):
 
         >>> from tftb.generators import fmconst
         >>> sig = np.r_[fmconst(128, 0.2)[0], fmconst(128, 0.4)[0]]
-        >>> tfr = ShortTimeFourierTransform(sig)
-        >>> tfr.run()
-        >>> tfr.plot()
+        >>> stft = ShortTimeFourierTransform(sig)
+        >>> tfr, t, f = stft.run()
+        >>> stft.plot() #doctest: +SKIP
 
         .. plot:: docstring_plots/processing/stft.py
         """

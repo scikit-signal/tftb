@@ -26,6 +26,13 @@ def integrate_2d(mat, x=None, y=None):
     :type y:
 :return:
 :rtype:
+    :Example:
+    >>> from tftb.generators import altes
+    >>> from tftb.processing import Scalogram
+    >>> x = altes(256, 0.1, 0.45, 10000)
+    >>> tfr, t, f, _ = Scalogram(x).run()
+    >>> print "%.3f" % integrate_2d(tfr, t, f)
+    2.000
     """
     m, n = mat.shape
     if x is None:
@@ -49,9 +56,11 @@ def derive_window(window):
     :rtype: array-like
     :Example:
     >>> from scipy.signal import hanning
+    >>> import matplotlib.pyplot as plt                   #doctest: +SKIP
     >>> window = hanning(210)
-    >>> subplot(211), plot(window)
-    >>> subplot(212), plot(derive_window(window))
+    >>> derivation = derive_window(window)
+    >>> plt.subplot(211), plt.plot(window)                #doctest: +SKIP
+    >>> plt.subplot(212), plt.plot(derivation) #doctest: +SKIP
 
     .. plot:: docstring_plots/processing/utils/derive_window.py
     """

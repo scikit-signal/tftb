@@ -20,7 +20,7 @@ def altes(n_points, fmin=0.05, fmax=0.5, alpha=300):
     :rtype: numpy.ndarray
     :Examples:
     >>> x = altes(128, 0.1, 0.45)
-    >>> plot(x)
+    >>> plot(x) #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/misc/altes.py
     """
@@ -48,10 +48,10 @@ def atoms(n_points, coordinates):
     :return: signal
     :rtype: array-like
     :Examples:
-    >>> coordinates = np.array([[32.0, 0.3, 32.0, 1.0],
-                                [0.15, 0.15, 48.0, 1.22]])
+    >>> import numpy as np
+    >>> coordinates = np.array([[32.0, 0.3, 32.0, 1.0], [0.15, 0.15, 48.0, 1.22]])
     >>> sig = atoms(128, coordinates)
-    >>> plot(real(sig))
+    >>> plot(real(sig)) #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/misc/atoms.py
     """
@@ -90,8 +90,8 @@ def doppler(n_points, s_freq, f0, distance, v_target, t0=None, v_wave=340.0):
     :rtype: tuple
     :Example:
     >>> fm, am, iflaw = doppler(512, 200.0, 65.0, 10.0, 50.0)
-    >>> subplot(211), plot(real(am * fm))
-    >>> subplot(211), plot(iflaw)
+    >>> subplot(211), plot(real(am * fm)) #doctest: +SKIP
+    >>> subplot(211), plot(iflaw)         #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/misc/doppler.py
     """
@@ -133,7 +133,7 @@ def klauder(n_points, attenuation=10.0, f0=0.2):
     :rtype: numpy.ndarray
     :Example:
     >>> x = klauder(128)
-    >>> plot(x)
+    >>> plot(x) #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/misc/klauder.py
     """
@@ -162,7 +162,7 @@ def mexhat(nu=0.05):
     :return: time vector containing mexhat samples.
     :rtype: numpy.ndarray
     :Example:
-    >>> plot(mexhat())
+    >>> plot(mexhat()) #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/misc/mexhat.py
     """

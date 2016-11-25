@@ -16,8 +16,9 @@ def fmconst(n_points, fnorm=0.25, t0=None):
     :return: frequency modulation signal with frequency fnorm
     :rtype: numpy.ndarray
     :Examples:
+    >>> from tftb.generators import amgauss
     >>> z = amgauss(128, 50, 30) * fmconst(128, 0.05, 50)[0]
-    >>> plot(real(z))
+    >>> plot(real(z)) #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/frequency_modulated/fmconst.py
     """
@@ -48,8 +49,8 @@ def fmhyp(n_points, p1, p2):
     :rtype: numpy.ndarray
     :Examples:
     >>> signal, iflaw = fmhyp(128, (1, 0.5), (32, 0.1))
-    >>> subplot(211), plot(real(signal))
-    >>> subplot(212), plot(iflaw)
+    >>> subplot(211), plot(real(signal)) #doctest: +SKIP
+    >>> subplot(212), plot(iflaw)        #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/frequency_modulated/fmhyp.py
     """
@@ -86,8 +87,9 @@ def fmlin(n_points, fnormi=0.0, fnormf=0.5, t0=None):
     :return: The modulated signal, and the instantaneous amplitude law.
     :rtype: tuple(array-like)
     :Examples:
+    >>> from tftb.generators import amgauss
     >>> z = amgauss(128, 50, 40) * fmlin(128, 0.05, 0.3, 50)[0]
-    >>> plot(real(z))
+    >>> plot(real(z)) #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/frequency_modulated/fmlin.py
     """
@@ -120,12 +122,14 @@ def fmodany(iflaw, t0=1):
     :return: output signal
     :rtype:
     :Examples:
+    >>> from tftb.generators import fmlin
+    >>> import numpy as np
     >>> y1, ifl1 = fmlin(100)  # A linear instantaneous frequency law.
     >>> y2, ifl2 = fmsin(100)  # A sinusoidal instantaneous frequency law.
     >>> iflaw = np.append(ifl1, ifl2)  # combination of the two
     >>> sig = fmodany(iflaw)
-    >>> subplot(211), plot(real(sig))
-    >>> subplot(212), plot(iflaw)
+    >>> subplot(211), plot(real(sig)) #doctest: +SKIP
+    >>> subplot(212), plot(iflaw)     #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/frequency_modulated/fmodany.py
     """
@@ -155,8 +159,8 @@ def fmpar(n_points, coefficients):
     :rtype: tuple
     :Examples:
     >>> x, iflaw = fmpar(128, (0.4, -0.0112, 8.6806e-05))
-    >>> subplot(211), plot(real(x))
-    >>> subplot(212), plot(iflaw)
+    >>> subplot(211), plot(real(x)) #doctest: +SKIP
+    >>> subplot(212), plot(iflaw)   #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/frequency_modulated/fmpar.py
     """
@@ -187,8 +191,8 @@ def fmpower(n_points, k, coefficients):
     :rtype: numpy.ndarray
     :Examples:
     >>> x, iflaw = fmpower(128, 0.5, (1, 0.5, 100, 0.1))
-    >>> subplot(211), plot(real(x))
-    >>> subplot(212), plot(iflaw)
+    >>> subplot(211), plot(real(x)) #doctest: +SKIP
+    >>> subplot(212), plot(iflaw)   #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/frequency_modulated/fmpower.py
     """
@@ -234,7 +238,7 @@ def fmsin(n_points, fnormin=0.05, fnormax=0.45, period=None, t0=None,
     :rtype: numpy.ndarray
     :Examples:
     >>> z = fmsin(140, period=100, t0=20, fnorm0=0.3, pm1=-1)
-    >>> plot(real(z))
+    >>> plot(real(z)) #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/frequency_modulated/fmsin.py
     """
