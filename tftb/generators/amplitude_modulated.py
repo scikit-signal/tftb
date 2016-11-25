@@ -16,11 +16,11 @@ def amgauss(n_points, t0=None, spread=None):
     :rtype: numpy.ndarray
     :Example:
     >>> x = amgauss(160)
-    >>> plot(x)
+    >>> plot(x) #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/amplitude_modulated/amgauss1.py
     >>> x = amgauss(160, 90)
-    >>> plot(x)
+    >>> plot(x) #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/amplitude_modulated/amgauss2.py
     """
@@ -56,11 +56,11 @@ def amexpos(n_points, t0=None, spread=None, kind="bilateral"):
     :rtype: numpy.ndarray
     :Examples:
     >>> x = amexpos(160)
-    >>> plot(x)
+    >>> plot(x) #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/amplitude_modulated/amexpos_bilateral.py
     >>> x = amexpos(160, kind='unilateral')
-    >>> plot(x)
+    >>> plot(x) #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/amplitude_modulated/amexpos_unilateral.py
     """
@@ -93,7 +93,7 @@ def amrect(n_points, t0=None, spread=None):
     :rtype: numpy.ndarray.
     :Examples:
     >>> x = amrect(160, 90, 40.0)
-    >>> plot(x)
+    >>> plot(x) #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/amplitude_modulated/amrect1.py
     """
@@ -123,7 +123,7 @@ def amtriang(n_points, t0=None, spread=None):
     :rtype: numpy.ndarray.
     :Examples:
     >>> x = amtriang(160)
-    >>> plot(x)
+    >>> plot(x) #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/amplitude_modulated/amtriang1.py
     """

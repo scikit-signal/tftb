@@ -22,10 +22,11 @@ def is_linear(x, decimals=5):
     :return: If the array is linear
     :rtype: boolean
     :Example:
-    >>> x = np.linspace(0, 2*pi, 100)
+    >>> import numpy as np
+    >>> x = np.linspace(0, 2 * np.pi, 100)
     >>> is_linear(x)
     True
-    >>> is_linear(sin(x))
+    >>> is_linear(np.sin(x))
     False
     """
     derivative = np.diff(x)
@@ -52,6 +53,11 @@ def nextpow2(n):
     :param n: Number whose next higest power of 2 needs to be computed.
     :type n: int, np.ndarray
     :rtype: int, np.ndarray
+    :Example:
+    >>> import numpy as np
+    >>> x = np.arange(1, 9)
+    >>> print nextpow2(x)
+    [ 0.  1.  2.  2.  3.  3.  3.  3.]
     """
     m_f = np.log2(n)
     m_i = np.ceil(m_f)
@@ -62,6 +68,17 @@ def divider(N):
     """Compute two factors of N such that they are as close as possible to sqrt(N).
 
     :param N: Number to be divided.
+    :type N: int
+    :return: A tuple of two integers such that their product is `N` and they
+    are the closest possible to :math:`\sqrt(N)`
+    :rtype: tuple(int)
+    :Example:
+    >>> print divider(256)
+    (16.0, 16.0)
+    >>> print divider(10)
+    (2.0, 5.0)
+    >>> print divider(101)
+    (1.0, 101.0)
     """
     n = np.floor(np.sqrt(N))
     while True:
@@ -74,8 +91,20 @@ def divider(N):
 
 
 def nearest_odd(N):
-    """Get the nearest odd number for each value of N."""
-    if isinstance(N, np.ndarray):
+    """Get the nearest odd number for each value of N.
+
+    :param N: int / sequence of ints
+    :return: int / sequence of ints
+    :Example:
+    >>> print nearest_odd(range(1, 11))
+    [  1.   3.   3.   5.   5.   7.   7.   9.   9.  11.]
+    >>> nearest_odd(0)
+    1
+    >>> nearest_odd(3)
+    3.0
+    """
+    if hasattr(N, "__iter__"):
+        N = np.array(N)
         y = np.floor(N)
         y[np.remainder(y, 2) == 0] = np.ceil(N[np.remainder(y, 2) == 0])
         y[np.remainder(y, 2) == 0] += 1
@@ -95,6 +124,9 @@ def modulo(x, N):
     :type x: array-like
     :type N: int
     :return: array-like
+    :Example:
+    >>> print modulo(range(1, 11), 2)
+    [1 2 1 2 1 2 1 2 1 2]
     """
     if any(np.isreal(x)):
         y = np.mod(x, N)

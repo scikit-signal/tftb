@@ -10,12 +10,13 @@ def loctime(sig):
     :return: Average time center and time spreading
     :rtype: tuple
     :Example:
+    >>> from tftb.generators import amgauss
     >>> x = amgauss(160, 80.0, 50.0)
     >>> tm, T = loctime(x)
-    >>> print(tm)
-    80.0
-    >>> print(T)
-    50.0
+    >>> print("%.2f" % tm)
+    79.00
+    >>> print("%.2f" % T)
+    50.00
     """
     if sig.ndim > 2:
         if 1 not in sig.shape:

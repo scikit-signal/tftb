@@ -17,8 +17,8 @@ def anaask(n_points, n_comp=None, f0=0.25):
     :rtype: tuple(numpy.ndarray)
     :Examples:
     >>> x, am = anaask(512, 64, 0.05)
-    >>> subplot(211), plot(real(x))
-    >>> subplot(212), plot(am)
+    >>> subplot(211), plot(real(x)) #doctest: +SKIP
+    >>> subplot(212), plot(am)      #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/analytic_signals/anaask.py
     """
@@ -47,8 +47,8 @@ def anabpsk(n_points, n_comp=None, f0=0.25):
     :rtype: numpy.ndarray
     :Examples:
     >>> x, am = anabpsk(300, 30, 0.1)
-    >>> subplot(211), plot(real(x))
-    >>> subplot(212), plot(am)
+    >>> subplot(211), plot(real(x)) #doctest: +SKIP
+    >>> subplot(212), plot(am)      #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/analytic_signals/anabpsk.py
     """
@@ -76,8 +76,8 @@ def anafsk(n_points, n_comp=None, Nbf=4):
     :rtype: numpy.ndarray
     :Examples:
     >>> x, am = anafsk(512, 54.0, 5.0)
-    >>> subplot(211), plot(real(x))
-    >>> subplot(212), plot(am)
+    >>> subplot(211), plot(real(x)) #doctest: +SKIP
+    >>> subplot(212), plot(am)      #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/analytic_signals/anafsk.py
     """
@@ -102,7 +102,7 @@ def anapulse(n_points, ti=None):
     :rtype: numpy.ndarray
     :Examples:
     >>> x = 2.5 * anapulse(512, 301)
-    >>> plot(real(x))
+    >>> plot(real(x)) #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/analytic_signals/anapulse.py
     """
@@ -128,8 +128,8 @@ def anaqpsk(n_points, n_comp=None, f0=0.25):
     :rtype: tuple
     :Examples:
     >>> x, phase = anaqpsk(512, 64.0, 0.05)
-    >>> subplot(211), plot(real(x))
-    >>> subplot(212), plot(phase)
+    >>> subplot(211), plot(real(x)) #doctest: +SKIP
+    >>> subplot(212), plot(phase)   #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/analytic_signals/anaqpsk.py
     """
@@ -161,7 +161,7 @@ def anasing(n_points, t0=None, h=0.0):
     :rtype: numpy.ndarray
     :Examples:
     >>> x = anasing(128)
-    >>> plot(real(x))
+    >>> plot(real(x)) #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/analytic_signals/anasing.py
     """
@@ -195,7 +195,7 @@ def anastep(n_points, ti=None):
     :rtype: numpy.ndarray
     :Examples:
     >>> x = anastep(256, 128)
-    >>> plot(real(x))
+    >>> plot(real(x)) #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/analytic_signals/anastep.py
     """

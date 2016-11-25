@@ -8,6 +8,6 @@ env:
 # command to install dependencies
 install: source continuous_integration/install.sh
 # command to run tests
-script: nosetests -sv --with-coverage --cover-package=tftb
+script: nosetests -sv --with-coverage --cover-package=tftb --with-doctest
 after_success:
   coveralls

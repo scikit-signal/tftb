@@ -11,11 +11,12 @@ def locfreq(signal):
     :return: average normalized frequency center, frequency spreading
     :rtype: tuple
     :Example:
+    >>> from tftb.generators import amgauss
     >>> z = amgauss(160, 80, 50)
     >>> fm, B = locfreq(z)
-    >>> print(fm)
-    -9.1835e-14
-    >>> print(B)
+    >>> print("%.4g" % fm)
+    -9.183e-14
+    >>> print("%.4g" % B)
     0.02
     """
     if signal.ndim > 1:
@@ -51,9 +52,10 @@ def inst_freq(x, t=None, L=1):
     :return: instantaneous frequencies of the input signal.
     :rtype: numpy.ndarray
     :Example:
+    >>> from tftb.generators import fmsin
     >>> x = fmsin(70, 0.05, 0.35, 25)[0]
     >>> instf, timestamps = inst_freq(x)
-    >>> plot(timestamps, instf)
+    >>> plot(timestamps, instf) #doctest: +SKIP
 
     .. plot:: docstring_plots/processing/freq_domain/inst_freq.py
     """
@@ -87,10 +89,12 @@ def group_delay(x, fnorm=None):
     :return: group delay
     :rtype: numpy.ndarray
     :Example:
+    >>> import numpy as np
+    >>> from tftb.generators import amgauss, fmlin
     >>> x = amgauss(128, 64.0, 30) * fmlin(128, 0.1, 0.4)[0]
     >>> fnorm = np.arange(0.1, 0.38, step=0.04)
     >>> gd = group_delay(x, fnorm)
-    >>> plot(gd, fnorm)
+    >>> plot(gd, fnorm) #doctest: +SKIP
 
     .. plot:: docstring_plots/processing/freq_domain/group_delay.py
     """
