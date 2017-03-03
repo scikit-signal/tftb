@@ -12,6 +12,6 @@ env:
 # command to install dependencies
 install: source continuous_integration/install.sh
 # command to run tests
-script: nosetests -sv --with-doctest --no-byte-compile --with-coverage --cover-package=pyhht
+script: nosetests -sv --with-doctest --no-byte-compile --with-coverage --cover-package=pytftb
 after_success:
   coveralls
