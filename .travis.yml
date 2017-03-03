@@ -1,13 +1,17 @@
-sudo: required
+sudo: false
 language: python
 virtualenv:
   system_site_packages: false
 env:
-  - DISTRIB="conda" COVERAGE="true" PYTHON_VERSION="2.7"
-
+  global:
+    - DISTRIB="conda"
+    - COVERAGE="true"
+  matrix:
+    - PYTHON_VERSION="2.7"
+    - PYTHON_VERSION="3.6"
 # command to install dependencies
 install: source continuous_integration/install.sh
 # command to run tests
-script: nosetests -sv --with-coverage --cover-package=tftb --with-doctest
+script: nosetests -sv --with-doctest --no-byte-compile --with-coverage --cover-package=tftb
 after_success:
   coveralls

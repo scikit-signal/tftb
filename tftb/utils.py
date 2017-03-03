@@ -54,9 +54,10 @@ def nextpow2(n):
     :type n: int, np.ndarray
     :rtype: int, np.ndarray
     :Example:
+    >>> from __future__ import print_function
     >>> import numpy as np
     >>> x = np.arange(1, 9)
-    >>> print nextpow2(x)
+    >>> print(nextpow2(x))
     [ 0.  1.  2.  2.  3.  3.  3.  3.]
     """
     m_f = np.log2(n)
@@ -73,11 +74,12 @@ def divider(N):
     are the closest possible to :math:`\sqrt(N)`
     :rtype: tuple(int)
     :Example:
-    >>> print divider(256)
+    >>> from __future__ import print_function
+    >>> print(divider(256))
     (16.0, 16.0)
-    >>> print divider(10)
+    >>> print(divider(10))
     (2.0, 5.0)
-    >>> print divider(101)
+    >>> print(divider(101))
     (1.0, 101.0)
     """
     n = np.floor(np.sqrt(N))
@@ -96,7 +98,8 @@ def nearest_odd(N):
     :param N: int / sequence of ints
     :return: int / sequence of ints
     :Example:
-    >>> print nearest_odd(range(1, 11))
+    >>> from __future__ import print_function
+    >>> print(nearest_odd(range(1, 11)))
     [  1.   3.   3.   5.   5.   7.   7.   9.   9.  11.]
     >>> nearest_odd(0)
     1
@@ -125,7 +128,8 @@ def modulo(x, N):
     :type N: int
     :return: array-like
     :Example:
-    >>> print modulo(range(1, 11), 2)
+    >>> from __future__ import print_function
+    >>> print(modulo(range(1, 11), 2))
     [1 2 1 2 1 2 1 2 1 2]
     """
     if any(np.isreal(x)):

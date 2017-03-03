@@ -171,8 +171,8 @@ def anasing(n_points, t0=None, h=0.0):
         start, end = 1.0 / n_points, 0.5 - 1.0 / n_points
         N = end / start
         f = np.linspace(start, end, N)
-        y = np.zeros((n_points / 2.0,), dtype=complex)
-        y[1:n_points / 2] = (f ** (-1 - h)) * np.exp(-1j * 2 * pi * f * (t0 - 1))
+        y = np.zeros((int(n_points / 2.0),), dtype=complex)
+        y[1:int(n_points / 2)] = (f ** (-1 - h)) * np.exp(-1j * 2 * pi * f * (t0 - 1))
         x = np.real(np.fft.ifft(y, n_points))
         x = x / x.max()
         x = x - np.sign(x.min()) * np.abs(x.min())

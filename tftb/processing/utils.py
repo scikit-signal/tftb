@@ -27,11 +27,12 @@ def integrate_2d(mat, x=None, y=None):
 :return:
 :rtype:
     :Example:
+    >>> from __future__ import print_function
     >>> from tftb.generators import altes
     >>> from tftb.processing import Scalogram
     >>> x = altes(256, 0.1, 0.45, 10000)
     >>> tfr, t, f, _ = Scalogram(x).run()
-    >>> print "%.3f" % integrate_2d(tfr, t, f)
+    >>> print("%.3f" % integrate_2d(tfr, t, f))
     2.000
     """
     m, n = mat.shape

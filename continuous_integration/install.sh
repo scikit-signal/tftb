@@ -7,8 +7,8 @@
 
 set -e
 
-sudo apt-get update -qq
-sudo apt-get install build-essential -qq
+# sudo apt-get update -qq
+# sudo apt-get install build-essential -qq
 
 if [[ "$DISTRIB" == "conda" ]]; then
 	# Deactivate the travis-provided virtual environment and setup a
