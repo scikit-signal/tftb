@@ -43,7 +43,7 @@ class TestNarrowBand(TestBase):
     def test_max_value(self):
         """Test if the maximum value of the ambiguity function occurs at the
         origin"""
-        xorg, yorg = map(lambda x: x / 2, self.tfr.shape)
+        xorg, yorg = map(lambda x: int(x / 2), self.tfr.shape)
         abs_mat = np.abs(self.tfr) ** 2
         max_val = abs_mat[xorg, yorg]
         for i in range(abs_mat.shape[0]):
