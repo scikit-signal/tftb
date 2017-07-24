@@ -13,8 +13,8 @@ Subpackages
 Submodules
 ----------
 
-tftb.utils module
------------------
+tftb\.utils module
+------------------
 
 .. automodule:: tftb.utils
     :members:

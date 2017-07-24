@@ -1,5 +1,5 @@
-tftb.generators package
-=======================
+tftb\.generators package
+========================
 
 Subpackages
 -----------
@@ -11,48 +11,48 @@ Subpackages
 Submodules
 ----------
 
-tftb.generators.amplitude_modulated module
-------------------------------------------
+tftb\.generators\.amplitude\_modulated module
+---------------------------------------------
 
 .. automodule:: tftb.generators.amplitude_modulated
     :members:
     :undoc-members:
     :show-inheritance:
 
-tftb.generators.analytic_signals module
----------------------------------------
+tftb\.generators\.analytic\_signals module
+------------------------------------------
 
 .. automodule:: tftb.generators.analytic_signals
     :members:
     :undoc-members:
     :show-inheritance:
 
-tftb.generators.frequency_modulated module
-------------------------------------------
+tftb\.generators\.frequency\_modulated module
+---------------------------------------------
 
 .. automodule:: tftb.generators.frequency_modulated
     :members:
     :undoc-members:
     :show-inheritance:
 
-tftb.generators.misc module
----------------------------
+tftb\.generators\.misc module
+-----------------------------
 
 .. automodule:: tftb.generators.misc
     :members:
     :undoc-members:
     :show-inheritance:
 
-tftb.generators.noise module
-----------------------------
+tftb\.generators\.noise module
+------------------------------
 
 .. automodule:: tftb.generators.noise
     :members:
     :undoc-members:
     :show-inheritance:
 
-tftb.generators.utils module
-----------------------------
+tftb\.generators\.utils module
+------------------------------
 
 .. automodule:: tftb.generators.utils
     :members:

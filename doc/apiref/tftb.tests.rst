@@ -1,19 +1,19 @@
-tftb.tests package
-==================
+tftb\.tests package
+===================
 
 Submodules
 ----------
 
-tftb.tests.base module
-----------------------
+tftb\.tests\.base module
+------------------------
 
 .. automodule:: tftb.tests.base
     :members:
     :undoc-members:
     :show-inheritance:
 
-tftb.tests.test_utils module
-----------------------------
+tftb\.tests\.test\_utils module
+-------------------------------
 
 .. automodule:: tftb.tests.test_utils
     :members:
