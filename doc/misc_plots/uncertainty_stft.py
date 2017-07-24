@@ -15,7 +15,7 @@ nf = [(w * 0.001 * f_sample) + 1 for w in wlengths]
 fig = plt.figure()
 extent = [0, ts.max(), 0, 2000]
 for i, wlen in enumerate(wlengths):
-    window = np.ones((nf[i],), dtype=float)
+    window = np.ones((int(nf[i]),), dtype=float)
     stft = ShortTimeFourierTransform(signal, fwindow=window)
     stft.run()
     ax = fig.add_subplot(4, 1, i + 1)

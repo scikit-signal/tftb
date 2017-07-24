@@ -12,7 +12,8 @@ import numpy as np
 
 
 def is_linear(x, decimals=5):
-    """Check if an array is linear.
+    """
+    Check if an array is linear.
 
     :param x: Array to be checked for linearity.
     :param decimals: decimal places upto which the derivative of the array
@@ -66,12 +67,13 @@ def nextpow2(n):
 
 
 def divider(N):
-    """Compute two factors of N such that they are as close as possible to sqrt(N).
+    """
+    Compute two factors of N such that they are as close as possible to sqrt(N).
 
     :param N: Number to be divided.
     :type N: int
     :return: A tuple of two integers such that their product is `N` and they
-    are the closest possible to :math:`\sqrt(N)`
+        are the closest possible to :math:`\sqrt(N)`
     :rtype: tuple(int)
     :Example:
     >>> from __future__ import print_function
@@ -93,7 +95,8 @@ def divider(N):
 
 
 def nearest_odd(N):
-    """Get the nearest odd number for each value of N.
+    """
+    Get the nearest odd number for each value of N.
 
     :param N: int / sequence of ints
     :return: int / sequence of ints
@@ -122,7 +125,8 @@ def nearest_odd(N):
 
 
 def modulo(x, N):
-    """Compute the congruence of each element of x modulo N.
+    """
+    Compute the congruence of each element of x modulo N.
 
     :type x: array-like
     :type N: int

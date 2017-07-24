@@ -44,7 +44,9 @@ sphinx_gallery_conf = {
     # path to your examples scripts
     'examples_dirs' : './_gallery',
     # path where to save gallery generated examples
-    'gallery_dirs'  : 'auto_examples'}
+    'gallery_dirs'  : 'auto_examples',
+    'backreferences_dir': "backreferences",
+    "doc_module": ("tftb")}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

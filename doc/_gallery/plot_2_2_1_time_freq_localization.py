@@ -13,6 +13,7 @@ Time and Frequency Localization Characteristics
 
 Generate a signal that has localized characteristics in both time and frequency
 and compute the following estimates:
+
     * time center
     * time duration
     * frequency center

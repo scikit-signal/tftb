@@ -78,9 +78,6 @@ class BaseTFRepresentation(object):
 
     def _plot_tfr(self, ax, kind, extent, contour_x=None, contour_y=None,
                   levels=None, show_tf=True, cmap=plt.cm.gray):
-        if extent is None:
-            extent = [self.ts.min(), self.ts.max(), self.freqs.min(),
-                      self.freqs.max()]
         if kind == "cmap":
             ax.imshow(self.tfr, cmap=cmap, origin="bottomleft", extent=extent,
                       aspect='auto')
@@ -172,16 +169,20 @@ class BaseTFRepresentation(object):
         self._viz_threshold = threshold
 
         extent = kwargs.pop('extent', None)
+        if extent is None:
+            extent = [self.ts.min(), self.ts.max(), self.freqs.min(),
+                      self.freqs.max()]
         contour_x = kwargs.pop('contour_x', None)
         contour_y = kwargs.pop('contour_y', None)
         levels = kwargs.pop('levels', None)
         freq_x = kwargs.pop('freq_x', None)
         freq_y = kwargs.pop('freq_y', None)
+        cmap = kwargs.pop("cmap", plt.cm.gray)
 
         if show_tf:
             fig, axTF = plt.subplots(figsize=(10, 8))
             self._plot_tfr(axTF, kind, extent, contour_x, contour_y, levels,
-                        show_tf)
+                           show_tf, cmap=cmap)
             from mpl_toolkits.axes_grid1 import make_axes_locatable
             divider = make_axes_locatable(axTF)
 
@@ -214,7 +215,7 @@ class BaseTFRepresentation(object):
                 if default_annotation:
                     ax.set_zlabel("Amplitude")
             elif kind == "wireframe":
-                from mpl_toolkits.mplot3d import Axes3D
+                from mpl_toolkits.mplot3d import Axes3D  # NOQA
                 ax = fig.gca(projection="3d")
                 x = np.arange(self.signal.shape[0])
                 y = np.linspace(0, 0.5, self.signal.shape[0])

@@ -13,6 +13,7 @@ Spectrum of a Noisy Transient Signal
 
 This example shows how to generate a noisy transient signal with the following
 characteristics:
+
     * One-sided exponential amplitude modulation (See :ref:`amexpos`)
     * Constant frequency modulation (See :ref:`fmconst`)
     * -5 dB complex gaussian noise (See :ref:`noisecg` and :ref:`sigmerge`)

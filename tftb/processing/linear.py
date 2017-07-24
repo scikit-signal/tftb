@@ -45,7 +45,9 @@ class ShortTimeFourierTransform(BaseTFRepresentation):
         .. plot:: docstring_plots/processing/stft.py
         """
         super(ShortTimeFourierTransform, self).__init__(signal=signal,
-                n_fbins=n_fbins, timestamps=timestamps, fwindow=fwindow)
+                                                        n_fbins=n_fbins,
+                                                        timestamps=timestamps,
+                                                        fwindow=fwindow)
 
     def run(self):
         r"""Compute the STFT according to:
@@ -55,19 +57,20 @@ class ShortTimeFourierTransform(BaseTFRepresentation):
         Where :math:`w` is a Hamming window."""
         lh = (self.fwindow.shape[0] - 1) // 2
         rangemin = min([round(self.n_fbins / 2.0), lh])
-        starts = -np.min(np.c_[rangemin * np.ones(self.ts.shape), self.ts - 1],
-                axis=1).astype(int)
+        starts = -np.min(np.c_[rangemin * np.ones(self.ts.shape),
+                               np.arange(self.ts.shape[0]) - 1],
+                         axis=1).astype(int)
         ends = np.min(np.c_[rangemin * np.ones(self.ts.shape),
-            self.signal.shape[0] - self.ts], axis=1).astype(int)
+                            self.signal.shape[0] - np.arange(self.ts.shape[0])],
+                      axis=1).astype(int)
         conj_fwindow = np.conj(self.fwindow)
         for icol in range(self.tfr.shape[1]):
-            ti = self.ts[icol]
             start = starts[icol]
             end = ends[icol]
             tau = np.arange(start, end + 1).astype(int)
             index = np.remainder(self.n_fbins + tau, self.n_fbins)
-            self.tfr[index, icol] = self.signal[ti + tau - 1] * \
-                conj_fwindow[lh + tau]
+            self.tfr[index, icol] = self.signal[(icol + tau - 1).astype(int)] * \
+                conj_fwindow[(lh + tau).astype(int)]
         self.tfr = np.fft.fft(self.tfr, axis=0)
         return self.tfr, self.ts, self.freqs
 
@@ -96,7 +99,8 @@ class ShortTimeFourierTransform(BaseTFRepresentation):
         _threshold = np.amax(self.tfr) * threshold
         self.tfr[self.tfr <= _threshold] = 0.0
         super(ShortTimeFourierTransform, self).plot(ax=ax, kind=kind,
-                threshold=threshold, **kwargs)
+                                                    threshold=threshold,
+                                                    **kwargs)
 
 
 def gabor(signal, n_coeff=None, q_oversample=None, window=None):
@@ -129,7 +133,7 @@ def gabor(signal, n_coeff=None, q_oversample=None, window=None):
     if nh % 2 == 0:
         raise ValueError("The window function should have an odd length.")
     alpha = np.round((2 * signal.shape[0] / float(n_coeff) - 1 - nh) / (2 *
-        q_oversample))
+                     q_oversample))
     hn1 = np.zeros((signal.shape[0],))
     start = np.round(((signal.shape[0] - (nh - 1))) / 2) - alpha
     end = np.round((signal.shape[0] + nh - 1) / 2) - alpha
@@ -159,8 +163,12 @@ def gabor(signal, n_coeff=None, q_oversample=None, window=None):
     tfr = np.abs(dgr) ** 2
     return tfr, dgr, gam
 
+
 if __name__ == '__main__':
     from tftb.generators import fmconst
+    import matplotlib.pyplot as plt
     sig = np.r_[fmconst(128, 0.2)[0], fmconst(128, 0.4)[0]]
-    tfr = ShortTimeFourierTransform(sig)
+    ts = np.linspace(0, 1, 256)
+    tfr = ShortTimeFourierTransform(sig, timestamps=ts)
     tfr.run()
+    tfr.plot(show_tf=True, cmap=plt.cm.viridis)

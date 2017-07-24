@@ -9,7 +9,7 @@ y2 = np.sin(2 * np.pi * 1336 * ts)
 y = (y1 + y2) / 2
 
 
-y = y[:(fs / 16)]
+y = y[:int(fs / 16)]
 y_analytic = hilbert(y)
 plt.plot(np.real(y_analytic), np.imag(y_analytic))
 plt.xlabel("Real part")
