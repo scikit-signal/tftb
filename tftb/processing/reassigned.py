@@ -38,7 +38,7 @@ def pseudo_wigner_ville(signal, timestamps=None, n_fbins=None, fwindow=None):
         hlength = np.floor(n_fbins / 4.0)
         if hlength % 2 == 0:
             hlength += 1
-        fwindow = ssig.hamming(hlength)
+        fwindow = ssig.hamming(int(hlength))
     elif fwindow.shape[0] % 2 == 0:
         raise ValueError('The smoothing fwindow must have an odd length.')
     lh = (fwindow.shape[0] - 1) // 2
