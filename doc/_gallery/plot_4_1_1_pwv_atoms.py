@@ -28,6 +28,7 @@ x = np.array([[32, .15, 20, 1],
              [32, .35, 20, 1],
              [96, .35, 20, 1]])
 g = atoms(128, x)
-spec = PseudoWignerVilleDistribution(g)
+t = np.linspace(0, 1, 128)
+spec = PseudoWignerVilleDistribution(g, timestamps=t)
 spec.run()
 spec.plot(kind="contour", scale="log", show_tf=True)
