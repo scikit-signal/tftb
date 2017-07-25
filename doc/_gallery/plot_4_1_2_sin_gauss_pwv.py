@@ -22,8 +22,10 @@ Figure 4.9 from the tutorial.
 
 from tftb.generators import fmconst, amgauss
 from tftb.processing import PseudoWignerVilleDistribution
+import numpy as np
 
+t = np.linspace(0, 1, 128)
 sig = fmconst(128, 0.15)[0] + amgauss(128) * fmconst(128, 0.4)[0]
-tfr = PseudoWignerVilleDistribution(sig)
+tfr = PseudoWignerVilleDistribution(sig, timestamps=t)
 tfr.run()
 tfr.plot(show_tf=True, kind="contour")
