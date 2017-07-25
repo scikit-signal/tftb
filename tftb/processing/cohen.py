@@ -151,20 +151,20 @@ class WignerVilleDistribution(BaseTFRepresentation):
     def run(self):
         tausec = round(self.n_fbins / 2.0)
         winlength = tausec - 1
-        taulens = np.min(np.c_[self.ts, self.signal.shape[0] - self.ts - 1,
+        taulens = np.min(np.c_[np.arange(self.signal.shape[0]),
+                               self.signal.shape[0] - np.arange(self.signal.shape[0]) - 1,
                          winlength * np.ones(self.ts.shape)], axis=1)
         conj_signal = np.conj(self.signal)
         for icol in range(self.ts.shape[0]):
-            ti = self.ts[icol]
             taumax = taulens[icol]
             tau = np.arange(-taumax, taumax + 1).astype(int)
             indices = np.remainder(self.n_fbins + tau, self.n_fbins).astype(int)
-            self.tfr[indices, icol] = self.signal[icol + tau - 1] * \
-                conj_signal[icol - tau - 1]
-            if (ti <= self.signal.shape[0] - tausec) and (ti >= tausec + 1):
-                self.tfr[tausec, icol] = (self.signal[ti + tausec, 0] *
-                                          np.conj(self.signal[ti - tausec, 0])) + \
-                    (self.signal[ti - tausec, 0] * conj_signal[ti + tausec, 0])
+            self.tfr[indices, icol] = self.signal[icol + tau] * \
+                conj_signal[icol - tau]
+            if (icol <= self.signal.shape[0] - tausec) and (icol >= tausec + 1):
+                self.tfr[tausec, icol] = (self.signal[icol + tausec, 0] *
+                                          np.conj(self.signal[icol - tausec, 0])) + \
+                    (self.signal[icol - tausec, 0] * conj_signal[icol + tausec, 0])
         self.tfr = np.fft.fft(self.tfr, axis=0)
         self.tfr = np.real(self.tfr)
         self.freqs = 0.5 * np.arange(self.n_fbins, dtype=float) / self.n_fbins

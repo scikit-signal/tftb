@@ -35,7 +35,7 @@ class TestCohen(TestBase):
         shift = 64
         timeshifted_signal = np.roll(signal, shift)
         timeshifted_tfr, _, _ = cohen.Spectrogram(timeshifted_signal, n_fbins=64,
-                                            fwindow=window).run()
+                                                  fwindow=window).run()
         rolled_tfr = np.roll(tfr, shift, axis=1)
         # the time invariance property holds mostly qualitatively. The shifted
         # TFR is not numerically indentical to the rolled TFR, having
@@ -131,6 +131,7 @@ class TestCohen(TestBase):
         signal, _ = fmsin(128)
         tfr, _, _ = cohen.PseudoWignerVilleDistribution(signal).run()
         self.assertTrue(np.all(np.isreal(tfr)))
+
 
 if __name__ == '__main__':
     unittest.main()
