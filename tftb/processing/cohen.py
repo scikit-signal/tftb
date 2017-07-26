@@ -210,6 +210,13 @@ class PseudoWignerVilleDistribution(WignerVilleDistribution):
         self.tfr = np.fft.fft(self.tfr, axis=0)
         return np.real(self.tfr), self.ts, self.freqs
 
+    def plot(self, **kwargs):
+        if kwargs.get("kind", "") == "cmap":
+            import warnings
+            warnings.warn("cmap is not supported for PseudoWignerVille distributions.")
+        kwargs['kind'] = "contour"
+        super(PseudoWignerVilleDistribution, self).plot(**kwargs)
+
 
 def smoothed_pseudo_wigner_ville(signal, timestamps=None, freq_bins=None,
                                  twindow=None, fwindow=None):
