@@ -179,6 +179,8 @@ class WignerVilleDistribution(BaseTFRepresentation):
             kwargs['levels'] = levels
         if sqmod:
             self.tfr = np.abs(self.tfr) ** 2
+        else:
+            self.tfr = np.abs(self.tfr)
         _threshold = np.amax(self.tfr) * threshold
         self.tfr[self.tfr <= _threshold] = 0.0
         super(WignerVilleDistribution, self).plot(kind=kind, threshold=threshold,
@@ -211,10 +213,8 @@ class PseudoWignerVilleDistribution(WignerVilleDistribution):
         return np.real(self.tfr), self.ts, self.freqs
 
     def plot(self, **kwargs):
-        if kwargs.get("kind", "") == "cmap":
-            import warnings
-            warnings.warn("cmap is not supported for PseudoWignerVille distributions.")
-        kwargs['kind'] = "contour"
+        if "kind" not in kwargs:
+            kwargs['kind'] = "contour"
         super(PseudoWignerVilleDistribution, self).plot(**kwargs)
 
 
