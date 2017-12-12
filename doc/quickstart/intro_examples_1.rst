@@ -11,8 +11,9 @@ modulation.
 
     >>> from tftb.generators import amgauss, fmlin
     >>> import matplotlib.pyplot as plt
+    >>> import numpy as np
     >>> z = amgauss(128, 50, 40) * fmlin(128, 0.05, 0.3, 50)[0]
-    >>> plt.plot(real(z))
+    >>> plt.plot(np.real(z))
     >>> plt.title("Linear Frequency Modulation")
     >>> plt.show()
 
