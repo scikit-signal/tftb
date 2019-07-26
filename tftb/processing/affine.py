@@ -11,7 +11,6 @@ Bilinear Time-Frequency Processing in the Affine Class.
 """
 
 import numpy as np
-from matplotlib.mlab import find
 from scipy.signal import hilbert
 from scipy.optimize import brenth, newton
 from scipy.interpolate import splrep, splev
@@ -113,8 +112,9 @@ class AffineDistribution(BaseTFRepresentation):
         gamma = np.linspace(-self.geo_f[self.n_voices - 1] * ts2,
                             self.geo_f[self.n_voices - 1] * ts2, 2 * self.m1)
         for i in range(self.n_voices):
-            ind = find(np.logical_and(gamma >= -self.geo_f[i] * ts2,
-                                    gamma <= self.geo_f[i] * ts2))
+            condition = np.logical_and(gamma >= -self.geo_f[i] * ts2,
+                                       gamma <= self.geo_f[i] * ts2)
+            ind = np.nonzero(np.ravel(condition))
             x = gamma[ind]
             y = tffr[i, ind]
             xi = (self.ts - ts2) * self.geo_f[i]
@@ -267,8 +267,9 @@ class UnterbergerDistribution(AffineDistribution):
         gamma = np.linspace(-self.geo_f[self.n_voices - 1] * ts2,
                             self.geo_f[self.n_voices - 1] * ts2, 2 * self.m1)
         for i in range(self.n_voices):
-            ind = find(np.logical_and(gamma >= -self.geo_f[i] * ts2,
-                                    gamma <= self.geo_f[i] * ts2))
+            condition = np.logical_and(gamma >= -self.geo_f[i] * ts2,
+                                       gamma <= self.geo_f[i] * ts2)
+            ind = np.nonzero(np.ravel(condition))
             x = gamma[ind]
             y = tffr[i, ind]
             xi = (self.ts - ts2 - 1) * self.geo_f[i]
