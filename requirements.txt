@@ -1,4 +1,6 @@
 numpy
 scipy
-matplotlib
+matplotlib==2.2.4
 sphinx-gallery
+cairocffi
+pgi
