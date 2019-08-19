@@ -256,8 +256,8 @@ def smoothed_pseudo_wigner_ville(signal, timestamps=None, freq_bins=None,
         raise ValueError('The smoothing fwindow must have an odd length.')
 
     tfr = np.zeros((freq_bins, timestamps.shape[0]), dtype=complex)
-    lg = (twindow.shape[0] - 1) / 2
-    lh = (fwindow.shape[0] - 1) / 2
+    lg = (twindow.shape[0] - 1) // 2
+    lh = (fwindow.shape[0] - 1) // 2
     for icol in range(timestamps.shape[0]):
         ti = timestamps[icol]
         taumax = min([ti + lg - 1, signal.shape[0] - ti + lg,
