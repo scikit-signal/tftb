@@ -63,3 +63,6 @@ target/
 
 # Skip sphinx-gallery build directory
 doc/auto_examples
+
+.pytest_cache
+.vscode

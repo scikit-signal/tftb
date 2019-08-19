@@ -13,7 +13,7 @@ import unittest
 import numpy as np
 from scipy import angle
 from tftb.utils import is_linear
-from skimage.measure import structural_similarity as ssim
+from skimage.measure import compare_ssim
 
 ispy2 = sys.version_info.major < 3
 
@@ -79,5 +79,5 @@ class TestBase(unittest.TestCase):
         y[y <= y_thresh] = 0.0
         x = np.ascontiguousarray(x)
         y = np.ascontiguousarray(y)
-        similarity = ssim(x, y)
+        similarity = compare_ssim(x, y)
         self.assertTrue(similarity >= tol)

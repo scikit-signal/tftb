@@ -15,7 +15,7 @@ import numpy as np
 from scipy.signal import kaiser
 from tftb.processing import cohen
 from tftb.generators import fmsin, fmlin
-from tftb.tests.base import TestBase
+from tftb.tests.test_base import TestBase
 
 
 class TestCohen(TestBase):

@@ -10,7 +10,7 @@
 Tests for tftb.processing.postprocessing
 """
 
-from tftb.tests.base import TestBase
+from tftb.tests.test_base import TestBase
 from tftb.generators import atoms, fmlin
 from tftb.processing import WignerVilleDistribution
 from tftb.processing import postprocessing as pproc
