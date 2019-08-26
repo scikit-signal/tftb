@@ -7,7 +7,7 @@ Submodules
 tftb\.tests\.base module
 ------------------------
 
-.. automodule:: tftb.tests.base
+.. automodule:: tftb.tests.test_base
     :members:
     :undoc-members:
     :show-inheritance:

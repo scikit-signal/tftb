@@ -8,24 +8,14 @@
 
 """Base class for tests."""
 
-import sys
 import unittest
 import numpy as np
 from scipy import angle
 from tftb.utils import is_linear
-from skimage.measure import structural_similarity as ssim
-
-ispy2 = sys.version_info.major < 3
+from skimage.measure import compare_ssim
 
 
 class TestBase(unittest.TestCase):
-
-    @classmethod
-    def setUpClass(cls):
-        if ispy2:
-            cls.assertCountEqual = cls.assertItemsEqual
-        else:
-            cls.assertItemsEqual = cls.assertCountEqual
 
     def assert_is_linear(self, signal, decimals=5):
         """Assert that the signal is linear."""
@@ -79,5 +69,5 @@ class TestBase(unittest.TestCase):
         y[y <= y_thresh] = 0.0
         x = np.ascontiguousarray(x)
         y = np.ascontiguousarray(y)
-        similarity = ssim(x, y)
+        similarity = compare_ssim(x, y)
         self.assertTrue(similarity >= tol)

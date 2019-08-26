@@ -13,7 +13,7 @@ import unittest
 import numpy as np
 from scipy import angle, unwrap
 from scipy.stats import mode
-from tftb.tests.base import TestBase
+from tftb.tests.test_base import TestBase
 from tftb.generators import analytic_signals as ana
 
 

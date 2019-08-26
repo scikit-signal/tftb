@@ -30,14 +30,13 @@ def wide_band(signal, fmin=None, fmax=None, N=None):
 
     # determine default values for fmin, fmax
     if (fmin is None) or (fmax is None):
-        from matplotlib.mlab import find
         STF = np.fft.fftshift(s_ana)
         sp = np.abs(STF[:m]) ** 2
         maxsp = np.amax(sp)
         f = np.linspace(0, 0.5, m + 1)
         f = f[:m]
-        indmin = find(sp > maxsp / 100.0).min()
-        indmax = find(sp > maxsp / 100.0).max()
+        indmin = np.nonzero(sp > maxsp / 100.0)[0].min()
+        indmax = np.nonzero(sp > maxsp / 100.0)[0].max()
         if fmin is None:
             fmin = max([0.01, 0.05 * np.fix(f[indmin] / 0.05)])
         if fmax is None:
@@ -133,6 +132,7 @@ def narrow_band(signal, lag=None, n_fbins=None):
     xi = np.arange(_xi1, _xi2 + 1, dtype=float) / n_fbins
     naf = naf[np.hstack((_ix1, _ix2)), :]
     return naf, lag, xi
+
 
 if __name__ == '__main__':
     from tftb.generators.misc import altes

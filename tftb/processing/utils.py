@@ -76,6 +76,7 @@ def derive_window(window):
     dw[-1] -= step_height
     return dw
 
+
 if __name__ == '__main__':
     x = np.arange(1, 16).reshape(5, 3)
     print(integrate_2d(x))

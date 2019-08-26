@@ -10,7 +10,7 @@
 
 import unittest
 import numpy as np
-from tftb.tests.base import TestBase
+from tftb.tests.test_base import TestBase
 from tftb.generators import noise
 
 
@@ -36,6 +36,7 @@ class TestNoise(TestBase):
         energy = np.sum(np.abs(signal) ** 2)
         self.assertAlmostEqual(energy, 1, 3)
         self.assert_is_monotonic_decreasing(iflaw)
+
 
 if __name__ == '__main__':
     unittest.main()

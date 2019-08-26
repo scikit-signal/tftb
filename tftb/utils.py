@@ -73,7 +73,7 @@ def divider(N):
     :param N: Number to be divided.
     :type N: int
     :return: A tuple of two integers such that their product is `N` and they
-        are the closest possible to :math:`\sqrt(N)`
+        are the closest possible to :math:`\sqrt(N)`  # NOQA: W605
     :rtype: tuple(int)
     :Example:
     >>> from __future__ import print_function
