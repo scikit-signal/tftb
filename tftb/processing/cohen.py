@@ -162,9 +162,9 @@ class WignerVilleDistribution(BaseTFRepresentation):
             self.tfr[indices, icol] = self.signal[icol + tau] * \
                 conj_signal[icol - tau]
             if (icol <= self.signal.shape[0] - tausec) and (icol >= tausec + 1):
-                self.tfr[tausec, icol] = (self.signal[icol + tausec, 0] *
-                                          np.conj(self.signal[icol - tausec, 0])) + \
-                    (self.signal[icol - tausec, 0] * conj_signal[icol + tausec, 0])
+                self.tfr[tausec, icol] = self.signal[icol + tausec, 0] * \
+                    np.conj(self.signal[icol - tausec, 0]) + \
+                    self.signal[icol - tausec, 0] * conj_signal[icol + tausec, 0]
         self.tfr = np.fft.fft(self.tfr, axis=0)
         self.tfr = np.real(self.tfr)
         self.freqs = 0.5 * np.arange(self.n_fbins, dtype=float) / self.n_fbins

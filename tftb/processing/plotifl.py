@@ -53,6 +53,7 @@ def plotifl(time_instants, iflaws, signal=None, **kwargs):
     plt.title('Instantaneous frequency law(s)')
     plt.show()
 
+
 if __name__ == '__main__':
     signal, _ = fmlin(256)
     time_samples = np.arange(3, 257)

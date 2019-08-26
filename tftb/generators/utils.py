@@ -89,6 +89,7 @@ def scale(X, a, fmin, fmax, N):
     S = S * np.linalg.norm(X) / np.linalg.norm(S)
     return S
 
+
 if __name__ == '__main__':
     from tftb.generators import altes
     sig = altes(256, 0.1, 0.45, 10000)

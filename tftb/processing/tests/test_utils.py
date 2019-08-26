@@ -26,5 +26,6 @@ class TestUtils(unittest.TestCase):
         self.assertTrue(np.all(dwindow[:64] >= 0))
         self.assertTrue(np.all(dwindow[64:] <= 0))
 
+
 if __name__ == '__main__':
     unittest.main()

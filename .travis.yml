@@ -1,17 +1,15 @@
 sudo: false
 language: python
-virtualenv:
-  system_site_packages: false
-env:
-  global:
-    - DISTRIB="conda"
-    - COVERAGE="true"
-  matrix:
-    - PYTHON_VERSION="2.7"
-    - PYTHON_VERSION="3.6"
-# command to install dependencies
-install: source continuous_integration/install.sh
-# command to run tests
-script: nosetests -sv --with-doctest --no-byte-compile --with-coverage --cover-package=tftb
+python: '3.7'
+
+script:
+  - wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O $HOME/miniconda.sh
+  - bash $HOME/miniconda.sh -b -u -p $HOME/miniconda
+  - export PATH="$HOME/minicoonda/bin:$PATH"
+  - hash -r
+  - pip install nose coverage coveralls
+  - pip install -e .
+  - flake8
+  - nosetests -sv --with-doctest --no-byte-compile --with-coverage --cover-package=tftb
 after_success:
   coveralls

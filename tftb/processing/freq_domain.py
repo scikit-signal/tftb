@@ -109,8 +109,7 @@ def group_delay(x, fnorm=None):
         denominator = np.fft.fft(x)
         window = np.real(numerator / denominator) >= 1
         ratio = np.real(numerator / denominator) * window.astype(int)
-        ratio = ratio * (np.real(numerator / denominator) <= (len(x) +
-                                                              3)).astype(int)
+        ratio = ratio * (np.real(numerator / denominator) <= (len(x) + 3)).astype(int)
         gd = np.fft.fftshift(ratio)
     else:
         exponent = np.exp(-1j * 2.0 * np.pi * fnorm.reshape(len(fnorm), 1) * np.arange(len(x)))

@@ -11,17 +11,11 @@ Tests for tftb.utils
 """
 
 import unittest
-import six
 import numpy as np
 from tftb import utils
 
 
 class TestUtils(unittest.TestCase):
-
-    @classmethod
-    def setUpClass(cls):
-        if six.PY3:
-            cls.assertItemsEqual = cls.assertSequenceEqual
 
     def test_is_linear(self):
         """Test the is_linear function."""
@@ -42,9 +36,9 @@ class TestUtils(unittest.TestCase):
 
     def test_divider(self):
         """Test the divider function."""
-        self.assertItemsEqual(utils.divider(4), (2, 2))
-        self.assertItemsEqual(utils.divider(17), (1, 17))
-        self.assertItemsEqual(utils.divider(60), (6, 10))
+        self.assertSequenceEqual(utils.divider(4), (2, 2))
+        self.assertSequenceEqual(utils.divider(17), (1, 17))
+        self.assertSequenceEqual(utils.divider(60), (6, 10))
         x = np.arange(1, 101)
         lowers = np.zeros(x.shape)
         uppers = np.zeros(x.shape)
@@ -66,13 +60,14 @@ class TestUtils(unittest.TestCase):
         x = np.arange(1, 11)
         np.testing.assert_allclose(utils.modulo(x, 1), np.ones(x.shape))
         np.testing.assert_allclose(utils.modulo(x, 2),
-                np.array([1, 2, 1, 2, 1, 2, 1, 2, 1, 2]))
+                                   np.array([1, 2, 1, 2, 1, 2, 1, 2, 1, 2]))
         np.testing.assert_allclose(utils.modulo(x, 3),
-                np.array([1, 2, 3, 1, 2, 3, 1, 2, 3, 1]))
+                                   np.array([1, 2, 3, 1, 2, 3, 1, 2, 3, 1]))
         np.testing.assert_allclose(utils.modulo(x, 4),
-                np.array([1, 2, 3, 4, 1, 2, 3, 4, 1, 2]))
+                                   np.array([1, 2, 3, 4, 1, 2, 3, 4, 1, 2]))
         np.testing.assert_allclose(utils.modulo(x, 5),
-                np.array([1, 2, 3, 4, 5, 1, 2, 3, 4, 5]))
+                                   np.array([1, 2, 3, 4, 5, 1, 2, 3, 4, 5]))
+
 
 if __name__ == '__main__':
     unittest.main()

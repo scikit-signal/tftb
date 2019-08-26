@@ -1,10 +1,10 @@
 from .amplitude_modulated import amexpos, amgauss, amrect, amtriang
 from .frequency_modulated import (fmconst, fmhyp, fmlin, fmodany, fmpar,
-        fmpower, fmsin)
+                                  fmpower, fmsin)
 from .utils import sigmerge, scale
 from .noise import dopnoise, noisecg, noisecu
 from .analytic_signals import (anaask, anabpsk, anafsk, anapulse, anaqpsk,
-        anasing, anastep)
+                               anasing, anastep)
 from .misc import doppler, gdpower, klauder, mexhat, altes, atoms
 
 __all__ = ['amexpos', 'amgauss', 'amrect', 'amtriang', 'fmconst', 'fmhyp',

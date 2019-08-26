@@ -143,6 +143,7 @@ def amtriang(n_points, t0=None, spread=None):
 
         return y
 
+
 if __name__ == '__main__':
     amgauss(128)
     amexpos(128)

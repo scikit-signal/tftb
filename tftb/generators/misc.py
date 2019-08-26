@@ -182,7 +182,7 @@ def gdpower(n_points, degree=0.0, rate=1.0):
     :param degree: degree of the power law.
     :param rate: rate-coefficient of the power law GD.
     :type n_points: int
-    :type degree: int		# yoder: i'm pretty sure this is supposed to be a float. at least in test_misc.py, the test for this funct. passes degree=0.5
+    :type degree: float
     :type rate: float
     :return: Tuple of time row containing modulated samples, group delay, \
             frequency bins.
@@ -235,6 +235,7 @@ def gdpower(n_points, degree=0.0, rate=1.0):
     x = x / np.linalg.norm(x)
 
     return x, gpd, nu
+
 
 if __name__ == "__main__":
     altes(128)

@@ -1,7 +1,0 @@
-numpy
-scipy
-matplotlib
-nose
-libgfortran
-scikit-image
-six

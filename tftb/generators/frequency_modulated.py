@@ -253,10 +253,12 @@ def fmsin(n_points, fnormin=0.05, fnormax=0.45, period=None, t0=None,
     delta = 0.5 * (fnormax - fnormin)
     phi = -pm1 * np.arccos((fnorm0 - fnormid) / delta)
     t = np.arange(n_points) - t0
-    phase = 2 * pi * fnormid * t + delta * period * (np.sin(2 * pi * t / period + phi)) - np.sin(phi)
+    phase = 2 * pi * fnormid * t + delta * period * (np.sin(2 * pi * t / period + phi)) -\
+        np.sin(phi)
     y = np.exp(1j * phase)
     iflaw = fnormid + delta * np.cos(2 * pi * t / period + phi)
     return y, iflaw
+
 
 if __name__ == '__main__':
     fmconst(128)

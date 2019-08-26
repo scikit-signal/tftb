@@ -17,13 +17,15 @@ def noisecu(n_points):
     0.00
     >>> print("%.1f" % np.std(noise) ** 2)
     1.0
-    >>> subplot(211), plot(real(noise))                                              #doctest: +SKIP
-    >>> subplot(212), plot(linspace(-0.5, 0.5, 512), abs(fftshift(fft(noise))) ** 2) #doctest: +SKIP
+    >>> subplot(211), plot(real(noise))                                #doctest: +SKIP
+    >>> subplot(212),
+    >>> plot(linspace(-0.5, 0.5, 512), abs(fftshift(fft(noise))) ** 2) #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/noise/noisecu.py
     """
     if n_points <= 2:
-        noise = (np.random.rand(n_points, 1) - 0.5 + 1j * (np.random.rand(n_points, 1) - 0.5)) * np.sqrt(6)
+        noise = (np.random.rand(n_points, 1) - 0.5 + 1j * (np.random.rand(n_points, 1) - 0.5)) * \
+            np.sqrt(6)
     else:
         noise = np.random.rand(2 ** int(nextpow2(n_points)),) - 0.5
         noise = hilbert(noise) / noise.std() / np.sqrt(2)
@@ -53,8 +55,9 @@ def noisecg(n_points, a1=None, a2=None):
     0.00
     >>> print("%.1f" % np.std(noise) ** 2)
     1.0
-    >>> subplot(211), plot(real(noise))                                              #doctest: +SKIP
-    >>> subplot(212), plot(linspace(-0.5, 0.5, 512), abs(fftshift(fft(noise))) ** 2) #doctest: +SKIP
+    >>> subplot(211), plot(real(noise))                                #doctest: +SKIP
+    >>> subplot(212),
+    >>> plot(linspace(-0.5, 0.5, 512), abs(fftshift(fft(noise))) ** 2) #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/noise/noisecg.py
     """
@@ -69,7 +72,7 @@ def noisecg(n_points, a1=None, a2=None):
 
 
 def dopnoise(n_points, s_freq, f_target, distance, v_target,
-        time_center=None, c=340):
+             time_center=None, c=340):
     """Generate complex noisy doppler signal, normalized to have unit energy.
 
     :param n_points: Number of points.
@@ -112,7 +115,8 @@ def dopnoise(n_points, s_freq, f_target, distance, v_target,
     y = np.zeros((2 * n_points,))
     for t in range(2, 2 * n_points):
         y[t] = x[t] - rr * (x[t - 2] + y[t - 2]) + r2 * np.cos(2.0 * np.pi * iflaw[t]) * y[t - 1]
-    y = hilbert(y[(n_points + 1): (2 * n_points + 1)]) / np.sqrt(dist[(n_points + 1): (2 * n_points + 1)])
+    y = hilbert(y[(n_points + 1): (2 * n_points + 1)]) /\
+        np.sqrt(dist[(n_points + 1): (2 * n_points + 1)])
     y = y / np.sqrt(np.sum(np.abs(y) ** 2))
     iflaw = iflaw[(n_points + 1):(2 * n_points + 1)]
     return y, iflaw

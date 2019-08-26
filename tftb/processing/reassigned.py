@@ -52,10 +52,10 @@ def pseudo_wigner_ville(signal, timestamps=None, n_fbins=None, fwindow=None):
         taumax = min([ti - 1, xrow - ti, np.round(n_fbins / 2.0) - 1, lh])
         tau = np.arange(-taumax, taumax + 1)
         indices = np.remainder(n_fbins + tau, n_fbins) + 1
-        tfr[indices - 1, icol] = (fwindow[lh + tau] * signal[ti + tau - 1] *
-                                  np.conj(signal[ti - tau - 1]))
-        tf2[indices - 1, icol] = (dh[lh + tau] * signal[ti + tau - 1] *
-                                  np.conj(signal[ti - tau - 1]))
+        tfr[indices - 1, icol] = fwindow[lh + tau] * signal[ti + tau - 1] * \
+            np.conj(signal[ti - tau - 1])
+        tf2[indices - 1, icol] = dh[lh + tau] * signal[ti + tau - 1] * \
+            np.conj(signal[ti - tau - 1])
         tau = np.round(n_fbins / 2)
         if (ti <= (xrow - tau)) and (ti > (tau + 1)) and (tau <= lh):
             _x = fwindow[lh + 1 + tau] * signal[ti + tau] * np.conj(signal[ti - tau])
@@ -82,9 +82,8 @@ def pseudo_wigner_ville(signal, timestamps=None, n_fbins=None, fwindow=None):
     for icol in range(tcol):
         for jcol in range(n_fbins):
             if np.abs(tfr[jcol, icol]) > threshold:
-                jcolhat = jcol - tf2[jcol, icol]
-                jcolhat = int(np.remainder(np.remainder(jcolhat - 1, n_fbins) +
-                                           n_fbins, n_fbins))
+                jcolhat = jcol - int(tf2[jcol, icol])
+                jcolhat = (((jcolhat - 1) % n_fbins) + n_fbins) % n_fbins
                 jcolhat += 1
                 rtfr[jcolhat - 1, icol] += tfr[jcol, icol]
                 tf2[jcol, icol] = jcolhat
@@ -136,10 +135,10 @@ def pseudo_margenau_hill(signal, timestamps=None, n_fbins=None, fwindow=None):
         end = min([np.round(n_fbins / 2.0) - 1, lh, ti - 1])
         tau = np.arange(-start, end + 1)
         indices = np.remainder(n_fbins + tau, n_fbins)
-        tfr[indices, icol] = (fwindow[lh + tau] * signal[ti - 1] *
-                              np.conj(signal[ti - tau - 1]))
-        tf2[indices, icol] = (dh[lh + tau] * signal[ti - 1] *
-                              np.conj(signal[ti - tau - 1]))
+        tfr[indices, icol] = fwindow[lh + tau] * signal[ti - 1] * \
+            np.conj(signal[ti - tau - 1])
+        tf2[indices, icol] = dh[lh + tau] * signal[ti - 1] * \
+            np.conj(signal[ti - tau - 1])
 
     tfr = np.fft.fft(tfr, axis=0)
     tf2 = np.fft.fft(tf2, axis=0)
@@ -160,8 +159,7 @@ def pseudo_margenau_hill(signal, timestamps=None, n_fbins=None, fwindow=None):
         for jcol in range(n_fbins):
             if np.abs(tfr[jcol, icol]) > threshold:
                 jcolhat = jcol - tf2[jcol, icol]
-                jcolhat = np.remainder(np.remainder(jcolhat - 1, n_fbins) +
-                                       n_fbins, n_fbins)
+                jcolhat = (((jcolhat - 1) % n_fbins) + n_fbins) % n_fbins
                 jcolhat += 1
                 rtfr[jcolhat - 1, icol] += tfr[jcol, icol]
                 tf2[jcol, icol] = jcolhat
@@ -209,10 +207,10 @@ def pseudo_page(signal, timestamps=None, n_fbins=None, fwindow=None):
     for icol in range(tcol):
         tau = np.arange(min([n_fbins - 1, lh, icol - 1]) + 1)
         indices = np.remainder(n_fbins + tau, n_fbins) + 1
-        tfr[indices, icol] = (fwindow[lh + tau] * signal[icol] *
-                              np.conj(signal[icol - tau]))
-        tf2[indices, icol] = (dh[lh + tau] * signal[icol] *
-                              np.conj(signal[icol - tau]))
+        tfr[indices, icol] = fwindow[lh + tau] * signal[icol] * \
+            np.conj(signal[icol - tau])
+        tf2[indices, icol] = dh[lh + tau] * signal[icol] * \
+            np.conj(signal[icol - tau])
         tf2[0, icol] += signal[icol] * np.conj(signal[icol])
 
     tfr = np.fft.fft(tfr, axis=0)
@@ -234,8 +232,7 @@ def pseudo_page(signal, timestamps=None, n_fbins=None, fwindow=None):
         for jcol in range(n_fbins):
             if np.abs(tfr[jcol, icol]) > threshold:
                 jcolhat = jcol - tf2[jcol, icol]
-                jcolhat = np.remainder(np.remainder(jcolhat - 1, n_fbins) +
-                                       n_fbins, n_fbins)
+                jcolhat = (((jcolhat - 1) % n_fbins) + n_fbins) % n_fbins
                 jcolhat += 1
                 rtfr[jcolhat - 1, icol] += tfr[jcol, icol]
                 tf2[jcol, icol] = jcolhat
@@ -277,11 +274,11 @@ def morlet_scalogram(signal, timestamps=None, n_fbins=None, tbp=0.25):
     tf2 = np.zeros((n_fbins, tcol), dtype=complex)
     M = np.ceil(tbp * n_fbins * np.sqrt(2 * np.log(1 / k)))
     tau = np.arange(M + int(np.round(n_fbins / 2)) + 1)
-    hstar = (np.exp(-(tau / (n_fbins * tbp)) ** 2 / 2.0) *
-             np.exp(-1j * 2 * np.pi * tau / n_fbins))
+    hstar = np.exp(-(tau / (n_fbins * tbp)) ** 2 / 2.0) * \
+        np.exp(-1j * 2 * np.pi * tau / n_fbins)
     thstar = tau * hstar
 
-    for m in range(1, int(np.round(n_fbins / 2))):
+    for m in range(1, n_fbins // 2):
         factor = np.sqrt(m / (tbp * n_fbins))
         for icol in range(tcol):
             ti = timestamps[icol]
@@ -351,8 +348,7 @@ def morlet_scalogram(signal, timestamps=None, n_fbins=None, tbp=0.25):
                                  n_fbins)
                 m -= np.round(n_fbins / 2.0) + 1
                 jcolhat = jcol + np.round(np.imag((m ** 2) * tf2[jcol, icol] / factor))
-                jcolhat = (np.remainder(np.remainder(jcolhat - 1, n_fbins) +
-                                        n_fbins, n_fbins) + 1)
+                jcolhat = ((((jcolhat - 1) % n_fbins) + n_fbins) % n_fbins) + 1
                 rtfr[jcolhat - 1, icolhat - 1] += tfr[jcol, icol]
                 tf2[jcol, icol] = jcolhat + 1j * icolhat
             else:
@@ -446,8 +442,8 @@ def smoothed_pseudo_wigner_ville(signal, timestamps=None, n_fbins=None,
 
     no_warn_mask = tfr != 0
     tf2[no_warn_mask] = np.round(tf2[no_warn_mask] / tfr[no_warn_mask] / dt)
-    tf3[no_warn_mask] = np.round(n_fbins * tf3[no_warn_mask] /
-                                 tfr[no_warn_mask] / (2 * np.pi))
+    tf3[no_warn_mask] = np.round(
+        n_fbins * tf3[no_warn_mask] / tfr[no_warn_mask] / (2 * np.pi))
     tfr, tf2, tf3 = [x.reshape(n_fbins, tcol).astype(complex) for x in (tfr, tf2, tf3)]
     tf3 = np.real(tf3)
 
@@ -524,8 +520,8 @@ def spectrogram(signal, time_samples=None, n_fbins=None, window=None):
 
     no_warn_mask = tfr != 0
     tf2[no_warn_mask] = np.round(np.real(tf2[no_warn_mask] / tfr[no_warn_mask]))
-    tf3[no_warn_mask] = np.round(np.imag(n_fbins * tf3[no_warn_mask] /
-                                         tfr[no_warn_mask] / (2 * np.pi)))
+    tf3[no_warn_mask] = np.round(
+        np.imag(n_fbins * tf3[no_warn_mask] / tfr[no_warn_mask] / (2 * np.pi)))
 
     tfr = np.abs(tfr) ** 2
     tfr = tfr.reshape(n_fbins, time_samples.shape[0])
@@ -542,8 +538,7 @@ def spectrogram(signal, time_samples=None, n_fbins=None, window=None):
                 icolhat = icol + tf2[jcol, icol]
                 icolhat = np.min([np.max([icolhat, 1]), time_samples.shape[0]])
                 jcolhat = jcol - tf3[jcol, icol]
-                jcolhat = np.remainder(np.remainder(jcolhat - 1, n_fbins) +
-                                       n_fbins, n_fbins)
+                jcolhat = (((jcolhat - 1) % n_fbins) + n_fbins) % n_fbins
                 rtfr[int(jcolhat), int(icolhat) - 1] += tfr[jcol, icol]
                 tf2[jcol, icol] = jcolhat + 1j * icolhat
             else:

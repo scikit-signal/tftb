@@ -28,5 +28,6 @@ class TestUtils(unittest.TestCase):
         x_hat = signal + h_est * noise
         np.testing.assert_allclose(x, x_hat)
 
+
 if __name__ == '__main__':
     unittest.main()

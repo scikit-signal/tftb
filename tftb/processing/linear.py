@@ -132,8 +132,7 @@ def gabor(signal, n_coeff=None, q_oversample=None, window=None):
     nh = window.shape[0]
     if nh % 2 == 0:
         raise ValueError("The window function should have an odd length.")
-    alpha = np.round((2 * signal.shape[0] / float(n_coeff) - 1 - nh) / (2 *
-                     q_oversample))
+    alpha = np.round((2 * signal.shape[0] / float(n_coeff) - 1 - nh) / (2 * q_oversample))
     hn1 = np.zeros((signal.shape[0],))
     start = np.round(((signal.shape[0] - (nh - 1))) / 2) - alpha
     end = np.round((signal.shape[0] + nh - 1) / 2) - alpha
