@@ -11,15 +11,16 @@ def noisecu(n_points):
     :return: analytic complex uniform white noise signal of length N
     :rtype: numpy.ndarray
     :Examples:
+    >>> import matplotlib.pyplot as plt
     >>> import numpy as np
     >>> noise = noisecu(512)
     >>> print("%.2f" % abs((noise ** 2).mean()))
     0.00
     >>> print("%.1f" % np.std(noise) ** 2)
     1.0
-    >>> subplot(211), plot(real(noise))                                #doctest: +SKIP
-    >>> subplot(212),
-    >>> plot(linspace(-0.5, 0.5, 512), abs(fftshift(fft(noise))) ** 2) #doctest: +SKIP
+    >>> plt.subplot(211), plt.plot(real(noise))                                #doctest: +SKIP
+    >>> plt.subplot(212),  #doctest: +SKIP
+    >>> plt.plot(linspace(-0.5, 0.5, 512), abs(fftshift(fft(noise))) ** 2) #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/noise/noisecu.py
     """
@@ -49,15 +50,16 @@ def noisecg(n_points, a1=None, a2=None):
     :return: Analytic complex Gaussian noise of length n_points.
     :rtype: numpy.ndarray
     :Examples:
+    >>> import matplotlib.pyplot as plt
     >>> import numpy as np
     >>> noise = noisecg(512)
-    >>> print("%.2f" % abs((noise ** 2).mean()))
-    0.00
+    >>> print("%.1f" % abs((noise ** 2).mean()))
+    0.0
     >>> print("%.1f" % np.std(noise) ** 2)
     1.0
-    >>> subplot(211), plot(real(noise))                                #doctest: +SKIP
-    >>> subplot(212),
-    >>> plot(linspace(-0.5, 0.5, 512), abs(fftshift(fft(noise))) ** 2) #doctest: +SKIP
+    >>> plt.subplot(211), plt.plot(real(noise))                                #doctest: +SKIP
+    >>> plt.subplot(212), #doctest: +SKIP
+    >>> plt.plot(linspace(-0.5, 0.5, 512), abs(fftshift(fft(noise))) ** 2) #doctest: +SKIP
 
     .. plot:: docstring_plots/generators/noise/noisecg.py
     """

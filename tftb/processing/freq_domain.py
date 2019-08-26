@@ -14,8 +14,8 @@ def locfreq(signal):
     >>> from tftb.generators import amgauss
     >>> z = amgauss(160, 80, 50)
     >>> fm, B = locfreq(z)
-    >>> print("%.4g" % fm)
-    -9.183e-14
+    >>> print("%.3g" % fm)
+    -9.18e-14
     >>> print("%.4g" % B)
     0.02
     """
