@@ -17,10 +17,10 @@ discussed in detail [here](https://tftb.readthedocs.io/en/latest/introduction.ht
 ## Installation
 
 tftb requires:
-    - Python (>= 3.5)
-    - NumPy
-    - SciPy
-    - Matplotlib
+  - Python (>= 3.5)
+  - NumPy
+  - SciPy
+  - Matplotlib
 
 Install tftb with pip as follows:
 ```bash
