@@ -7,7 +7,7 @@ script:
   - bash $HOME/miniconda.sh -b -u -p $HOME/miniconda
   - export PATH="$HOME/minicoonda/bin:$PATH"
   - hash -r
-  - pip install nose coverage coveralls flake8
+  - pip install nose coverage coveralls flake8 scikit-image
   - pip install -e .
   - flake8
   - nosetests -sv --with-doctest --no-byte-compile --with-coverage --cover-package=tftb
