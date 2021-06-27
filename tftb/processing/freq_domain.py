@@ -8,8 +8,10 @@ def locfreq(signal):
 
     :param sig: input signal
     :type sig: numpy.ndarray
+
     :return: average normalized frequency center, frequency spreading
     :rtype: tuple
+
     :Example:
     >>> from tftb.generators import amgauss
     >>> z = amgauss(160, 80, 50)
@@ -49,8 +51,10 @@ def inst_freq(x, t=None, L=1):
     :type x: numpy.ndarray
     :type t: numpy.ndarray
     :type L: int
+
     :return: instantaneous frequencies of the input signal.
     :rtype: numpy.ndarray
+
     :Example:
     >>> from tftb.generators import fmsin
     >>> x = fmsin(70, 0.05, 0.35, 25)[0]
@@ -86,8 +90,10 @@ def group_delay(x, fnorm=None):
     :param fnorm: normalized frequency at which to calculate the group delay.
     :type x: numpy.ndarray
     :type fnorm: float
+
     :return: group delay
     :rtype: numpy.ndarray
+
     :Example:
     >>> import numpy as np
     >>> from tftb.generators import amgauss, fmlin

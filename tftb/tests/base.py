@@ -13,7 +13,7 @@ import unittest
 import numpy as np
 from scipy import angle
 from tftb.utils import is_linear
-from skimage.measure import structural_similarity as ssim
+from skimage.metrics import structural_similarity as ssim
 
 ispy2 = sys.version_info.major < 3
 

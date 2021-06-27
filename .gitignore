@@ -63,3 +63,4 @@ target/
 
 # Skip sphinx-gallery build directory
 doc/auto_examples
+doc/backreferences/

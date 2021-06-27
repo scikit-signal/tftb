@@ -15,6 +15,11 @@ from scipy.signal import hilbert
 from tftb.utils import nextpow2
 
 
+def _find(condt):
+    res, = np.nonzero(np.ravel(condt))
+    return res
+
+
 def wide_band(signal, fmin=None, fmax=None, N=None):
     if 1 in signal.shape:
         signal = signal.ravel()
@@ -30,21 +35,20 @@ def wide_band(signal, fmin=None, fmax=None, N=None):
 
     # determine default values for fmin, fmax
     if (fmin is None) or (fmax is None):
-        from matplotlib.mlab import find
         STF = np.fft.fftshift(s_ana)
         sp = np.abs(STF[:m]) ** 2
         maxsp = np.amax(sp)
         f = np.linspace(0, 0.5, m + 1)
         f = f[:m]
-        indmin = find(sp > maxsp / 100.0).min()
-        indmax = find(sp > maxsp / 100.0).max()
+        indmin = _find(sp > maxsp / 100.0).min()
+        indmax = _find(sp > maxsp / 100.0).max()
         if fmin is None:
             fmin = max([0.01, 0.05 * np.fix(f[indmin] / 0.05)])
         if fmax is None:
             fmax = 0.05 * np.ceil(f[indmax] / 0.05)
     B = fmax - fmin
     R = B / ((fmin + fmax) / 2.0)
-    nq = np.ceil((B * T * (1 + 2.0 / R) * np.log((1 + R / 2.0) / (1 - R / 2.0))) / 2.0)
+    nq = np.ceil((B * T * (1 + 2.0 / R) * np.log((1 + R / 2.0) / (1 - R / 2.0))) / 2.0)  # NOQA
     nmin = nq - (nq % 2)
     if N is None:
         N = int(2 ** (nextpow2(nmin)))
@@ -133,6 +137,7 @@ def narrow_band(signal, lag=None, n_fbins=None):
     xi = np.arange(_xi1, _xi2 + 1, dtype=float) / n_fbins
     naf = naf[np.hstack((_ix1, _ix2)), :]
     return naf, lag, xi
+
 
 if __name__ == '__main__':
     from tftb.generators.misc import altes
