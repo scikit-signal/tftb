@@ -1,6 +1,6 @@
 import sys
 
-__version__ = '0.1.1'
+__version__ = '0.1.3'
 
 try:
     __TFTB__SETUP__
