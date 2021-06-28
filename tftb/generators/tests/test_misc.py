@@ -9,7 +9,7 @@
 """Tests for the generators.misc module."""
 
 import unittest
-from tftb.tests.base import TestBase
+from tftb.tests.test_base import TestBase
 from tftb.generators import misc
 from tftb.processing.utils import derive_window
 import numpy as np

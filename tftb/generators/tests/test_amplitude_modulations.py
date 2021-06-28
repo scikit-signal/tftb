@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 from numpy import pi
 from scipy.signal import argrelmax
-from tftb.tests.base import TestBase
+from tftb.tests.test_base import TestBase
 import tftb.generators.amplitude_modulated as am
 
 

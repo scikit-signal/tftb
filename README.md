@@ -1,49 +1,28 @@
-[![Documentation Status](https://readthedocs.org/projects/pytftb/badge/?version=master)](http://pytftb.readthedocs.org/en/master/?badge=master)
-[![Build Status](https://travis-ci.org/scikit-signal/pytftb.svg)](https://travis-ci.org/scikit-signal/pytftb)
-[![Coverage Status](https://coveralls.io/repos/scikit-signal/pytftb/badge.svg?branch=master&service=github)](https://coveralls.io/github/scikit-signal/pytftb?branch=master)
-[![Code Health](https://landscape.io/github/scikit-signal/pytftb/master/landscape.svg?style=flat)](https://landscape.io/github/scikit-signal/pytftb/master)
+[![Documentation Status](https://readthedocs.org/projects/tftb/badge/?version=latest)](https://tftb.readthedocs.io/en/latest/?badge=latest)
+[![Build Status](https://travis-ci.org/scikit-signal/tftb.svg)](https://travis-ci.org/scikit-signal/tftb)
 
-pytftb
-======
+# tftb
 
-A Python implementation of the MATLAB Time-Frequency Toolbox by Auger, Flandrin, Goncalves and Lemoine (http://tftb.nongnu.org)
+tftb (Time-frequency toolbox) is a Python module for time-frequency analysis and visualization
+build with SciPy and matplotlib.
 
-
-Documentation
--------------
-
-Working draft of the documentation can be found [here](http://pytftb.rtfd.org).
-
-Requirements
-------------
-
-1. Core requirements:
- * numpy
- * scipy
- * matplotlib
-2. Optional requirements:
- * nose (for running tests)
- * sphinx (to build the documentation)
+The tftb project began as a Python implementation of the TFTB toolbox developed by
+François Auger, Olivier Lemoine, Paulo Gonçalvès and Patrick Flandrin. While this project and the
+MATLAB implementation (henceforth referred to as TFTB) are similar in the core algorithms and the
+basic code organization, the very nature of the Python programming language has motivated a very
+different approach in architecture of PyTFTB (differences between the two packages have been
+discussed in detail [here](https://tftb.readthedocs.io/en/latest/introduction.html#comparison-of-tftb-and-pytftb)).
 
 
-Installation
-------------
+## Installation
 
-1. Clone this repository with Git:
+tftb requires:
+    - Python (>= 3.5)
+    - NumPy
+    - SciPy
+    - Matplotlib
 
+Install tftb with pip as follows:
 ```bash
-$ git clone https://github.com/scikit-signal/pytftb
-```
-
-2. Install the dependencies:
-
-```bash
-$ cd pytftb
-$ pip install -r requirements.txt
-```
-
-3. Install PyTFTB:
-
-```bash
-$ python setup.py install
+$ pip install tftb
 ```

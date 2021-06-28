@@ -217,6 +217,7 @@ def ridges(tfr, re_mat, timestamps=None, method='rsp'):
         raise ValueError("Unknown time frequency representation.")
     return time_points, freq_points
 
+
 if __name__ == '__main__':
     from tftb.generators import atoms
     from tftb.processing import Spectrogram

@@ -14,7 +14,7 @@ import numpy as np
 from tftb.processing import freq_domain as fproc
 from tftb.generators import frequency_modulated as fm
 from tftb.generators import amplitude_modulated as am
-from tftb.tests.base import TestBase
+from tftb.tests.test_base import TestBase
 
 
 class TestFrequencyDomainProcessing(TestBase):

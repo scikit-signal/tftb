@@ -13,7 +13,7 @@
 import unittest
 from tftb.processing import time_domain as tmd
 from tftb.generators import amplitude_modulated as am
-from tftb.tests.base import TestBase
+from tftb.tests.test_base import TestBase
 
 
 class TestTimeDomainProcessors(TestBase):
@@ -24,6 +24,7 @@ class TestTimeDomainProcessors(TestBase):
         tm, T = tmd.loctime(signal)
         self.assertAlmostEqual(tm, 79, places=6)
         self.assertAlmostEqual(T, 50, places=4)
+
 
 if __name__ == '__main__':
     unittest.main()

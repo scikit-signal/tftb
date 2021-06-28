@@ -15,7 +15,7 @@ import numpy as np
 
 from tftb.generators import fmlin, amgauss, altes
 from tftb.processing import ambiguity
-from tftb.tests.base import TestBase
+from tftb.tests.test_base import TestBase
 
 
 class TestWideBand(TestBase):
@@ -63,6 +63,7 @@ class TestNarrowBand(TestBase):
         """Test the symmetry property of the narrow band ambiguity function."""
         tfr = self.tfr[1:, :]
         self.assert_is_hermitian(tfr)
+
 
 if __name__ == '__main__':
     unittest.main()

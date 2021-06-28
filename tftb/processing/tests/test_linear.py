@@ -12,7 +12,7 @@ Tests for tftb.processing.linear
 
 from tftb.processing import linear
 from tftb.generators import fmlin
-from tftb.tests.base import TestBase
+from tftb.tests.test_base import TestBase
 import numpy as np
 import unittest
 
@@ -57,6 +57,7 @@ class TestLinear(TestBase):
         rhs, _, _ = linear.ShortTimeFourierTransform(x[::-1]).run()
         rhs = np.conjugate(rhs)
         np.testing.assert_allclose(lhs, rhs)
+
 
 if __name__ == '__main__':
     unittest.main()

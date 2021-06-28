@@ -10,7 +10,7 @@
 
 import unittest
 import numpy as np
-from tftb.tests.base import TestBase
+from tftb.tests.test_base import TestBase
 from tftb.generators import frequency_modulated as fm
 
 
@@ -93,6 +93,7 @@ class TestFrequencyModulated(TestBase):
         yy = freq_dir * np.sin(2 * np.pi * f_sample * xx)
         yy = ((max_freq - min_freq) / 2) * yy + (max_freq + min_freq) / 2
         np.testing.assert_allclose(yy, iflaw, rtol=1e-3, atol=1e-3)
+
 
 if __name__ == '__main__':
     unittest.main()
