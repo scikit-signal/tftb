@@ -169,7 +169,7 @@ def anasing(n_points, t0=None, h=0.0):
         t0 = n_points / 2.0
     if h <= 0:
         start, end = 1.0 / n_points, 0.5 - 1.0 / n_points
-        N = end / start
+        N = int(end / start)
         f = np.linspace(start, end, N)
         y = np.zeros((int(n_points / 2.0),), dtype=complex)
         y[1:int(n_points / 2)] = (f ** (-1 - h)) * np.exp(-1j * 2 * pi * f * (t0 - 1))

@@ -11,10 +11,10 @@
 """
 
 import matplotlib.pyplot as plt
-from scipy.signal import hanning
+from scipy.signal import hann
 from tftb.processing.utils import derive_window
 
-window = hanning(210)
+window = hann(210)
 plt.subplot(211), plt.plot(window)
 plt.xlim(0, 210)
 plt.grid()

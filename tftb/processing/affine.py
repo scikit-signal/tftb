@@ -100,7 +100,7 @@ class AffineDistribution(BaseTFRepresentation):
         mellin2 = np.fft.fftshift(np.fft.ifft(S2))
         umin = -self.umax
         du = np.abs(self.umax - umin) / (2 * self.m1)
-        u = np.linspace(umin, self.umax - du, (self.umax - umin) / du)
+        u = np.linspace(umin, self.umax - du, int((self.umax - umin) / du))
         u[int(self.m1)] = 0
         self.u = u
         beta = (p / float(self.n_voices) - 1) / (2 * np.log(self.q))
@@ -110,7 +110,7 @@ class AffineDistribution(BaseTFRepresentation):
         _thresh = np.amax(self.tfr) * threshold
         self.tfr[self.tfr <= _thresh] = 0
         freq_y = kwargs.pop(
-            "freq_y", np.linspace(self.fmin, self.fmax, self.signal.shape[0] / 2)
+            "freq_y", np.linspace(self.fmin, self.fmax, int(self.signal.shape[0] / 2))
         )
 
         super(AffineDistribution, self).plot(
@@ -667,5 +667,5 @@ if __name__ == "__main__":
     tfr = np.abs(tfr) ** 2
     threshold = np.amax(tfr) * 0.05
     tfr[tfr <= threshold] = 0
-    plt.imshow(tfr, aspect="auto", origin="bottomleft", extent=[0, 64, 0, 0.5])
+    plt.imshow(tfr, aspect="auto", origin="lower", extent=[0, 64, 0, 0.5])
     plt.show()

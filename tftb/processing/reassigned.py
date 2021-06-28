@@ -558,6 +558,6 @@ if __name__ == '__main__':
     rtfr = np.abs(rtfr) ** 2
     threshold = np.amax(rtfr) * 0.05
     rtfr[rtfr <= threshold] = 0.0
-    plt.imshow(rtfr[:64, :], aspect='auto', origin="bottomleft",
+    plt.imshow(rtfr[:64, :], aspect='auto', origin="lower",
                extent=[0, 128, 0, 0.5])
     plt.show()

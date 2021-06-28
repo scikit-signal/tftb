@@ -1,5 +1,4 @@
 import numpy as np
-from scipy import angle
 
 
 def locfreq(signal):
@@ -74,7 +73,7 @@ def inst_freq(x, t=None, L=1):
     else:
         t = np.arange(2, len(x))
 
-    fnorm = 0.5 * (angle(-x[t] * np.conj(x[t - 2])) + np.pi) / (2 * np.pi)
+    fnorm = 0.5 * (np.angle(-x[t] * np.conj(x[t - 2])) + np.pi) / (2 * np.pi)
     return fnorm, t
 
 

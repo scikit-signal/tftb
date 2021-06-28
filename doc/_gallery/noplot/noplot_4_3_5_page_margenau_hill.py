@@ -36,7 +36,7 @@ tfr[tfr <= threshold] = 0.0
 
 plt.figure(figsize=(10, 8))
 plt.subplot(221)
-plt.imshow(tfr[:64, :], extent=[0, 128, 0, 0.5], aspect='auto', origin='bottomleft')
+plt.imshow(tfr[:64, :], extent=[0, 128, 0, 0.5], aspect='auto', origin='lower')
 plt.gca().set_xticklabels([])
 plt.grid(True)
 plt.title("Pseudo Page distribution")
@@ -47,7 +47,7 @@ tfr = np.abs(tfr) ** 2
 threshold = np.amax(tfr) * 0.05
 tfr[tfr <= threshold] = 0.0
 plt.subplot(222)
-plt.imshow(tfr[:64, :], extent=[0, 128, 0, 0.5], aspect='auto', origin='bottomleft')
+plt.imshow(tfr[:64, :], extent=[0, 128, 0, 0.5], aspect='auto', origin='lower')
 plt.grid(True)
 plt.title("Reassigned Pseudo Page distribution")
 plt.gca().set_xticklabels([])
@@ -58,7 +58,7 @@ tfr = np.abs(tfr) ** 2
 threshold = np.amax(tfr) * 0.05
 tfr[tfr <= threshold] = 0.0
 plt.subplot(223)
-plt.imshow(tfr[:64, :], extent=[0, 128, 0, 0.5], aspect='auto', origin='bottomleft')
+plt.imshow(tfr[:64, :], extent=[0, 128, 0, 0.5], aspect='auto', origin='lower')
 plt.grid(True)
 plt.title("Pseudo Margenau Hill distribution")
 plt.xlabel('Time')
@@ -69,7 +69,7 @@ tfr = np.abs(tfr) ** 2
 threshold = np.amax(tfr) * 0.05
 tfr[tfr <= threshold] = 0.0
 plt.subplot(224)
-plt.imshow(tfr[:64, :], extent=[0, 128, 0, 0.5], aspect='auto', origin='bottomleft')
+plt.imshow(tfr[:64, :], extent=[0, 128, 0, 0.5], aspect='auto', origin='lower')
 plt.gca().set_yticklabels([])
 plt.grid(True)
 plt.title("Reassigned Pseudo Margenau Hill distribution")

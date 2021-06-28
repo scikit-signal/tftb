@@ -56,9 +56,9 @@ def derive_window(window):
     :return: Derivative of the input window
     :rtype: array-like
     :Example:
-    >>> from scipy.signal import hanning
+    >>> from scipy.signal import hann
     >>> import matplotlib.pyplot as plt                   #doctest: +SKIP
-    >>> window = hanning(210)
+    >>> window = hann(210)
     >>> derivation = derive_window(window)
     >>> plt.subplot(211), plt.plot(window)                #doctest: +SKIP
     >>> plt.subplot(212), plt.plot(derivation) #doctest: +SKIP
