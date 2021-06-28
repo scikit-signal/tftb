@@ -13,7 +13,7 @@ from tftb.tests.test_base import TestBase
 from tftb.generators import misc
 from tftb.processing.utils import derive_window
 import numpy as np
-from scipy.signal import argrelmax, argrelmin, hanning
+from scipy.signal import argrelmax, argrelmin, hann
 
 
 class TestMisc(TestBase):
@@ -21,7 +21,7 @@ class TestMisc(TestBase):
     def test_window_derivative(self):
         """Test if the derivative of a window function is calculated
         properly."""
-        window = hanning(210)
+        window = hann(210)
         derivative = derive_window(window)
         ix_win_maxima = np.argmax(window)
         self.assertAlmostEqual(derivative[ix_win_maxima], 0.0, places=3)

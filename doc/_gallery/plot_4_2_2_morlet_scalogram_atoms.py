@@ -47,7 +47,7 @@ axTime.set_xlim(0, 128)
 axTime.set_ylabel('Real part')
 axTime.set_title('Signal in time')
 axTime.grid(True)
-freq_y = np.linspace(0, 0.5, sig.shape[0] / 2)
+freq_y = np.linspace(0, 0.5, int(sig.shape[0] / 2))
 freq_x = (abs(np.fft.fftshift(np.fft.fft(sig))) ** 2)[::-1][:64]
 ix = np.logical_and(freq_y >= 0.05, freq_y <= 0.45)
 axFreq.plot(freq_x[ix], freq_y[ix])

@@ -70,8 +70,7 @@ class BaseTFRepresentation(object):
 
         h = np.floor(self.n_fbins / 4.0)
         h += 1 - np.remainder(h, 2)
-        from scipy import hamming
-        fwindow = hamming(int(h))
+        fwindow = np.hamming(int(h))
         # No need to normalize the window
         # fwindow = fwindow / np.linalg.norm(fwindow)
         return fwindow
@@ -79,7 +78,7 @@ class BaseTFRepresentation(object):
     def _plot_tfr(self, ax, kind, extent, contour_x=None, contour_y=None,
                   levels=None, show_tf=True, cmap=plt.cm.gray):
         if kind == "cmap":
-            ax.imshow(self.tfr, cmap=cmap, origin="bottomleft", extent=extent,
+            ax.imshow(self.tfr, cmap=cmap, origin="lower", extent=extent,
                       aspect='auto')
         elif kind == "contour":
             if contour_x is None:
@@ -202,7 +201,7 @@ class BaseTFRepresentation(object):
                 ax = fig.add_subplot(111)
             if kind == "cmap":
                 ax.imshow(self.tfr,
-                          aspect='auto', origin='bottomleft', extent=extent,
+                          aspect='auto', cmap=cmap, origin='lower', extent=extent,
                           **kwargs)
             elif kind == "surf":
                 from mpl_toolkits.mplot3d import Axes3D

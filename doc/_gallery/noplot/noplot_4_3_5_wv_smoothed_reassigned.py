@@ -42,7 +42,7 @@ tfr = WignerVilleDistribution(sig).run()[0]
 threshold = np.amax(np.abs(tfr) ** 2) * 0.05
 tfr[np.abs(tfr) ** 2 <= threshold] = 0.0
 plt.subplot(222)
-plt.imshow(np.abs(tfr) ** 2, extent=[0, 128, 0, 0.5], aspect='auto', origin='bottomleft')
+plt.imshow(np.abs(tfr) ** 2, extent=[0, 128, 0, 0.5], aspect='auto', origin='lower')
 plt.grid(True)
 plt.title("WV distro")
 plt.gca().set_xticklabels([])
@@ -52,7 +52,7 @@ tfr = smoothed_pseudo_wigner_ville(sig)
 threshold = np.amax(np.abs(tfr) ** 2) * 0.05
 tfr[np.abs(tfr) ** 2 <= threshold] = 0.0
 plt.subplot(223)
-plt.imshow(np.abs(tfr) ** 2, extent=[0, 128, 0, 0.5], aspect='auto', origin='bottomleft')
+plt.imshow(np.abs(tfr) ** 2, extent=[0, 128, 0, 0.5], aspect='auto', origin='lower')
 plt.grid(True)
 plt.title("Smoothed Pseudo WV distro")
 plt.xlabel('Time')
@@ -62,7 +62,7 @@ _, rtfr, _ = reassigned_smoothed_pseudo_wigner_ville(sig)
 threshold = np.amax(np.abs(rtfr) ** 2) * 0.05
 rtfr[np.abs(rtfr) ** 2 <= threshold] = 0.0
 plt.subplot(224)
-plt.imshow(np.abs(rtfr) ** 2, extent=[0, 128, 0, 0.5], aspect='auto', origin='bottomleft')
+plt.imshow(np.abs(rtfr) ** 2, extent=[0, 128, 0, 0.5], aspect='auto', origin='lower')
 plt.grid(True)
 plt.title("Reassigned Smoothed Pseudo WV distro")
 plt.xlabel('Time')

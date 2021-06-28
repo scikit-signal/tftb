@@ -47,7 +47,7 @@ class AffineDistribution(BaseTFRepresentation):
             sp2 = np.abs(stf2[: int(np.round(nstf / 2))]) ** 2
             maxsp1 = sp1.max()
             maxsp2 = sp2.max()
-            f = np.linspace(0, 0.5, np.round(nstf / 2) + 1)
+            f = np.linspace(0, 0.5, int(np.round(nstf / 2.0) + 1))
             if fmin is None:
                 mask = sp1 > maxsp1 / 100
                 indmin = np.arange(mask.shape[0], dtype=int)[mask.astype(bool)].min()
@@ -100,7 +100,7 @@ class AffineDistribution(BaseTFRepresentation):
         mellin2 = np.fft.fftshift(np.fft.ifft(S2))
         umin = -self.umax
         du = np.abs(self.umax - umin) / (2 * self.m1)
-        u = np.linspace(umin, self.umax - du, (self.umax - umin) / du)
+        u = np.linspace(umin, self.umax - du, int((self.umax - umin) / du))
         u[int(self.m1)] = 0
         self.u = u
         beta = (p / float(self.n_voices) - 1) / (2 * np.log(self.q))
@@ -110,7 +110,7 @@ class AffineDistribution(BaseTFRepresentation):
         _thresh = np.amax(self.tfr) * threshold
         self.tfr[self.tfr <= _thresh] = 0
         freq_y = kwargs.pop(
-            "freq_y", np.linspace(self.fmin, self.fmax, self.signal.shape[0] / 2)
+            "freq_y", np.linspace(self.fmin, self.fmax, int(self.signal.shape[0] / 2))
         )
 
         super(AffineDistribution, self).plot(
@@ -131,7 +131,7 @@ class AffineDistribution(BaseTFRepresentation):
             )
             ind = np.nonzero(np.ravel(condition))[0]
             x = gamma[ind]
-            y = tffr[i, ind]
+            y = tffr[i, ind].ravel()
             xi = (self.ts - ts2) * self.geo_f[i]
             tck = splrep(x, y)
             tfr[i, :] = splev(xi, tck).ravel()
@@ -322,7 +322,7 @@ class UnterbergerDistribution(AffineDistribution):
             )
             ind = np.nonzero(np.ravel(condition))[0]
             x = gamma[ind]
-            y = tffr[i, ind]
+            y = tffr[i, ind].ravel()
             xi = (self.ts - ts2 - 1) * self.geo_f[i]
             tck = splrep(x, y)
             tfr[i, :] = splev(xi, tck).ravel()
@@ -666,6 +666,6 @@ if __name__ == "__main__":
     tfr, timestamps, frequencies = smoothed_pseudo_wigner(sig)
     tfr = np.abs(tfr) ** 2
     threshold = np.amax(tfr) * 0.05
-    tfr[tfr <= threshold] = 0
-    plt.imshow(tfr, aspect="auto", origin="bottomleft", extent=[0, 64, 0, 0.5])
+    tfr[tfr <= threshold] = 0.0
+    plt.imshow(tfr, aspect='auto', origin='lower', extent=[0, 64, 0, 0.5])
     plt.show()

@@ -263,29 +263,37 @@ def smoothed_pseudo_wigner_ville(signal, timestamps=None, freq_bins=None,
         taumax = min([ti + lg - 1, signal.shape[0] - ti + lg,
                       np.round(freq_bins / 2.0) - 1, lh])
         points = np.arange(-min([lg, signal.shape[0] - ti]),
-                           min([lg, ti - 1]) + 1)
-        g2 = twindow[lg + points]
+                           min([lg, ti - 1]) + 1).astype(int)
+        lg_points = (lg + points).astype(int)
+        g2 = twindow[lg_points]
         g2 = g2 / np.sum(g2)
-        tfr[0, icol] = np.sum(g2 * signal[ti - points - 1] * np.conj(signal[ti - points - 1]))
+        signal_idx = (ti - points - 1).astype(int)
+        tfr[0, icol] = np.sum(g2 * signal[signal_idx] * np.conj(signal[signal_idx]))
         for tau in range(int(taumax)):
             points = np.arange(-min([lg, signal.shape[0] - ti - tau]),
                                min([lg, ti - 1 - tau]) + 1)
-            g2 = twindow[lg + points]
+            lg_points = (lg + points).astype(int)
+            g2 = twindow[lg_points]
             g2 = g2 / np.sum(g2)
-            R = np.sum(g2 * signal[ti + tau - points - 1] * np.conj(signal[ti - tau - points - 1]))
-            tfr[1 + tau, icol] = fwindow[lh + tau + 1] * R
-            R = np.sum(g2 * signal[ti - tau - points - 1] * np.conj(signal[ti + tau - points - 1]))
-            tfr[freq_bins - tau - 1, icol] = fwindow[lh - tau + 1] * R
+            idx1 = (ti + tau - points - 1).astype(int)
+            idx2 = (ti - tau - points - 1).astype(int)
+            R = np.sum(g2 * signal[idx1] * np.conj(signal[idx2]))
+            tfr[1 + tau, icol] = fwindow[(lh + tau + 1).astype(int)] * R
+            R = np.sum(g2 * signal[idx2] * np.conj(signal[idx1]))
+            tfr[freq_bins - tau - 1, icol] = fwindow[(lh - tau + 1).astype(int)] * R
         tau = np.round(freq_bins / 2.0)
         if (ti <= signal.shape[0] - tau) and (ti >= tau + 1) and (tau <= lh):
             points = np.arange(-min([lg, signal.shape[0] - ti - tau]),
                                min([lg, ti - 1 - tau]) + 1)
-            g2 = twindow[lg + 1 + points]
+            lg_points = (lg + 1 + points).astype(int)
+            g2 = twindow[lg_points]
             g2 = g2 / np.sum(g2)
-            _x = np.sum(g2 * signal[ti + tau - points] * np.conj(signal[ti - tau - points]))
-            _x *= fwindow[lh + tau + 1]
-            _y = np.sum(g2 * signal[ti - tau - points] * np.conj(signal[ti + tau - points]))
-            _y *= fwindow[lh - tau + 1]
+            idx1 = (ti + tau - points).astype(int)
+            idx2 = (ti - tau - points).astype(int)
+            _x = np.sum(g2 * signal[idx1] * np.conj(signal[idx2]))
+            _x *= fwindow[(lh + tau + 1).astype(int)]
+            _y = np.sum(g2 * signal[idx2] * np.conj(signal[idx1]))
+            _y *= fwindow[(lh - tau + 1).astype(int)]
             tfr[tau, icol] = (_x + _y) * 0.5
     tfr = np.fft.fft(tfr, axis=0)
     return np.real(tfr)

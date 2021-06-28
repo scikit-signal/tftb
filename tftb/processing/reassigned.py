@@ -372,8 +372,9 @@ def smoothed_pseudo_wigner_ville(signal, timestamps=None, n_fbins=None,
     :type n_fbins:
     :type twindow:
     :type fwindow:
-:return:
-:rtype:
+
+    :return:
+    :rtype:
     """
     xrow = signal.shape[0]
 
@@ -478,11 +479,11 @@ def spectrogram(signal, time_samples=None, n_fbins=None, window=None):
     :type time_samples: array-like
     :type n_fbins: int
     :type window: array-like
-    :return: spectrogram, reassigned specstrogram and matrix of reassignment
-    vectors
+
+    :return: spectrogram, reassigned specstrogram and matrix of reassignment \
+        vectors
     :rtype: tuple(array-like)
     """
-
     if time_samples is None:
         time_samples = np.arange(signal.shape[0])
     elif np.unique(np.diff(time_samples)).shape[0] > 1:
@@ -558,6 +559,6 @@ if __name__ == '__main__':
     rtfr = np.abs(rtfr) ** 2
     threshold = np.amax(rtfr) * 0.05
     rtfr[rtfr <= threshold] = 0.0
-    plt.imshow(rtfr[:64, :], aspect='auto', origin="bottomleft",
+    plt.imshow(rtfr[:64, :], aspect='auto', origin="lower",
                extent=[0, 128, 0, 0.5])
     plt.show()

@@ -43,7 +43,7 @@ tfr, _, _ = Spectrogram(sig).run()
 threshold = np.amax(np.abs(tfr)) * 0.05
 tfr[np.abs(tfr) <= threshold] = 0.0
 plt.subplot(222)
-plt.imshow(np.abs(tfr)[:64, :], extent=[0, 128, 0, 0.5], aspect='auto', origin='bottomleft')
+plt.imshow(np.abs(tfr)[:64, :], extent=[0, 128, 0, 0.5], aspect='auto', origin='lower')
 plt.grid(True)
 plt.gca().set_xticklabels([])
 plt.gca().set_yticklabels([])
@@ -54,7 +54,7 @@ tfr = tfr[:64, :]
 threshold = np.amax(np.abs(tfr) ** 2) * 0.05
 tfr[np.abs(tfr) ** 2 <= threshold] = 0.0
 plt.subplot(223)
-plt.imshow(np.abs(tfr) ** 2, extent=[0, 128, 0, 0.5], aspect='auto', origin='bottomleft')
+plt.imshow(np.abs(tfr) ** 2, extent=[0, 128, 0, 0.5], aspect='auto', origin='lower')
 plt.grid(True)
 plt.title("Reassigned spectrogram")
 plt.xlabel('Time')
@@ -65,7 +65,7 @@ rtfr = rtfr[:64, :]
 threshold = np.amax(np.abs(rtfr) ** 2) * 0.05
 rtfr[np.abs(rtfr) ** 2 <= threshold] = 0.0
 plt.subplot(224)
-plt.imshow(np.abs(rtfr) ** 2, extent=[0, 128, 0, 0.5], aspect='auto', origin='bottomleft')
+plt.imshow(np.abs(rtfr) ** 2, extent=[0, 128, 0, 0.5], aspect='auto', origin='lower')
 plt.gca().set_yticklabels([])
 plt.grid(True)
 plt.title("Reassigned Morlet Scalogram")
