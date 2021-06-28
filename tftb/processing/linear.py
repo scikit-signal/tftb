@@ -142,7 +142,7 @@ def gabor(signal, n_coeff=None, q_oversample=None, window=None):
     dzth = np.fft.fft(msig.T, axis=0) / np.sqrt(m)
     mzh = np.zeros((m, mb))
     x = np.arange(1, m + 1, dtype=float)
-    for l in range(q_oversample):
+    for l in range(q_oversample):  # NOQA: E741
         mod = modulo(x - l * m / q_oversample, m).astype(int)
         mzh += np.abs(dzth[mod - 1, :]) ** 2
 

@@ -67,3 +67,4 @@ doc/auto_examples
 .pytest_cache
 .vscode
 doc/backreferences
+doc/apiref/
