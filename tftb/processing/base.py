@@ -191,8 +191,7 @@ class BaseTFRepresentation(object):
                 self._annotate_signal(axTime)
                 self._annotate_spectrum(axSpec)
         else:
-            if (ax is None) and (kind != "surf"):
-                fig = plt.figure()
+            fig = plt.figure()
             if kind == "cmap":
                 ax = fig.add_subplot(111)
                 ax.imshow(self.tfr,
