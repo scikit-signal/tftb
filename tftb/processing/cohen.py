@@ -240,16 +240,16 @@ def smoothed_pseudo_wigner_ville(signal, timestamps=None, freq_bins=None,
         freq_bins = signal.shape[0]
 
     if fwindow is None:
-        winlength = np.floor(freq_bins / 4.0)
-        winlength = winlength + 1 - np.remainder(winlength, 2)
+        winlength = freq_bins // 4
+        winlength = winlength + 1 - (winlength % 2)
         from scipy.signal import hamming
         fwindow = hamming(int(winlength))
     elif fwindow.shape[0] % 2 == 0:
         raise ValueError('The smoothing fwindow must have an odd length.')
 
     if twindow is None:
-        timelength = np.floor(freq_bins / 10.0)
-        timelength += 1 - np.remainder(timelength, 2)
+        timelength = freq_bins // 10
+        timelength += 1 - (timelength % 2)
         from scipy.signal import hamming
         twindow = hamming(int(timelength))
     elif twindow.shape[0] % 2 == 0:
@@ -261,7 +261,7 @@ def smoothed_pseudo_wigner_ville(signal, timestamps=None, freq_bins=None,
     for icol in range(timestamps.shape[0]):
         ti = timestamps[icol]
         taumax = min([ti + lg - 1, signal.shape[0] - ti + lg,
-                      np.round(freq_bins / 2.0) - 1, lh])
+                      round(freq_bins / 2.0) - 1, lh])
         points = np.arange(-min([lg, signal.shape[0] - ti]),
                            min([lg, ti - 1]) + 1).astype(int)
         lg_points = (lg + points).astype(int)
@@ -278,9 +278,9 @@ def smoothed_pseudo_wigner_ville(signal, timestamps=None, freq_bins=None,
             idx1 = (ti + tau - points - 1).astype(int)
             idx2 = (ti - tau - points - 1).astype(int)
             R = np.sum(g2 * signal[idx1] * np.conj(signal[idx2]))
-            tfr[1 + tau, icol] = fwindow[(lh + tau + 1).astype(int)] * R
+            tfr[1 + tau, icol] = fwindow[lh + tau + 1] * R
             R = np.sum(g2 * signal[idx2] * np.conj(signal[idx1]))
-            tfr[freq_bins - tau - 1, icol] = fwindow[(lh - tau + 1).astype(int)] * R
+            tfr[freq_bins - tau - 1, icol] = fwindow[lh - tau + 1] * R
         tau = np.round(freq_bins / 2.0)
         if (ti <= signal.shape[0] - tau) and (ti >= tau + 1) and (tau <= lh):
             points = np.arange(-min([lg, signal.shape[0] - ti - tau]),
