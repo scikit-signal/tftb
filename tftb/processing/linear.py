@@ -118,9 +118,9 @@ def gabor(signal, n_coeff=None, q_oversample=None, window=None):
     :rtype: tuple
     """
     if n_coeff is None:
-        n_coeff = divider(signal.shape[0])
+        n_coeff, _ = divider(signal.shape[0])
     if q_oversample is None:
-        q_oversample = divider(n_coeff)
+        q_oversample, _ = divider(n_coeff)
     if window is None:
         window = np.exp(np.log(0.005) * np.linspace(-1, 1, nearest_odd(n_coeff)) ** 2)
         window = window / np.linalg.norm(window)

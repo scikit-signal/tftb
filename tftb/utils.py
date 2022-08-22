@@ -1,13 +1,8 @@
 #! /usr/bin/env python
-# -*- coding: utf-8 -*-
-# vim:fenc=utf-8
-#
-# Copyright © 2015 jaidev <jaidev@newton>
-#
-# Distributed under terms of the MIT license.
 
 """Miscellaneous utilities."""
 
+import math
 import numpy as np
 
 
@@ -61,9 +56,7 @@ def nextpow2(n):
     >>> print(nextpow2(x))
     [ 0.  1.  2.  2.  3.  3.  3.  3.]
     """
-    m_f = np.log2(n)
-    m_i = np.ceil(m_f)
-    return m_i
+    return math.ceil(math.log2(n))
 
 
 def divider(N):
@@ -78,20 +71,22 @@ def divider(N):
     :Example:
     >>> from __future__ import print_function
     >>> print(divider(256))
-    (16.0, 16.0)
+    (16, 16)
     >>> print(divider(10))
-    (2.0, 5.0)
+    (2, 5)
     >>> print(divider(101))
-    (1.0, 101.0)
+    (1, 101)
     """
-    n = np.floor(np.sqrt(N))
-    while True:
-        old = n
-        m = np.ceil(N / float(n))
-        n = np.floor(N / float(m))
-        if n == old:
+    s = math.sqrt(N)
+    if s % 1 == 0:
+        s = int(s)
+        return s, s
+    s = math.ceil(s)
+    for i in range(s, 0, -1):
+        factor = N // i
+        if N % i == 0:
             break
-    return n, m
+    return i, factor
 
 
 def nearest_odd(N):
@@ -109,18 +104,16 @@ def nearest_odd(N):
     >>> nearest_odd(3)
     3.0
     """
-    if hasattr(N, "__iter__"):
-        N = np.array(N)
+    if isinstance(N, (list, np.ndarray)):
         y = np.floor(N)
-        y[np.remainder(y, 2) == 0] = np.ceil(N[np.remainder(y, 2) == 0])
         y[np.remainder(y, 2) == 0] += 1
-        return y
+        return y.astype(int)
     if N % 2 == 0:
         return N + 1
-    elif np.floor(N) % 2 == 0:
-        return np.ceil(N)
-    elif np.floor(N) % 2 != 0:
-        return np.floor(N)
+    elif math.floor(N) % 2 == 0:
+        return math.ceil(N)
+    elif math.floor(N) % 2 != 0:
+        return math.floor(N)
     return N
 
 

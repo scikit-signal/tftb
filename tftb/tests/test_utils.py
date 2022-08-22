@@ -28,11 +28,8 @@ class TestUtils(unittest.TestCase):
         """Test the nextpow2 function."""
         self.assertEqual(utils.nextpow2(2), 1)
         self.assertEqual(utils.nextpow2(17), 5)
-        import warnings
-        with warnings.catch_warnings(record=True) as catcher:
+        with self.assertRaises(ValueError):
             utils.nextpow2(-3)
-            self.assertEqual(len(catcher), 1)
-            self.assertTrue(catcher[-1].category, RuntimeWarning)
 
     def test_divider(self):
         """Test the divider function."""

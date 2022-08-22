@@ -11,6 +11,7 @@ Base time-frequency representation class.
 """
 
 import numpy as np
+from scipy.signal import hamming
 import matplotlib.pyplot as plt
 
 
@@ -18,7 +19,7 @@ class BaseTFRepresentation(object):
 
     isaffine = False
 
-    def __init__(self, signal, **kwargs):
+    def __init__(self, signal, timestamps=None, n_fbins=None, fwindow=None, **kwargs):
         """Create a base time-frequency representation object.
 
         :param signal: Signal to be analyzed.
@@ -27,28 +28,25 @@ class BaseTFRepresentation(object):
         :return: BaseTFRepresentation object
         :rtype:
         """
-        if (signal.ndim == 2) and (1 in signal.shape):
+        if signal.ndim > 1:
             signal = signal.ravel()
         self.signal = signal
-        timestamps = kwargs.get('timestamps')
         if timestamps is None:
             timestamps = np.arange(signal.shape[0])
         self.ts = self.timestamps = timestamps
-        n_fbins = kwargs.get('n_fbins')
         if n_fbins is None:
             n_fbins = signal.shape[0]
         self.n_fbins = n_fbins
-        fwindow = kwargs.get('fwindow')
         if fwindow is None:
             fwindow = self._make_window()
         self.fwindow = fwindow
         if self.n_fbins % 2 == 0:
-            freqs = np.hstack((np.arange(self.n_fbins / 2),
-                               np.arange(-self.n_fbins / 2, 0)))
+            freqs = np.r_[np.arange(self.n_fbins / 2),
+                          np.arange(-self.n_fbins / 2, 0)]
         else:
-            freqs = np.hstack((np.arange((self.n_fbins - 1) / 2),
-                               np.arange(-(self.n_fbins - 1) / 2, 0)))
-        self.freqs = freqs.astype(float) / self.n_fbins
+            freqs = np.r_[np.arange((self.n_fbins - 1) / 2),
+                          np.arange(-(self.n_fbins - 1) / 2, 0)]
+        self.freqs = freqs / self.n_fbins
         self.tfr = np.zeros((self.n_fbins, self.ts.shape[0]), dtype=complex)
 
     def _get_spectrum(self):
@@ -68,12 +66,9 @@ class BaseTFRepresentation(object):
         :rtype: array-like
         """
 
-        h = np.floor(self.n_fbins / 4.0)
-        h += 1 - np.remainder(h, 2)
-        fwindow = np.hamming(int(h))
-        # No need to normalize the window
-        # fwindow = fwindow / np.linalg.norm(fwindow)
-        return fwindow
+        h = self.n_fbins // 4
+        h += 1 - (h % 2)
+        return hamming(h)
 
     def _plot_tfr(self, ax, kind, extent, contour_x=None, contour_y=None,
                   levels=None, show_tf=True, cmap=plt.cm.gray):
@@ -198,15 +193,15 @@ class BaseTFRepresentation(object):
         else:
             if (ax is None) and (kind != "surf"):
                 fig = plt.figure()
-                ax = fig.add_subplot(111)
             if kind == "cmap":
+                ax = fig.add_subplot(111)
                 ax.imshow(self.tfr,
                           aspect='auto', cmap=cmap, origin='lower', extent=extent,
                           **kwargs)
             elif kind == "surf":
                 from mpl_toolkits.mplot3d import Axes3D
                 fig = plt.figure()
-                ax = fig.gca(projection="3d")
+                ax = fig.add_subplot(projection="3d")
                 x = np.arange(self.signal.shape[0])
                 y = np.linspace(0, 0.5, self.signal.shape[0])
                 X, Y = np.meshgrid(x, y)
@@ -215,7 +210,7 @@ class BaseTFRepresentation(object):
                     ax.set_zlabel("Amplitude")
             elif kind == "wireframe":
                 from mpl_toolkits.mplot3d import Axes3D  # NOQA
-                ax = fig.gca(projection="3d")
+                ax = fig.add_subplot(projection="3d")
                 x = np.arange(self.signal.shape[0])
                 y = np.linspace(0, 0.5, self.signal.shape[0])
                 X, Y = np.meshgrid(x, y)
@@ -223,6 +218,7 @@ class BaseTFRepresentation(object):
                                   rstride=3, cstride=3)
             else:
                 t, f = np.meshgrid(self.ts, np.linspace(0, 0.5, self.tfr.shape[0]))
+                ax = fig.add_subplot(111)
                 ax.contour(t, f, self.tfr, **kwargs)
             if default_annotation:
                 grid = kwargs.get('grid', True)
