@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 
 DATA_PATH = join(abspath(dirname("__file__")), "data", "gabor.mat")
 signal = loadmat(DATA_PATH)['gabor'].ravel()
-tfr = loadmat(DATA_PATH)['data']
+tfr = loadmat(DATA_PATH)['tfr']
 time = np.arange(338)
 freq = np.arange(128, dtype=float) / 256.0 * 1000
 

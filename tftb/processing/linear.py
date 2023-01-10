@@ -172,16 +172,6 @@ def gabor(signal, n_coeff=None, q_oversample=None, window=None):
     return tfr, dgr, gam
 
 
-# def original_main():
-#     from tftb.generators import fmconst
-#     import matplotlib.pyplot as plt
-#     sig = np.r_[fmconst(128, 0.2)[0], fmconst(128, 0.4)[0]]
-#     ts = np.linspace(0, 1, 256)
-#     tfr = ShortTimeFourierTransform(sig, timestamps=ts)
-#     tfr.run()
-#     tfr.plot(show_tf=True, cmap=plt.cm.viridis)
-
-
 def main():
     from tftb.generators import fmconst
     import matplotlib.pyplot as plt
@@ -189,10 +179,9 @@ def main():
     sig = np.r_[fmconst(128, 0.2)[0], fmconst(128, 0.4)[0]]
     ts = np.linspace(0, 1, 256)
 
-
     nr_samples = 256
     n_fbins = nr_samples
-    nperseg =65
+    nperseg = 65
     noverlap = nperseg - 1
     window = hamming(nperseg)
     nfft = 256
@@ -214,4 +203,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    # original_main()

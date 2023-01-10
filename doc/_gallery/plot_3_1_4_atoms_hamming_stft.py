@@ -44,4 +44,3 @@ tfr, ts, freqs = stft.run(
     window=window,
     scaling="psd")
 stft.plot(show_tf=True, cmap=plt.cm.gray)
-stft.plot(show_tf=True, cmap=plt.cm.gray)
