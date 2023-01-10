@@ -11,6 +11,8 @@ Bilinear Time-Frequency Processing in the Cohen’s Class.
 """
 
 import numpy as np
+from scipy.signal import spectrogram
+
 from tftb.processing.linear import ShortTimeFourierTransform
 from tftb.processing.base import BaseTFRepresentation
 
@@ -19,29 +21,13 @@ class Spectrogram(ShortTimeFourierTransform):
 
     name = "spectrogram"
 
-    def run(self):
-        lh = (self.fwindow.shape[0] - 1) // 2
-        rangemin = min([round(self.n_fbins / 2.0) - 1, lh])
-        starts = -np.min(np.c_[rangemin * np.ones(self.ts.shape), self.ts - 1],
-                         axis=1).astype(int)
-        ends = np.min(np.c_[rangemin * np.ones(self.ts.shape),
-                      self.signal.shape[0] - self.ts], axis=1).astype(int)
-        conj_fwindow = np.conj(self.fwindow)
-        for icol in range(self.tfr.shape[1]):
-            ti = self.ts[icol]
-            start = starts[icol]
-            end = ends[icol]
-            tau = np.arange(start, end + 1).astype(int)
-            indices = np.remainder(self.n_fbins + tau, self.n_fbins)
-            self.tfr[indices.astype(int), icol] = self.signal[ti + tau - 1] * \
-                conj_fwindow[lh + tau] / np.linalg.norm(self.fwindow[lh + tau])
-        self.tfr = np.abs(np.fft.fft(self.tfr, axis=0)) ** 2
-        return self.tfr, self.ts, self.freqs
+    def run(self, **kwargs):
+        self.freqs, self.timestamps, self.tfr = spectrogram(self.signal, **kwargs)
+        return self.tfr, self.timestamps, self.freqs
 
     def plot(self, kind='cmap', **kwargs):
         thresh = kwargs.pop("threshold", 0.0)
-        super(Spectrogram, self).plot(kind=kind, sqmod=False, threshold=thresh,
-                                      **kwargs)
+        super().plot(kind=kind, sqmod=False, threshold=thresh, **kwargs)
 
 
 class PageRepresentation(BaseTFRepresentation):
@@ -75,7 +61,7 @@ class PseudoPageRepresentation(PageRepresentation):
         hlength = np.floor(self.n_fbins / 4.0)
         if hlength % 2 == 0:
             hlength += 1
-        from scipy.signal import hamming
+        from scipy.signal.windows import hamming
         fwindow = hamming(hlength)
         lh = (fwindow.shape[0] - 1) / 2
         return fwindow / fwindow[lh]
@@ -125,7 +111,7 @@ class PseudoMargenauHillDistribution(MargenauHillDistribution):
         hlength = np.floor(self.n_fbins / 4.0)
         if hlength % 2 == 0:
             hlength += 1
-        from scipy.signal import hamming
+        from scipy.signal.windows import hamming
         fwindow = hamming(hlength)
         lh = (fwindow.shape[0] - 1) / 2
         return fwindow / fwindow[lh]
@@ -242,7 +228,7 @@ def smoothed_pseudo_wigner_ville(signal, timestamps=None, freq_bins=None,
     if fwindow is None:
         winlength = freq_bins // 4
         winlength = winlength + 1 - (winlength % 2)
-        from scipy.signal import hamming
+        from scipy.signal.windows import hamming
         fwindow = hamming(int(winlength))
     elif fwindow.shape[0] % 2 == 0:
         raise ValueError('The smoothing fwindow must have an odd length.')
@@ -250,7 +236,7 @@ def smoothed_pseudo_wigner_ville(signal, timestamps=None, freq_bins=None,
     if twindow is None:
         timelength = freq_bins // 10
         timelength += 1 - (timelength % 2)
-        from scipy.signal import hamming
+        from scipy.signal.windows import hamming
         twindow = hamming(int(timelength))
     elif twindow.shape[0] % 2 == 0:
         raise ValueError('The smoothing fwindow must have an odd length.')

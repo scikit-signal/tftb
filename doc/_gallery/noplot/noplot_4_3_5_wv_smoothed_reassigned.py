@@ -17,7 +17,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from tftb.generators import fmsin, fmlin, fmconst
 from tftb.processing import (ideal_tfr, WignerVilleDistribution,
-        smoothed_pseudo_wigner_ville, reassigned_smoothed_pseudo_wigner_ville)
+                             smoothed_pseudo_wigner_ville, reassigned_smoothed_pseudo_wigner_ville)
 
 sig1, if1 = fmsin(60, 0.16, 0.35, 50, 1, 0.35, 1)
 sig2, if2 = fmlin(60, 0.3, 0.1)

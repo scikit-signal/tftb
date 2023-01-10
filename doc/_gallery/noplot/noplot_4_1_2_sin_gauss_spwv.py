@@ -17,7 +17,7 @@ from tftb.processing import smoothed_pseudo_wigner_ville
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-from scipy.signal import kaiser, hamming
+from scipy.signal.windows import kaiser, hamming
 
 twindow = kaiser(13, 3 * np.pi)
 fwindow = kaiser(33, 3 * np.pi)

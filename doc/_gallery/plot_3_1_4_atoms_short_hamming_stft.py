@@ -21,13 +21,29 @@ Figure 3.8 from the tutorial.
 import numpy as np
 import matplotlib.pyplot as plt
 from tftb.generators import atoms
-from scipy.signal import hamming
+from scipy.signal.windows import hamming
 from tftb.processing.linear import ShortTimeFourierTransform
+import matplotlib
+matplotlib.use("TkAgg")
+
 
 coords = np.array([[45, .25, 32, 1], [85, .25, 32, 1]])
 sig = atoms(128, coords)
 x = np.real(sig)
-window = hamming(17)
-stft = ShortTimeFourierTransform(sig, n_fbins=128, fwindow=window)
-stft.run()
+
+nperseg = 17
+window = hamming(nperseg)
+
+nr_samples = 128
+n_fbins = nr_samples
+noverlap = nperseg - 1
+nfft = 128
+stft = ShortTimeFourierTransform(x, timestamps=None, n_fbins=n_fbins)
+tfr, ts, freqs = stft.run(
+    nfft=nfft,
+    nperseg=nperseg,
+    noverlap=noverlap,
+    return_onesided=False,
+    window=window,
+    scaling="psd")
 stft.plot(show_tf=True, cmap=plt.cm.gray)

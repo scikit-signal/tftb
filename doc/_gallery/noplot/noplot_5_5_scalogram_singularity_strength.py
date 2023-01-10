@@ -15,8 +15,8 @@ The time localization of the Lipschitz function can be seen at smaller scales.
 
 Figure 5.8 from the tutorial.
 """
+from tftb.processing.affine import Scalogram
 
-from tftb.processing import scalogram
 from tftb.generators import anasing
 import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -25,7 +25,7 @@ import matplotlib.pyplot as plt
 
 sig = anasing(64, 32, -0.5)
 
-tfr, t, f, _ = scalogram(sig, waveparams=4, fmin=0.01, fmax=0.5, n_voices=256)
+tfr, t, f, _ = Scalogram(sig, waveparams=4, fmin=0.01, fmax=0.5, n_voices=256).run()
 
 t, f = np.meshgrid(t, f)
 
