@@ -12,7 +12,7 @@ Tests for tftb.processing.cohen
 
 import unittest
 import numpy as np
-from scipy.signal.windows import kaiser
+from scipy.signal import kaiser
 from tftb.processing import cohen
 from tftb.generators import fmsin, fmlin
 from tftb.tests.test_base import TestBase

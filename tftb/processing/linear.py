@@ -11,9 +11,6 @@ Linear Time Frequency Processing.
 """
 
 import numpy as np
-import scipy.signal
-from scipy.signal.windows import hamming
-
 from tftb.processing.base import BaseTFRepresentation
 from tftb.utils import nearest_odd, divider, modulo, izak
 
@@ -47,39 +44,34 @@ class ShortTimeFourierTransform(BaseTFRepresentation):
 
         .. plot:: docstring_plots/processing/stft.py
         """
-        super().__init__(signal=signal,
-                         n_fbins=n_fbins,
-                         timestamps=timestamps,
-                         fwindow=fwindow)
-        # super(ShortTimeFourierTransform, self).__init__(x=x,
-        #                                                 n_fbins=n_fbins,
-        #                                                 timestamps=timestamps,
-        #                                                 fwindow=fwindow)
+        super(ShortTimeFourierTransform, self).__init__(signal=signal,
+                                                        n_fbins=n_fbins,
+                                                        timestamps=timestamps,
+                                                        fwindow=fwindow)
 
-    def run(self, **kwargs):
+    def run(self):
         r"""Compute the STFT according to:
 
         .. math:: X[m, w] = \sum_{n=-\infty}^{\infty}x[n]w[n - m]e^{-j\omega n}
 
         Where :math:`w` is a Hamming window."""
-        """
-        
-        scipy.x.stft(
-            x,
-            fs=1.0,
-            window='hann',
-            nperseg=256,
-            noverlap=None,
-            nfft=None,
-            detrend=False,
-            return_onesided=True,
-            boundary='zeros',
-            padded=True,
-            axis=- 1,
-            scaling='spectrum')
-        """
-
-        self.freqs, self.ts, self.tfr = scipy.signal.stft(self.signal, **kwargs)
+        lh = (self.fwindow.shape[0] - 1) // 2
+        rangemin = min([round(self.n_fbins / 2.0), lh])
+        starts = -np.min(np.c_[rangemin * np.ones(self.ts.shape),
+                               np.arange(self.ts.shape[0]) - 1],
+                         axis=1).astype(int)
+        ends = np.min(np.c_[rangemin * np.ones(self.ts.shape),
+                            self.signal.shape[0] - np.arange(self.ts.shape[0])],
+                      axis=1).astype(int)
+        conj_fwindow = np.conj(self.fwindow)
+        for icol in range(self.tfr.shape[1]):
+            start = starts[icol]
+            end = ends[icol]
+            tau = np.arange(start, end + 1).astype(int)
+            index = np.remainder(self.n_fbins + tau, self.n_fbins)
+            self.tfr[index, icol] = self.signal[(icol + tau - 1).astype(int)] * \
+                conj_fwindow[(lh + tau).astype(int)]
+        self.tfr = np.fft.fft(self.tfr, axis=0)
         return self.tfr, self.ts, self.freqs
 
     def plot(self, ax=None, kind='cmap', sqmod=True, threshold=0.05, **kwargs):
@@ -106,10 +98,9 @@ class ShortTimeFourierTransform(BaseTFRepresentation):
             self.tfr = np.abs(self.tfr) ** 2
         _threshold = np.amax(self.tfr) * threshold
         self.tfr[self.tfr <= _threshold] = 0.0
-        # super(ShortTimeFourierTransform, self).plot(ax=ax, kind=kind,
-        #                                             threshold=threshold,
-        #                                             **kwargs)
-        super().plot(ax=ax, kind=kind, threshold=threshold, **kwargs)
+        super(ShortTimeFourierTransform, self).plot(ax=ax, kind=kind,
+                                                    threshold=threshold,
+                                                    **kwargs)
 
 
 def gabor(signal, n_coeff=None, q_oversample=None, window=None):
@@ -172,46 +163,11 @@ def gabor(signal, n_coeff=None, q_oversample=None, window=None):
     return tfr, dgr, gam
 
 
-# def original_main():
-#     from tftb.generators import fmconst
-#     import matplotlib.pyplot as plt
-#     sig = np.r_[fmconst(128, 0.2)[0], fmconst(128, 0.4)[0]]
-#     ts = np.linspace(0, 1, 256)
-#     tfr = ShortTimeFourierTransform(sig, timestamps=ts)
-#     tfr.run()
-#     tfr.plot(show_tf=True, cmap=plt.cm.viridis)
-
-
-def main():
+if __name__ == '__main__':
     from tftb.generators import fmconst
     import matplotlib.pyplot as plt
-
     sig = np.r_[fmconst(128, 0.2)[0], fmconst(128, 0.4)[0]]
     ts = np.linspace(0, 1, 256)
-
-
-    nr_samples = 256
-    n_fbins = nr_samples
-    nperseg =65
-    noverlap = nperseg - 1
-    window = hamming(nperseg)
-    nfft = 256
-    nyquist = nfft // 2
-    print(f"nr_samples:  {nr_samples}")
-    print(f"nperseg:  {nperseg}")
-    print(f"noverlap:  {noverlap}")
-    print(f"nfft:  {nfft}")
-    stft = ShortTimeFourierTransform(sig, timestamps=None, n_fbins=n_fbins)
-    tfr, ts, freqs = stft.run(
-        nfft=nfft,
-        nperseg=nperseg,
-        noverlap=noverlap,
-        return_onesided=False,
-        window=window,
-        scaling="psd")
-    stft.plot(show_tf=True, cmap=plt.cm.viridis)
-
-
-if __name__ == "__main__":
-    main()
-    # original_main()
+    tfr = ShortTimeFourierTransform(sig, timestamps=ts)
+    tfr.run()
+    tfr.plot(show_tf=True, cmap=plt.cm.viridis)

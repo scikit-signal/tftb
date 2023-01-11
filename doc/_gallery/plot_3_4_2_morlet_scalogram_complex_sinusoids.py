@@ -27,7 +27,7 @@ import matplotlib.pyplot as plt
 
 sig2 = fmconst(128, .15)[0] + fmconst(128, .35)[0]
 tfr, t, freqs, _ = Scalogram(sig2, time_instants=np.arange(1, 129), waveparams=6,
-                             fmin=0.05, fmax=0.45, n_voices=128).run()
+                         fmin=0.05, fmax=0.45, n_voices=128).run()
 tfr = np.abs(tfr) ** 2
 threshold = np.amax(tfr) * 0.05
 tfr[tfr <= threshold] = 0.0

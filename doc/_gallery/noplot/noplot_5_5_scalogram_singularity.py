@@ -12,16 +12,16 @@ Morlet Scalograms of Lipschitz singularities.
 Figure 5.7 from the tutorial
 """
 
+from tftb.processing import scalogram
 from tftb.generators import anasing
 import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import matplotlib.pyplot as plt
 
-from tftb.processing.affine import Scalogram
 
 sig = anasing(64)
 
-tfr, t, f, _ = Scalogram(sig, waveparams=4, fmin=0.01, fmax=0.5, n_voices=256).run()
+tfr, t, f, _ = scalogram(sig, waveparams=4, fmin=0.01, fmax=0.5, n_voices=256)
 
 t, f = np.meshgrid(t, f)
 

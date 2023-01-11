@@ -38,7 +38,7 @@ def pseudo_wigner_ville(signal, timestamps=None, n_fbins=None, fwindow=None):
         hlength = np.floor(n_fbins / 4.0)
         if hlength % 2 == 0:
             hlength += 1
-        fwindow = ssig.windows.hamming(int(hlength))
+        fwindow = ssig.hamming(int(hlength))
     elif fwindow.shape[0] % 2 == 0:
         raise ValueError('The smoothing fwindow must have an odd length.')
     lh = (fwindow.shape[0] - 1) // 2
@@ -119,7 +119,7 @@ def pseudo_margenau_hill(signal, timestamps=None, n_fbins=None, fwindow=None):
         hlength = np.floor(n_fbins / 4.0)
         if hlength % 2 == 0:
             hlength += 1
-        fwindow = ssig.windows.hamming(hlength)
+        fwindow = ssig.hamming(hlength)
     elif fwindow.shape[0] % 2 == 0:
         raise ValueError('The smoothing fwindow must have an odd length.')
     lh = (fwindow.shape[0] - 1) / 2
@@ -194,7 +194,7 @@ def pseudo_page(signal, timestamps=None, n_fbins=None, fwindow=None):
         hlength = np.floor(n_fbins / 4.0)
         if hlength % 2 == 0:
             hlength += 1
-        fwindow = ssig.windows.hamming(hlength)
+        fwindow = ssig.hamming(hlength)
     elif fwindow.shape[0] % 2 == 0:
         raise ValueError('The smoothing fwindow must have an odd length.')
     lh = (fwindow.shape[0] - 1) / 2
@@ -349,8 +349,6 @@ def morlet_scalogram(signal, timestamps=None, n_fbins=None, tbp=0.25):
                 m -= np.round(n_fbins / 2.0) + 1
                 jcolhat = jcol + np.round(np.imag((m ** 2) * tf2[jcol, icol] / factor))
                 jcolhat = ((((jcolhat - 1) % n_fbins) + n_fbins) % n_fbins) + 1
-                icolhat = int(icolhat)
-                jcolhat = int(jcolhat)
                 rtfr[jcolhat - 1, icolhat - 1] += tfr[jcol, icol]
                 tf2[jcol, icol] = jcolhat + 1j * icolhat
             else:
@@ -387,7 +385,7 @@ def smoothed_pseudo_wigner_ville(signal, timestamps=None, n_fbins=None,
     if fwindow is None:
         hlength = np.floor(n_fbins / 4.0)
         hlength += 1 - (hlength % 2)
-        fwindow = ssig.windows.hamming(hlength)
+        fwindow = ssig.hamming(hlength)
     elif fwindow.shape[0] % 2 == 0:
         raise ValueError('The smoothing window must have an odd length.')
     lh = (fwindow.shape[0] - 1) / 2
@@ -395,7 +393,7 @@ def smoothed_pseudo_wigner_ville(signal, timestamps=None, n_fbins=None,
     if twindow is None:
         glength = np.floor(n_fbins / 4.0)
         glength += 1 - (glength % 2)
-        twindow = ssig.windows.hamming(glength)
+        twindow = ssig.hamming(glength)
     elif twindow.shape[0] % 2 == 0:
         raise ValueError('The smoothing window must have an odd length.')
     lg = (twindow.shape[0] - 1) / 2
@@ -495,7 +493,7 @@ def spectrogram(signal, time_samples=None, n_fbins=None, window=None):
     if window is None:
         wlength = int(np.floor(signal.shape[0] / 4.0))
         wlength += 1 - np.remainder(wlength, 2)
-        window = ssig.windows.hamming(wlength)
+        window = ssig.hamming(wlength)
     elif window.shape[0] % 2 == 0:
         raise ValueError('The smoothing window must have an odd length.')
 
@@ -555,7 +553,7 @@ if __name__ == '__main__':
     import matplotlib.pyplot as plt
     ts = np.arange(128, step=2)
     sig = fmlin(128, 0.1, 0.4)[0]
-    fwindow = ssig.windows.kaiser(17, beta=3 * np.pi)
+    fwindow = ssig.kaiser(17, beta=3 * np.pi)
     _, rtfr, _ = pseudo_wigner_ville(sig, timestamps=ts, n_fbins=64,
                                      fwindow=fwindow)
     rtfr = np.abs(rtfr) ** 2

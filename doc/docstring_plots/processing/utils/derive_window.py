@@ -11,7 +11,7 @@
 """
 
 import matplotlib.pyplot as plt
-from scipy.signal.windows import hann
+from scipy.signal import hann
 from tftb.processing.utils import derive_window
 
 window = hann(210)

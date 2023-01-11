@@ -13,8 +13,7 @@ from tftb.tests.test_base import TestBase
 from tftb.generators import misc
 from tftb.processing.utils import derive_window
 import numpy as np
-from scipy.signal import argrelmax, argrelmin
-from scipy.signal.windows import hann
+from scipy.signal import argrelmax, argrelmin, hann
 
 
 class TestMisc(TestBase):

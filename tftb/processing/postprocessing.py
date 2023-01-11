@@ -11,8 +11,6 @@ Postprocessing functions.
 """
 
 import numpy as np
-from scipy.signal.windows import hamming
-
 from tftb.processing.utils import integrate_2d
 
 
@@ -222,35 +220,8 @@ def ridges(tfr, re_mat, timestamps=None, method='rsp'):
 
 if __name__ == '__main__':
     from tftb.generators import atoms
-    from tftb.processing.cohen import Spectrogram
-
-    # from tftb.processing import Spectrogram
+    from tftb.processing import Spectrogram
     s = atoms(64, np.array([[32, 0.3, 16, 1]]))
-    # spec = Spectrogram(s)
-    # tfr, t, f = spec.run()
-
-    fs = 1.0
-    nfft = 64
-    nperseg = 17
-    window = hamming(nperseg)
-    noverlap = nperseg - 1
-    # detrend = 'constant'
-    detrend = "constant"
-    return_onesided = False
-    scaling = 'spectrum'
-    mode = 'psd'
-
-    spec = Spectrogram(s, n_fbins=nfft, fwindow=window)
-    tfr, t, f = spec.run(
-        fs=1.0,
-        window=window,
-        nperseg=nperseg,
-        noverlap=noverlap,
-        nfft=nfft,
-        detrend=detrend,
-        return_onesided=return_onesided,
-        scaling=scaling,
-        mode=mode
-    )
-
+    spec = Spectrogram(s)
+    tfr, t, f = spec.run()
     print(renyi_information(tfr, t, f, 3))

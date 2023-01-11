@@ -20,7 +20,7 @@ Figure 1.11 from the tutorial.
 
 
 import numpy as np
-from scipy.signal.windows import hamming
+from scipy.signal import hamming
 from tftb.generators import amexpos, fmconst, sigmerge, noisecg
 from tftb.processing.cohen import Spectrogram
 
@@ -29,27 +29,7 @@ transsig = amexpos(64, kind='unilateral') * fmconst(64)[0]
 signal = np.hstack((np.zeros((100,)), transsig, np.zeros((92,))))
 signal = sigmerge(signal, noisecg(256), -5)
 
-fs = 1.0
-nfft = 128
-nperseg = 65
-window = hamming(nperseg)
-noverlap = nperseg - 1
-# detrend = 'constant'
-detrend = False
-return_onesided = False
-scaling = 'density'
-mode = 'psd'
-
-spec = Spectrogram(signal, n_fbins=nfft, fwindow=window)
-spec.run(fs=1.0,
-         window=window,
-         nperseg=nperseg,
-         noverlap=noverlap,
-         nfft=nfft,
-         # detrend=detrend,
-         return_onesided=return_onesided,
-         scaling=scaling,
-         mode=mode
-         )
-
+fwindow = hamming(65)
+spec = Spectrogram(signal, n_fbins=128, fwindow=fwindow)
+spec.run()
 spec.plot(kind="contour", threshold=0.1, show_tf=False)
