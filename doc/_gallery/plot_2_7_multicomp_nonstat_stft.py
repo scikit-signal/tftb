@@ -11,13 +11,13 @@
 Short time Fourier transform of a multi-component nonstationary signal
 ======================================================================
 
-Compute and visualize the `STFT <https://en.wikipedia.org/wiki/Short-time_Fourier_transform>`
-of a multi component nonstationary signal.
+Compute and visualize the `STFT <https://en.wikipedia.org/wiki/Short-time_Fourier_transform>`_ of a multi component nonstationary signal.
 
 Figure 2.11 from the tutorial.
 """
 
 from tftb.generators import fmlin
+# from tftb.processing.linear import ShortTimeFourierTransform
 from tftb.processing.linear import ShortTimeFourierTransform as ShortTimeFourierTransform
 import matplotlib.pyplot as plt
 from scipy.signal.windows import hamming
