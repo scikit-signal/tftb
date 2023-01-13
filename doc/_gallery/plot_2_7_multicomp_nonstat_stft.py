@@ -17,8 +17,7 @@ Figure 2.11 from the tutorial.
 """
 
 from tftb.generators import fmlin
-# from tftb.processing.linear import ShortTimeFourierTransform
-from tftb.processing.linear import ShortTimeFourierTransform as ShortTimeFourierTransform
+from tftb.processing.linear import ShortTimeFourierTransform
 import matplotlib.pyplot as plt
 from scipy.signal.windows import hamming
 import numpy as np
@@ -32,13 +31,8 @@ def generate_signal(nr_samples):
 
 
 def plot_stft_contours(axis, ts, freqs, tfr):
-    print("In plot_stft_contours")
-    print(f"freqs.shape:  {freqs.shape}")
-    print(freqs)
     t_mesh, f_mesh = np.meshgrid(ts, freqs)
-    # axis.contour(T[:32, :], F[:32], data[:32, :], 5)
     nyquist = freqs.shape[0] // 2
-    print(f"nyquist: {nyquist}")
     axis.contour(t_mesh[:nyquist, :], f_mesh[:nyquist], tfr[:nyquist, :], 5)
     axis.grid(True)
     axis.set_title('Squared modulus of STFT')
@@ -58,17 +52,7 @@ def plot_signal(axis, x, nr_samples):
 
 
 def plot_spectrum(axis, squared_modulus_spectrum, freqs, nyquist):
-    print("In plot_spectrum")
-    print(f"freqs.shape:  {freqs.shape}")
-    print(freqs)
-    print(f"squared_modulus_spectrum.shape:  {squared_modulus_spectrum.shape}")
-    print(f"max: {np.max(freqs)}")
-    print(f"min: {np.min(freqs)}")
     len_freqs = squared_modulus_spectrum.shape[0] // 2
-    # len_freqs = freqs.shape[0] // 2
-    print(f"len_freqs: {len_freqs}")
-    print(f"nyquist: {nyquist}")
-    # axis.plot(squared_modulus_spectrum[::-1][:nyquist], freqs[:nyquist])
     f = np.linspace(0.0, 0.5, len_freqs, endpoint=True)
     axis.plot(squared_modulus_spectrum[len_freqs:], f)
     axis.set_yticklabels([])
@@ -101,10 +85,6 @@ def main():
     window = hamming(nperseg)
     nfft = 128
     nyquist = nfft // 2
-    print(f"nr_samples:  {nr_samples}")
-    print(f"nperseg:  {nperseg}")
-    print(f"noverlap:  {noverlap}")
-    print(f"nfft:  {nfft}")
     stft = ShortTimeFourierTransform(x, timestamps=None, n_fbins=n_fbins)
     tfr, ts, freqs = stft.run(
         nfft=nfft,
@@ -114,19 +94,11 @@ def main():
         window=window,
         scaling="psd")
 
-    print(f"tfr shape:  {tfr.shape}")
-    # data, _, _ = ShortTimeFourierTransform(x, timestamps=None, n_fbins=n_fbins,
-    #                                       fwindow=window).run()
-    # data = data[:64, :]
-    print(f"tfr shape modified:  {tfr.shape}")
     threshold = np.amax(np.abs(tfr)) * 0.05
-    print(f"threshold:  {threshold}")
 
     tfr[np.abs(tfr) <= threshold] = 0.0 + 1j * 0.0
     tfr = np.abs(tfr) ** 2
-    print(f"len(x): {len(x)}")
     squared_modulus_spectrum = abs(np.fft.fftshift(np.fft.fft(x))) ** 2
-    print(f"In main. squared_modulus_spectrum:  {squared_modulus_spectrum.shape}")
     plot(nr_samples, x, tfr, ts, freqs, squared_modulus_spectrum, nyquist)
 
 
