@@ -191,16 +191,19 @@ class BaseTFRepresentation(object):
                 self._annotate_signal(axTime)
                 self._annotate_spectrum(axSpec)
         else:
-            fig = plt.figure()
+            if ax is None:
+                fig = plt.figure()
             if kind == "cmap":
-                ax = fig.add_subplot(111)
+                if ax is None:
+                    ax = fig.add_subplot(111)
                 ax.imshow(self.tfr,
                           aspect='auto', cmap=cmap, origin='lower', extent=extent,
                           **kwargs)
             elif kind == "surf":
                 from mpl_toolkits.mplot3d import Axes3D
                 fig = plt.figure()
-                ax = fig.add_subplot(projection="3d")
+                if ax is None:
+                    ax = fig.add_subplot(projection="3d")
                 x = np.arange(self.signal.shape[0])
                 y = np.linspace(0, 0.5, self.signal.shape[0])
                 X, Y = np.meshgrid(x, y)
@@ -209,15 +212,17 @@ class BaseTFRepresentation(object):
                     ax.set_zlabel("Amplitude")
             elif kind == "wireframe":
                 from mpl_toolkits.mplot3d import Axes3D  # NOQA
-                ax = fig.add_subplot(projection="3d")
+                if ax is None:
+                    ax = fig.add_subplot(projection="3d")
                 x = np.arange(self.signal.shape[0])
                 y = np.linspace(0, 0.5, self.signal.shape[0])
                 X, Y = np.meshgrid(x, y)
                 ax.plot_wireframe(X, Y, np.abs(self.tfr), cmap=plt.cm.jet,
                                   rstride=3, cstride=3)
             else:
-                t, f = np.meshgrid(self.ts, np.linspace(0, 0.5, self.tfr.shape[0]))
-                ax = fig.add_subplot(111)
+                t, f = np.meshgrid(self.timestamps, np.linspace(0, 0.5, self.tfr.shape[0]))
+                if ax is None:
+                    ax = fig.add_subplot(111)
                 ax.contour(t, f, self.tfr, **kwargs)
             if default_annotation:
                 grid = kwargs.get('grid', True)

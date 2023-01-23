@@ -30,5 +30,17 @@ sig = atoms(128, coords)
 x = np.real(sig)
 window = hamming(65)
 stft = ShortTimeFourierTransform(sig, n_fbins=128, fwindow=window)
-stft.run()
+
+nfft = 128
+nperseg = 65
+noverlap = nperseg - 1
+window = hamming(nperseg)
+n_fbins = nfft
+tfr, ts, freqs = stft.run(
+    nfft=nfft,
+    nperseg=nperseg,
+    noverlap=noverlap,
+    return_onesided=False,
+    window=window,
+    scaling="psd")
 stft.plot(show_tf=True, cmap=plt.cm.gray)
