@@ -21,10 +21,8 @@ Figure 3.8 from the tutorial.
 import numpy as np
 import matplotlib.pyplot as plt
 from tftb.generators import atoms
-from scipy.signal.windows import hamming
+from scipy.signal import hamming
 from tftb.processing.linear import ShortTimeFourierTransform
-import matplotlib
-matplotlib.use("TkAgg")
 
 
 coords = np.array([[45, .25, 32, 1], [85, .25, 32, 1]])
@@ -34,8 +32,7 @@ x = np.real(sig)
 nperseg = 17
 window = hamming(nperseg)
 
-nr_samples = 128
-n_fbins = nr_samples
+n_fbins = 128
 noverlap = nperseg - 1
 nfft = 128
 stft = ShortTimeFourierTransform(x, timestamps=None, n_fbins=n_fbins)

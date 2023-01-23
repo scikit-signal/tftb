@@ -19,7 +19,7 @@ Figure 2.11 from the tutorial.
 from tftb.generators import fmlin
 from tftb.processing.linear import ShortTimeFourierTransform
 import matplotlib.pyplot as plt
-from scipy.signal.windows import hamming
+from scipy.signal import hamming
 import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 

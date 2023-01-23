@@ -1,15 +1,14 @@
 from tftb.processing.linear import ShortTimeFourierTransform
 from tftb.generators import fmconst
 import numpy as np
-from scipy.signal.windows import hamming
+from scipy.signal import hamming
 from matplotlib.pyplot import cm
 
 sig = np.r_[fmconst(128, 0.2)[0], fmconst(128, 0.4)[0]]
 
 nperseg = 65
 window = hamming(nperseg)
-nr_samples = 128
-n_fbins = nr_samples
+n_fbins = 128
 noverlap = nperseg - 1
 nfft = 128
 stft = ShortTimeFourierTransform(sig, timestamps=None, n_fbins=n_fbins)

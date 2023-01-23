@@ -22,7 +22,7 @@ Figure 3.7 from the tutorial.
 import numpy as np
 import matplotlib.pyplot as plt
 from tftb.generators import atoms
-from scipy.signal.windows import hamming
+from scipy.signal import hamming
 from tftb.processing.linear import ShortTimeFourierTransform
 
 coords = np.array([[45, .25, 32, 1], [85, .25, 32, 1]])

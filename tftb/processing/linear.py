@@ -12,7 +12,6 @@ Linear Time Frequency Processing.
 
 import numpy as np
 import scipy.signal
-from scipy.signal.windows import hamming
 
 from tftb.processing.base import BaseTFRepresentation
 from tftb.utils import nearest_odd, divider, modulo, izak
@@ -171,11 +170,10 @@ def main():
 
     sig = np.r_[fmconst(128, 0.2)[0], fmconst(128, 0.4)[0]]
 
-    nr_samples = 256
-    n_fbins = nr_samples
+    n_fbins = 256
     nperseg = 65
     noverlap = nperseg - 1
-    window = hamming(nperseg)
+    window = scipy.signal.hamming(nperseg)
     nfft = 256
     stft = ShortTimeFourierTransform(sig, timestamps=None, n_fbins=n_fbins)
     stft.run(
