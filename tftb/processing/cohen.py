@@ -75,7 +75,7 @@ class PseudoPageRepresentation(PageRepresentation):
         hlength = np.floor(self.n_fbins / 4.0)
         if hlength % 2 == 0:
             hlength += 1
-        from scipy.signal import hamming
+        from scipy.signal.windows import hamming
         fwindow = hamming(hlength)
         lh = (fwindow.shape[0] - 1) / 2
         return fwindow / fwindow[lh]
@@ -125,7 +125,7 @@ class PseudoMargenauHillDistribution(MargenauHillDistribution):
         hlength = np.floor(self.n_fbins / 4.0)
         if hlength % 2 == 0:
             hlength += 1
-        from scipy.signal import hamming
+        from scipy.signal.windows import hamming
         fwindow = hamming(hlength)
         lh = (fwindow.shape[0] - 1) / 2
         return fwindow / fwindow[lh]
@@ -242,7 +242,7 @@ def smoothed_pseudo_wigner_ville(signal, timestamps=None, freq_bins=None,
     if fwindow is None:
         winlength = freq_bins // 4
         winlength = winlength + 1 - (winlength % 2)
-        from scipy.signal import hamming
+        from scipy.signal.windows import hamming
         fwindow = hamming(int(winlength))
     elif fwindow.shape[0] % 2 == 0:
         raise ValueError('The smoothing fwindow must have an odd length.')
@@ -250,7 +250,7 @@ def smoothed_pseudo_wigner_ville(signal, timestamps=None, freq_bins=None,
     if twindow is None:
         timelength = freq_bins // 10
         timelength += 1 - (timelength % 2)
-        from scipy.signal import hamming
+        from scipy.signal.windows import hamming
         twindow = hamming(int(timelength))
     elif twindow.shape[0] % 2 == 0:
         raise ValueError('The smoothing fwindow must have an odd length.')

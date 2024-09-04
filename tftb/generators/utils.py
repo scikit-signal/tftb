@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.signal import hilbert
-from scipy.integrate import trapz
+from scipy.integrate import trapezoid
 # from tftb.utils import nextpow2
 
 
@@ -82,7 +82,7 @@ def scale(X, a, fmin, fmax, N):
                                                  geo_f.reshape((1, 128))))
         dilate_sig = np.zeros((2 * Mcurrent,), dtype=complex)
         for kk in range(2 * int(Mcurrent)):
-            dilate_sig[kk] = trapz(itfmatx[kk, :] * DS[:N], geo_f)
+            dilate_sig[kk] = trapezoid(itfmatx[kk, :] * DS[:N], geo_f)
         S[(Mmax - Mcurrent):(Mmax + Mcurrent)] = dilate_sig
         ptr += 1
 
