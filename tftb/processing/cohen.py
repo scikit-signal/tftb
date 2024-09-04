@@ -72,7 +72,7 @@ class PseudoPageRepresentation(PageRepresentation):
     name = "pseudo page"
 
     def _make_window(self):
-        hlength = np.floor(self.n_fbins / 4.0)
+        hlength = int(np.floor(self.n_fbins / 4.0))
         if hlength % 2 == 0:
             hlength += 1
         from scipy.signal.windows import hamming
@@ -122,16 +122,16 @@ class PseudoMargenauHillDistribution(MargenauHillDistribution):
     name = "pseudo margenau-hill"
 
     def _make_window(self):
-        hlength = np.floor(self.n_fbins / 4.0)
+        hlength = int(np.floor(self.n_fbins / 4.0))
         if hlength % 2 == 0:
             hlength += 1
         from scipy.signal.windows import hamming
         fwindow = hamming(hlength)
-        lh = (fwindow.shape[0] - 1) / 2
+        lh = (fwindow.shape[0] - 1) // 2
         return fwindow / fwindow[lh]
 
     def run(self):
-        lh = (self.fwindow.shape[0] - 1) / 2
+        lh = (self.fwindow.shape[0] - 1) // 2
         xrow = self.signal.shape[0]
         for icol in range(self.ts.shape[0]):
             start = min([np.round(self.n_fbins / 2.0) - 1, lh, xrow - icol])
