@@ -1,6 +1,6 @@
 [project]
 name = "tftb"
-version = "0.1.4"
+version = "0.2.0"
 description = "A Python library for time-frquency analysis and visualization."
 authors = [
     {name = "deshpande.jaidev@gmail.com",email = "deshpande.jaidev@gmail.com"}
