@@ -68,3 +68,6 @@ doc/auto_examples
 .vscode
 doc/backreferences
 doc/apiref/
+
+# Avoid poetry lockfiles
+poetry.lock

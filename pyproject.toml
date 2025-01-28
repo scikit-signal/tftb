@@ -1,0 +1,25 @@
+[project]
+name = "tftb"
+version = "0.1.4"
+description = "A Python library for time-frquency analysis and visualization."
+authors = [
+    {name = "deshpande.jaidev@gmail.com",email = "deshpande.jaidev@gmail.com"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "numpy (>=1.22.4,<2.0.0)",
+    "scipy (>=1.9.0,<2.0.0)",
+    "matplotlib (>=3.6.0,<4.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.4"
+scikit-image = "^0.24.0"
+

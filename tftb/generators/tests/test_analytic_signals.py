@@ -51,8 +51,8 @@ class TestAnalyticSignals(TestBase):
         # they appear in the same locations
         uphase = np.unwrap(np.angle(signal))
         dphase = np.diff(uphase)
-        base_value = mode(dphase)[0][0]
-        signal_phase_change = np.abs(dphase - base_value) > 0.0001
+        base_value, _ = mode(dphase)
+        signal_phase_change = np.abs(dphase - base_value) > 1e-4
         ideal_phase_change = np.diff(phases) != 0
         np.testing.assert_allclose(signal_phase_change, ideal_phase_change)
 

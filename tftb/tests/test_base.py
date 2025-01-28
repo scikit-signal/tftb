@@ -69,5 +69,5 @@ class TestBase(unittest.TestCase):
         y[y <= y_thresh] = 0.0
         x = np.ascontiguousarray(x)
         y = np.ascontiguousarray(y)
-        similarity = structural_similarity(x, y)
+        similarity = structural_similarity(x, y, data_range=np.amax(x) - np.amin(x))
         self.assertTrue(similarity >= tol)
