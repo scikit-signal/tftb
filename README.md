@@ -1,6 +1,3 @@
-[![Documentation Status](https://readthedocs.org/projects/tftb/badge/?version=latest)](https://tftb.readthedocs.io/en/latest/?badge=latest)
-[![Build Status](https://travis-ci.org/scikit-signal/tftb.svg)](https://travis-ci.org/scikit-signal/tftb)
-
 # tftb
 
 tftb (Time-frequency toolbox) is a Python module for time-frequency analysis and visualization
