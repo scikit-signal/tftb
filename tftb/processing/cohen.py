@@ -72,10 +72,10 @@ class PseudoPageRepresentation(PageRepresentation):
     name = "pseudo page"
 
     def _make_window(self):
-        hlength = np.floor(self.n_fbins / 4.0)
+        hlength = int(np.floor(self.n_fbins / 4.0))
         if hlength % 2 == 0:
             hlength += 1
-        from scipy.signal import hamming
+        from scipy.signal.windows import hamming
         fwindow = hamming(hlength)
         lh = (fwindow.shape[0] - 1) / 2
         return fwindow / fwindow[lh]
@@ -122,16 +122,16 @@ class PseudoMargenauHillDistribution(MargenauHillDistribution):
     name = "pseudo margenau-hill"
 
     def _make_window(self):
-        hlength = np.floor(self.n_fbins / 4.0)
+        hlength = int(np.floor(self.n_fbins / 4.0))
         if hlength % 2 == 0:
             hlength += 1
-        from scipy.signal import hamming
+        from scipy.signal.windows import hamming
         fwindow = hamming(hlength)
-        lh = (fwindow.shape[0] - 1) / 2
+        lh = (fwindow.shape[0] - 1) // 2
         return fwindow / fwindow[lh]
 
     def run(self):
-        lh = (self.fwindow.shape[0] - 1) / 2
+        lh = (self.fwindow.shape[0] - 1) // 2
         xrow = self.signal.shape[0]
         for icol in range(self.ts.shape[0]):
             start = min([np.round(self.n_fbins / 2.0) - 1, lh, xrow - icol])
@@ -242,7 +242,7 @@ def smoothed_pseudo_wigner_ville(signal, timestamps=None, freq_bins=None,
     if fwindow is None:
         winlength = freq_bins // 4
         winlength = winlength + 1 - (winlength % 2)
-        from scipy.signal import hamming
+        from scipy.signal.windows import hamming
         fwindow = hamming(int(winlength))
     elif fwindow.shape[0] % 2 == 0:
         raise ValueError('The smoothing fwindow must have an odd length.')
@@ -250,7 +250,7 @@ def smoothed_pseudo_wigner_ville(signal, timestamps=None, freq_bins=None,
     if twindow is None:
         timelength = freq_bins // 10
         timelength += 1 - (timelength % 2)
-        from scipy.signal import hamming
+        from scipy.signal.windows import hamming
         twindow = hamming(int(timelength))
     elif twindow.shape[0] % 2 == 0:
         raise ValueError('The smoothing fwindow must have an odd length.')
